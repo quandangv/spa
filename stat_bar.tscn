@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://fonts/UbuntuOutlined.tres" type="DynamicFont" id=1]
+[ext_resource path="res://stat_bar.gd" type="Script" id=2]
+
+[node name="stat" type="ProgressBar"]
+margin_right = 240.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 240, 25 )
+max_value = 16.0
+step = 1.0
+allow_greater = true
+percent_visible = false
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="."]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 10.0
+margin_top = -9.5
+margin_bottom = 9.5
+size_flags_horizontal = 6
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_outline_modulate = Color( 0.184314, 0.160784, 0.317647, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "example"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="value" type="Label" parent="."]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -9.5
+margin_right = -6.0
+margin_bottom = 9.5
+size_flags_horizontal = 6
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_outline_modulate = Color( 0.184314, 0.160784, 0.317647, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -1,0 +1,38 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "ImageTexture",
+"class": "RadialGradientTexture",
+"language": "GDScript",
+"path": "res://RadialGradientTexture.gd"
+} ]
+_global_script_class_icons={
+"RadialGradientTexture": ""
+}
+
+[application]
+
+config/name="ssa"
+run/main_scene="res://ship_build.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+utils="*res://utils.tscn"
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_clear_color=Color( 0.18672, 0.1632, 0.32, 1 )
+environment/default_environment="res://default_env.tres"

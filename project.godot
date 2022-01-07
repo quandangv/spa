@@ -28,6 +28,10 @@ config/icon="res://icon.png"
 
 utils="*res://utils.tscn"
 
+[locale]
+
+translations=PoolStringArray( "res://locale/en.po" )
+
 [physics]
 
 common/enable_pause_aware_picking=true

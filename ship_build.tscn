@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://hexmap.gd" type="Script" id=1]
 [ext_resource path="res://components.tres" type="TileSet" id=2]
@@ -120,6 +120,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ 20, 0.0 ]
 }
+
+[sub_resource type="StyleBoxFlat" id=6]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+bg_color = Color( 0, 0.717647, 1, 0.0784314 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0.717647, 1, 0.541176 )
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="Animation" id=1]
 length = 0.001
@@ -276,8 +290,8 @@ max_value = 4.0
 [node name="force" parent="ui/base/stats/container" instance=ExtResource( 8 )]
 visible = false
 self_modulate = Color( 0, 1, 0.505882, 1 )
-margin_top = 174.0
-margin_bottom = 199.0
+margin_top = 145.0
+margin_bottom = 170.0
 max_value = 4.0
 
 [node name="focus" parent="ui/base/stats/container" instance=ExtResource( 8 )]
@@ -452,8 +466,8 @@ margin_bottom = 90.0
 
 [node name="upgrades" type="HBoxContainer" parent="ui/base/toolbar/container/buttons"]
 visible = false
-margin_right = 836.0
-margin_bottom = 80.0
+margin_right = 876.0
+margin_bottom = 184.0
 script = ExtResource( 11 )
 
 [node name="anim" type="AnimationPlayer" parent="ui/base/toolbar/container/buttons/upgrades"]
@@ -461,8 +475,8 @@ anims/RESET = SubResource( 4 )
 anims/appear = SubResource( 5 )
 
 [node name="super" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
-margin_right = 80.0
-margin_bottom = 80.0
+margin_right = 84.0
+margin_bottom = 90.0
 toggle_mode = false
 
 [node name="img" parent="ui/base/toolbar/container/buttons/upgrades/super" index="0"]
@@ -477,9 +491,9 @@ margin_bottom = 384.0
 text = "super"
 
 [node name="super-flip" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
-margin_left = 84.0
-margin_right = 164.0
-margin_bottom = 80.0
+margin_left = 88.0
+margin_right = 172.0
+margin_bottom = 90.0
 toggle_mode = false
 
 [node name="img" parent="ui/base/toolbar/container/buttons/upgrades/super-flip" index="0"]
@@ -500,9 +514,9 @@ flip_v = true
 text = "super"
 
 [node name="mega" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
-margin_left = 168.0
-margin_right = 248.0
-margin_bottom = 80.0
+margin_left = 176.0
+margin_right = 260.0
+margin_bottom = 90.0
 toggle_mode = false
 
 [node name="img" parent="ui/base/toolbar/container/buttons/upgrades/mega" index="0"]
@@ -510,6 +524,14 @@ scale = Vector2( 0.06, 0.06 )
 
 [node name="label" parent="ui/base/toolbar/container/buttons/upgrades/mega" index="1"]
 text = "mega"
+
+[node name="help" type="Label" parent="ui/base/toolbar/container/buttons/upgrades"]
+margin_left = 264.0
+margin_right = 876.0
+margin_bottom = 90.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/normal = SubResource( 6 )
 
 [node name="map" type="Node2D" parent="."]
 position = Vector2( 0, -50 )

@@ -7,20 +7,24 @@ onready var anim = get_node("anim")
 onready var super = get_node("super")
 onready var super_flip = get_node("super-flip")
 onready var mega = get_node("mega")
+onready var help = get_node("help")
 
 func appear(type, show_super, show_super_flip, show_mega):
 	disappear()
 	if anim.is_playing():
 		yield(anim, "animation_finished")
+	help.text = type + "_help"
 	anim.queue("appear")
 	if type in supertypes:
-		super.visible = show_super
+		super.visible = true
+		super.disabled = not show_super
 		super.set_component("super" + type)
-		super.disabled = false
-		super_flip.visible = show_super_flip
+		super_flip.visible = true
+		super_flip.disabled = not show_super_flip
 		super_flip.set_component("super" + type)
 		if type in megatypes:
-			mega.visible = show_mega
+			mega.visible = true
+			mega.disabled = not show_mega
 			mega.set_component("mega" + type)
 		else:
 			mega.visible = false

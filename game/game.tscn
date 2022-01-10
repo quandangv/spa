@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://game/outlined_shape.tscn" type="PackedScene" id=1]
+[ext_resource path="res://game/ship.gd" type="Script" id=2]
+[ext_resource path="res://game/plasma.tscn" type="PackedScene" id=3]
+
+[node name="game" type="Camera2D"]
+current = true
+zoom = Vector2( 0.2, 0.2 )
+
+[node name="ship" type="Node2D" parent="."]
+script = ExtResource( 2 )
+turret_color = Color( 0.52549, 0.52549, 0.52549, 1 )
+
+[node name="hull" parent="ship" instance=ExtResource( 1 )]
+polygon = PoolVector2Array(  )
+
+[node name="plasma" parent="." instance=ExtResource( 3 )]
+position = Vector2( -100, 0 )
+size = 10.0
+velocity = Vector2( 100, 0 )
+hp = 15.0
+
+[node name="plasma2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 100, 0 )
+size = 3.0
+velocity = Vector2( -10, 0 )
+hp = 13.0
+collateral_damage = 0.2

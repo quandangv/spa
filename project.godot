@@ -21,12 +21,17 @@ _global_script_class_icons={
 [application]
 
 config/name="ssa"
-run/main_scene="res://ship_build.tscn"
+run/main_scene="res://game/game.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 utils="*res://utils.tscn"
+
+[global]
+
+main=false
+hdr=false
 
 [locale]
 
@@ -39,4 +44,5 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 environment/default_clear_color=Color( 0.18672, 0.1632, 0.32, 1 )
+quality/depth/hdr=false
 environment/default_environment="res://default_env.tres"

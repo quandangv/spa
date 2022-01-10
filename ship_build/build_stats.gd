@@ -1,8 +1,12 @@
 extends MarginContainer
 
+export(Color) var safe_color
+export(Color) var danger_color
+
 onready var comp_utils = get_node("/root/utils/component")
 var stat_bars = {}
 var autohide_bars = []
+var size
 
 func _ready():
 	for bar in $container.get_children():
@@ -10,10 +14,13 @@ func _ready():
 		stat_bars[bar.name] = bar
 		if not bar.visible:
 			autohide_bars.append(bar.name)
+	size = stat_bars["size"]
 
 func set_stat(stats):
 	for name in stats:
-		stat_bars[name].set_value(stats[name])
+		if name in stat_bars:
+			stat_bars[name].set_value(stats[name])
+	size.self_modulate = lerp(safe_color, danger_color, inverse_lerp(size.min_value, size.max_value, size.value))
 
 func selection_changed(new_tile):
 	for bar in autohide_bars:

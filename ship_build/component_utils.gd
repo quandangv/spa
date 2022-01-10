@@ -45,7 +45,7 @@ func _ready():
 			offset.y += tile_radius
 		tileset.tile_set_texture_offset(id, offset)
 
-const normal_neighbors = super_coords + super_flip_coords + mega_extra_coords
+const normal_neighbors = mega_coords
 const super_neighbors = [Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0),
 	Vector2(1, 0), Vector2(1, 1), Vector2(0, 2), Vector2(-1, 2), Vector2(-2, 2), Vector2(-2, 1)]
 const super_flip_neighbors = [Vector2(0, 1), Vector2(-1, 1), Vector2(-1, 0),
@@ -60,16 +60,36 @@ func add_dict(dict, key, amount = 1):
 	else:
 		dict[key] = amount
 
-const generator_output = [0, 6.0, 9.0, 11.0, 11.0, 11.0, 12.0]
+func get2D(array, size, pos):
+	return array[pos.x + pos.y*size]
+
+func update_range(r, value):
+	if value < r[0]:
+		r[0] = value
+	if value + 1 > r[1]:
+		r[1] = value + 1
+
+const output_by_side = [0, 6.0, 9.0, 11.0, 11.0, 11.0, 12.0]
 func analyze_components(tiles, size):
-	var stats = {"thrust":0, "radar":0, "armor": 0, "shield":0, "regeneration":0}
+	var stats = {"thrust":0, "radar":0, "armor": 0, "shield":0, "weight":0}
 	var generators = {}
 	var energizers = {}
 	var turrets = {}
+	var armors = {}
+	var collectors = {}
+	var assemblers = {}
+	var hrange = [size, 0]
+	var vrange = [size, 0]
+	var drange = [size*2, 0]
 	for x in range(size):
 		for y in range(size):
 			var tile = tiles[x + y*size]
-			if tile == null: continue
+			if tile == null or "destroyed" in tile: continue
+			stats["weight"] += 1
+			update_range(hrange, x)
+			update_range(vrange, y)
+			update_range(drange, x + y)
+			tile.erase("covered")
 			var pos = Vector2(x, y)
 			match tile[""]:
 				"generator":
@@ -88,7 +108,7 @@ func analyze_components(tiles, size):
 					tile["plasma_supply"] = 0
 					tile["plasma_power"] = 0
 					turrets[pos] = tile
-					if tile["flip"]:
+					if "flip" in tile and tile["flip"]:
 						for delta in super_flip_coords:
 							turrets[pos + delta] = tile
 					else:
@@ -120,11 +140,19 @@ func analyze_components(tiles, size):
 					add_dict(stats, "map_detail")
 					tile["map_detail"] = true
 				"armor":
-					stats["armor"] += 1
+					tile["armor"] = 1
+					tile["material_supply"] = 0
+					armors[pos] = tile
 				"superarmor":
-					stats["armor"] += 3
-					add_dict(stats, "reflect")
-					tile["reflect"] = true
+					tile["armor"] = 3
+					tile["material_supply"] = 0
+					armors[pos] = tile
+					if "flip" in tile and tile["flip"]:
+						for delta in super_flip_coords:
+							armors[pos + delta] = tile
+					else:
+						for delta in super_coords:
+							armors[pos + delta] = tile
 				"shield":
 					stats["shield"] += 1
 				"supershield":
@@ -135,10 +163,15 @@ func analyze_components(tiles, size):
 					add_dict(stats, "multitask")
 					tile["multitask"] = true
 				"assembler":
-					add_dict(stats, "assembly")
-					tile["assembly"] = true
+					tile["material_supply"] = 0
+					assemblers[pos] = tile
 				"collector":
-					stats["regeneration"] += 1
+					collectors[pos] = tile
+	stats["size"] = max(0, max(hrange[1] - hrange[0], max(vrange[1] - vrange[0], drange[1] - drange[0])))
+	print(hrange, vrange, drange, stats["size"])
+	stats["hrange"] = hrange
+	stats["vrange"] = vrange
+	stats["drange"] = drange
 	for pos in generators:
 		var tile = generators[pos]
 		var connections = []
@@ -150,18 +183,19 @@ func analyze_components(tiles, size):
 				connections.append(energizers[pos2])
 		var level = len(connections)
 		if level != 0:
-			var divided_output = generator_output[level] / level
-			tile["plasma_supply"] = generator_output[level]
+			var divided_output = output_by_side[level] / level
+			tile["plasma_output"] = output_by_side[level]
 			for tile2 in connections:
 				tile2["plasma_supply"] += divided_output
 			tile.erase("warning")
 		else:
-			tile["warning"] = "no turret or energizer to receive output"
+			tile["plasma_output"] = 0
+			tile["warning"] = "need_plasma_output"
 	for pos in energizers:
 		var tile = energizers[pos]
 		tile["wasted_plasma_supply"] = tile["plasma_supply"]
 		tile["wasted_plasma_power"] = tile["plasma_power"]
-		var pos2 = pos + mega_coords[tile["rotation"]]
+		var pos2 = pos + mega_coords[tile.get("rotation", 0)]
 		if pos2 in energizers:
 			var tile2 = energizers[pos2]
 			tile2["chained"] = true
@@ -170,7 +204,7 @@ func analyze_components(tiles, size):
 		if not "chained" in tile:
 			var tracker = [pos]
 			while true:
-				pos += mega_coords[tile["rotation"]]
+				pos += mega_coords[tile.get("rotation", 0)]
 				if pos in tracker:
 					break
 				else:
@@ -188,9 +222,83 @@ func analyze_components(tiles, size):
 					clear_energizer(tile)
 					break
 				else:
-					tile["warning"] = "no turret or energizer to receive output"
+					tile["warning"] = "need_plasma_output"
 					break
+	check_supply([energizers.values(), turrets.values()], "plasma")
+	for pos in collectors:
+		var tile = collectors[pos]
+		var connections = []
+		for delta in mega_coords:
+			var pos2 = delta + pos
+			if pos2 in armors:
+				connections.append(armors[pos2])
+			if pos2 in assemblers:
+				connections.append(assemblers[pos2])
+		var level = len(connections)
+		if level != 0:
+			var divided_output = output_by_side[level] / level
+			tile["material_output"] = output_by_side[level]
+			for tile2 in connections:
+				tile2["material_supply"] += divided_output
+			tile.erase("warning")
+		else:
+			tile["material_output"] = 0
+			tile["warning"] = "need_material_output"
+	check_supply([armors.values(), assemblers.values()], "material")
+	for pos in armors:
+		for delta in normal_neighbors:
+			var tile = get2D(tiles, size, pos + delta)
+			if tile != null and not "armor" in tile[""]:
+				if not "covered" in tile:
+					tile["covered"] = []
+				tile["covered"].append(-delta)
 	return stats
+
+func finalize_ship(tiles, size):
+	var stats = analyze_components(tiles, size)
+	var hhits = []
+	var vhits = []
+	var dhits = []
+	var map = []
+	var turrets = []
+	var real_size = stats["size"]
+	if real_size != 0:
+		for i in range(real_size):
+			hhits.append([])
+			vhits.append([])
+			dhits.append([])
+		var hrange = stats["hrange"]
+		var vrange = stats["vrange"]
+		var drange = stats["drange"]
+		var mapsize = hrange[1] - hrange[0]
+		map.resize(mapsize*(vrange[1] - vrange[0]))
+		for x in range(hrange[0], hrange[1]):
+			for y in range(vrange[0], vrange[1]):
+				var tile = tiles[x + y*size]
+				if tile != null:
+					if "turret" in tile[""]:
+						turrets.append(Vector2(x, y))
+					var mapx = x-hrange[0]
+					var mapy = y-vrange[0]
+					map[mapx + mapy*mapsize] = tile
+					vhits[mapx].append(Vector2(mapx, mapy))
+					hhits[mapy].append(Vector2(mapx, mapy))
+					dhits[x+y-drange[0]].append(Vector2(mapx, mapy))
+		for line in dhits:
+			line.sort_custom(self, "by_x")
+	stats.erase("hrange")
+	stats.erase("vrange")
+	stats.erase("drange")
+	return {"map":map, "hhits":hhits, "vhits":vhits, "dhits":dhits, "stats":stats, "turrets":turrets}
+
+func by_x(a, b):
+	return a.x < b.x
+
+func check_supply(list_of_list, type):
+	for list in list_of_list:
+		for tile in list:
+			if tile[type+"_supply"] == 0:
+				tile["warning"] = "need_"+type+"_supply"
 
 func clear_energizer(e):
 	e["wasted_plasma_supply"] = 0
@@ -200,26 +308,27 @@ func get_component_parts(tile):
 	if not tile:
 		return [null]
 	if not tile is Dictionary:
-		tile = {"": tile, "rotation": 0}
+		tile = {"": tile}
 	var type = tile[""]
 	var result
 	if type == "redirect":
 		return [null]
 	elif type == "pseudocore":
 		result = ["pseudocore-top", "core-base"]
-	elif "core" in type or "turret" in type or "thruster" in type:
+	elif "core" in type or "turret" in type or "thruster" in type or type == "assembler":
 		result = [type + "-top", type + "-base"]
 	elif type is String:
 		result = [type]
-	if tile["rotation"] % 3 and have_full_rotation(result[0]):
+	var rotation = tile.get("rotation", 0)
+	if rotation % 3 and have_full_rotation(result[0]):
 		result[0] += "-rotate"
 	if "super" in type:
 		if "flip" in tile and tile["flip"]:
-			if tile["rotation"] in [1, 2]:
+			if rotation in [1, 2]:
 				result[0] += "-flip"
 				result[1] += "-flip"
 		else:
-			if tile["rotation"] in [4, 5]:
+			if rotation in [4, 5]:
 				result[0] += "-flip"
 				result[1] += "-flip"
 	return result
@@ -241,7 +350,7 @@ func set_tile(map: TileMap, pos, tile, imgname):
 	if not imgname:
 		map.set_cellv(pos, -1)
 	else:
-		var rotation = 0 if "base" in imgname else tile["rotation"]
+		var rotation = 0 if "base" in imgname else tile.get("rotation", 0)
 		var flip = "flip" in tile and tile["flip"]
 		match rotation:
 			0:

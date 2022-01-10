@@ -8,18 +8,21 @@ export(TileSet) var tile_set
 export(NodePath) var type_buttons_path
 export(NodePath) var upgrade_buttons_path
 export(NodePath) var ghost_path
+export(NodePath) var warning_path
 var tiles: Array
 var size: int
 var selected_pos
 var type_buttons_anim: AnimationPlayer
 var upgrade_buttons
 var ghost
+var warning
 onready var comp_utils = get_node("/root/utils/component")
 
 func _ready():
 	type_buttons_anim = get_node(type_buttons_path).find_node("anim")
 	upgrade_buttons = get_node(upgrade_buttons_path)
 	ghost = get_node(ghost_path)
+	warning = get_node(warning_path)
 	size = halfsize*2+1
 	$map.init(halfsize, tile_set)
 	$ui/base/toolbar.connect("rotation_changed", self, "rotation_changed")
@@ -54,7 +57,7 @@ func _unhandled_input(event):
 					if new_selected_tile == null or mouse == selected_pos:
 						unselect_tile()
 					elif new_selected_tile[""] == "redirect":
-						mouse = new_selected_tile["target"]
+						mouse += new_selected_tile["target"]
 						continue
 					else:
 						select_tile(mouse, new_selected_tile)
@@ -84,10 +87,11 @@ func unselect_tile():
 		type_buttons_anim.play("appear")
 		upgrade_buttons.disappear()
 		$ui/base/stats.selection_changed(null)
+		warning.get_node("anim").play_backwards("appear")
 
 func select_tile(pos, tile):
 	$ui/base/stats.selection_changed(tile)
-	$ui/base/toolbar.rotation = tile["rotation"]
+	$ui/base/toolbar.rotation = tile.get("rotation", 0)
 	selected_pos = pos
 	comp_utils.set_texture($map/selection, comp_utils.get_component_parts(tile)[-1])
 	$map/selection.flip_v = false
@@ -101,6 +105,11 @@ func select_tile(pos, tile):
 		$map/selection.position = comp_utils.map_to_local(pos)
 	$map/selection/anim.play("appear")
 	type_buttons_anim.play_backwards("appear")
+	if "warning" in tile:
+		warning.text = tile["warning"]
+		warning.get_node("anim").play("appear")
+	else:
+		warning.visible = false
 	var show_super = check_near(pos, tile[""], comp_utils.super_coords)
 	var show_super_flip = check_near(pos, tile[""], comp_utils.super_flip_coords)
 	upgrade_buttons.appear(tile[""], show_super, show_super_flip,
@@ -173,7 +182,7 @@ func set_tile(pos, tile, reanalyze = true):
 		return
 	if current != null:
 		if current[""] == "redirect":
-			set_tile(current["target"], null, false)
+			set_tile(current["target"] + pos, null, false)
 		if "occupies" in current:
 			for delta in current["occupies"]:
 				tiles[get_tiles_index(pos + delta)] = null
@@ -181,8 +190,9 @@ func set_tile(pos, tile, reanalyze = true):
 	if tile != null:
 		if "occupies" in tile:
 			for delta in tile["occupies"]:
-				set_tile(pos + delta, {"": "redirect", "target": pos}, false)
+				set_tile(pos + delta, {"": "redirect", "target": -delta}, false)
 	set_layers(pos, tile)
 	if reanalyze:
 		var stats = comp_utils.analyze_components(tiles, size)
+#		print(comp_utils.finalize_ship(tiles, size))
 		$ui/base/stats.set_stat(stats)

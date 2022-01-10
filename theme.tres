@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=10 format=2]
+[gd_resource type="Theme" load_steps=11 format=2]
 
 [ext_resource path="res://fonts/Ubuntu.tres" type="DynamicFont" id=1]
+[ext_resource path="res://fonts/UbuntuBold.tres" type="DynamicFont" id=2]
 
 [sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 1, 0.537255, 0, 0.0784314 )
@@ -105,3 +106,5 @@ MarginContainer/constants/margin_top = 16
 PanelContainer/styles/panel = SubResource( 8 )
 ProgressBar/styles/bg = SubResource( 9 )
 ProgressBar/styles/fg = SubResource( 10 )
+RichTextLabel/colors/default_color = Color( 0.521569, 0.878431, 1, 1 )
+RichTextLabel/fonts/bold_font = ExtResource( 2 )

@@ -1,125 +1,32 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=18 format=2]
 
-[ext_resource path="res://hexmap.gd" type="Script" id=1]
-[ext_resource path="res://components.tres" type="TileSet" id=2]
-[ext_resource path="res://component_button.tscn" type="PackedScene" id=3]
-[ext_resource path="res://build_toolbar.gd" type="Script" id=4]
-[ext_resource path="res://ship_build.gd" type="Script" id=5]
+[ext_resource path="res://ship_build/hexmap.gd" type="Script" id=1]
+[ext_resource path="res://ship_build/components.tres" type="TileSet" id=2]
+[ext_resource path="res://ship_build/component_button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ship_build/build_toolbar.gd" type="Script" id=4]
+[ext_resource path="res://ship_build/ship_build.gd" type="Script" id=5]
 [ext_resource path="res://theme.tres" type="Theme" id=6]
 [ext_resource path="res://fonts/UbuntuBold.tres" type="DynamicFont" id=7]
-[ext_resource path="res://stat_bar.tscn" type="PackedScene" id=8]
+[ext_resource path="res://ship_build/stat_bar.tscn" type="PackedScene" id=8]
 [ext_resource path="res://interpolator.gd" type="Script" id=9]
-[ext_resource path="res://toolbar_appear.tres" type="Animation" id=10]
-[ext_resource path="res://upgrade_buttons.gd" type="Script" id=11]
-[ext_resource path="res://component_img.gd" type="Script" id=12]
-[ext_resource path="res://build_stats.gd" type="Script" id=13]
+[ext_resource path="res://ship_build/fade_down_anim.tscn" type="PackedScene" id=10]
+[ext_resource path="res://ship_build/upgrade_buttons.gd" type="Script" id=11]
+[ext_resource path="res://ship_build/component_img.gd" type="Script" id=12]
+[ext_resource path="res://ship_build/build_stats.gd" type="Script" id=13]
 
-[sub_resource type="Animation" id=3]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ true ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 1 ) ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:margin_top")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0 ]
-}
-
-[sub_resource type="Animation" id=4]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ false ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:margin_top")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ 0 ]
-}
-
-[sub_resource type="Animation" id=5]
-resource_name = "appear"
-length = 0.2
-step = 0.01
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.01 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ false, true ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:modulate")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0.01, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:margin_top")
-tracks/2/interp = 2
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0.01, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 20, 0.0 ]
-}
+[sub_resource type="StyleBoxFlat" id=7]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+bg_color = Color( 1, 0.498039, 0, 0.117647 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.498039, 0, 1 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
 
 [sub_resource type="StyleBoxFlat" id=6]
 content_margin_left = 8.0
@@ -215,7 +122,7 @@ tracks/2/keys = {
 "values": [ false, true ]
 }
 
-[node name="root" type="Camera2D"]
+[node name="build" type="Camera2D"]
 current = true
 script = ExtResource( 5 )
 __meta__ = {
@@ -225,6 +132,7 @@ tile_set = ExtResource( 2 )
 type_buttons_path = NodePath("ui/base/toolbar/container/buttons/types")
 upgrade_buttons_path = NodePath("ui/base/toolbar/container/buttons/upgrades")
 ghost_path = NodePath("map/ghost")
+warning_path = NodePath("ui/base/toolbar/container/help/warning")
 
 [node name="ui" type="CanvasLayer" parent="."]
 
@@ -245,12 +153,14 @@ script = ExtResource( 13 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+safe_color = Color( 0.172549, 1, 0.494118, 1 )
+danger_color = Color( 1, 0.298039, 0.298039, 1 )
 
 [node name="container" type="VBoxContainer" parent="ui/base/stats"]
 margin_left = 16.0
 margin_top = 16.0
 margin_right = 256.0
-margin_bottom = 157.0
+margin_bottom = 128.0
 
 [node name="thrust" parent="ui/base/stats/container" instance=ExtResource( 8 )]
 self_modulate = Color( 0, 0.717647, 1, 1 )
@@ -268,17 +178,10 @@ margin_top = 58.0
 margin_bottom = 83.0
 max_value = 8.0
 
-[node name="armor" parent="ui/base/stats/container" instance=ExtResource( 8 )]
+[node name="size" parent="ui/base/stats/container" instance=ExtResource( 8 )]
 self_modulate = Color( 0, 0.717647, 1, 1 )
 margin_top = 87.0
 margin_bottom = 112.0
-max_value = 8.0
-
-[node name="regeneration" parent="ui/base/stats/container" instance=ExtResource( 8 )]
-self_modulate = Color( 0, 0.717647, 1, 1 )
-margin_top = 116.0
-margin_bottom = 141.0
-max_value = 8.0
 
 [node name="boost" parent="ui/base/stats/container" instance=ExtResource( 8 )]
 visible = false
@@ -342,7 +245,34 @@ self_modulate = Color( 0.878431, 0.305882, 1, 1 )
 margin_top = 377.0
 margin_bottom = 402.0
 
+[node name="plasma_output" parent="ui/base/stats/container" instance=ExtResource( 8 )]
+visible = false
+self_modulate = Color( 0.878431, 0.305882, 1, 1 )
+margin_top = 377.0
+margin_bottom = 402.0
+max_value = 12.0
+
 [node name="plasma_power" parent="ui/base/stats/container" instance=ExtResource( 8 )]
+visible = false
+self_modulate = Color( 0.878431, 0.305882, 1, 1 )
+margin_top = 406.0
+margin_bottom = 431.0
+max_value = 8.0
+
+[node name="material_supply" parent="ui/base/stats/container" instance=ExtResource( 8 )]
+visible = false
+self_modulate = Color( 0.878431, 0.305882, 1, 1 )
+margin_top = 377.0
+margin_bottom = 402.0
+
+[node name="material_output" parent="ui/base/stats/container" instance=ExtResource( 8 )]
+visible = false
+self_modulate = Color( 0.878431, 0.305882, 1, 1 )
+margin_top = 377.0
+margin_bottom = 402.0
+max_value = 12.0
+
+[node name="armor" parent="ui/base/stats/container" instance=ExtResource( 8 )]
 visible = false
 self_modulate = Color( 0.878431, 0.305882, 1, 1 )
 margin_top = 406.0
@@ -354,9 +284,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -454.0
+margin_left = -410.0
 margin_top = -159.0
-margin_right = 454.0
+margin_right = 410.0
 mouse_filter = 2
 script = ExtResource( 4 )
 __meta__ = {
@@ -367,7 +297,7 @@ __meta__ = {
 [node name="container" type="VBoxContainer" parent="ui/base/toolbar"]
 margin_left = 16.0
 margin_top = 16.0
-margin_right = 892.0
+margin_right = 804.0
 margin_bottom = 143.0
 mouse_filter = 2
 
@@ -376,44 +306,53 @@ margin_right = 131.0
 margin_bottom = 31.0
 size_flags_horizontal = 0
 
-[node name="Panel" type="PanelContainer" parent="ui/base/toolbar/container/help"]
+[node name="rotate" type="PanelContainer" parent="ui/base/toolbar/container/help"]
 margin_right = 131.0
 margin_bottom = 31.0
 
-[node name="rotate" type="HBoxContainer" parent="ui/base/toolbar/container/help/Panel"]
+[node name="container" type="HBoxContainer" parent="ui/base/toolbar/container/help/rotate"]
 margin_left = 8.0
 margin_top = 6.0
 margin_right = 123.0
 margin_bottom = 25.0
 size_flags_horizontal = 0
 
-[node name="keystroke" type="Label" parent="ui/base/toolbar/container/help/Panel/rotate"]
+[node name="keystroke" type="Label" parent="ui/base/toolbar/container/help/rotate/container"]
 margin_right = 63.0
 margin_bottom = 19.0
 custom_fonts/font = ExtResource( 7 )
 text = "[shift] R"
 
-[node name="label" type="Label" parent="ui/base/toolbar/container/help/Panel/rotate"]
+[node name="label" type="Label" parent="ui/base/toolbar/container/help/rotate/container"]
 margin_left = 67.0
 margin_right = 115.0
 margin_bottom = 19.0
 text = "Rotate"
 
+[node name="warning" type="Label" parent="ui/base/toolbar/container/help"]
+visible = false
+margin_left = 135.0
+margin_right = 208.0
+margin_bottom = 31.0
+custom_colors/font_color = Color( 1, 0.584314, 0, 1 )
+custom_styles/normal = SubResource( 7 )
+text = "warning"
+
+[node name="anim" parent="ui/base/toolbar/container/help/warning" instance=ExtResource( 10 )]
+
 [node name="buttons" type="VBoxContainer" parent="ui/base/toolbar/container"]
 margin_top = 35.0
-margin_right = 876.0
+margin_right = 788.0
 margin_bottom = 125.0
 
 [node name="types" type="HBoxContainer" parent="ui/base/toolbar/container/buttons"]
-margin_right = 876.0
+margin_right = 788.0
 margin_bottom = 90.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="anim" type="AnimationPlayer" parent="ui/base/toolbar/container/buttons/types"]
-anims/RESET = SubResource( 3 )
-anims/appear = ExtResource( 10 )
+[node name="anim" parent="ui/base/toolbar/container/buttons/types" instance=ExtResource( 10 )]
 
 [node name="core" parent="ui/base/toolbar/container/buttons/types" instance=ExtResource( 3 )]
 margin_right = 84.0
@@ -460,19 +399,19 @@ margin_right = 788.0
 margin_bottom = 90.0
 
 [node name="assembler" parent="ui/base/toolbar/container/buttons/types" instance=ExtResource( 3 )]
+visible = false
 margin_left = 792.0
 margin_right = 876.0
 margin_bottom = 90.0
 
 [node name="upgrades" type="HBoxContainer" parent="ui/base/toolbar/container/buttons"]
 visible = false
-margin_right = 876.0
+margin_top = 94.0
+margin_right = 788.0
 margin_bottom = 184.0
 script = ExtResource( 11 )
 
-[node name="anim" type="AnimationPlayer" parent="ui/base/toolbar/container/buttons/upgrades"]
-anims/RESET = SubResource( 4 )
-anims/appear = SubResource( 5 )
+[node name="anim" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 10 )]
 
 [node name="super" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
 margin_right = 84.0
@@ -491,8 +430,7 @@ margin_bottom = 384.0
 text = "super"
 
 [node name="super-flip" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
-margin_left = 88.0
-margin_right = 172.0
+margin_right = 84.0
 margin_bottom = 90.0
 toggle_mode = false
 
@@ -514,8 +452,7 @@ flip_v = true
 text = "super"
 
 [node name="mega" parent="ui/base/toolbar/container/buttons/upgrades" instance=ExtResource( 3 )]
-margin_left = 176.0
-margin_right = 260.0
+margin_right = 84.0
 margin_bottom = 90.0
 toggle_mode = false
 
@@ -525,13 +462,14 @@ scale = Vector2( 0.06, 0.06 )
 [node name="label" parent="ui/base/toolbar/container/buttons/upgrades/mega" index="1"]
 text = "mega"
 
-[node name="help" type="Label" parent="ui/base/toolbar/container/buttons/upgrades"]
-margin_left = 264.0
-margin_right = 876.0
+[node name="help" type="RichTextLabel" parent="ui/base/toolbar/container/buttons/upgrades"]
+margin_right = 788.0
 margin_bottom = 90.0
+rect_min_size = Vector2( 0, 90 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/normal = SubResource( 6 )
+bbcode_enabled = true
 
 [node name="map" type="Node2D" parent="."]
 position = Vector2( 0, -50 )
@@ -549,7 +487,6 @@ cell_size = Vector2( 1, 1 )
 cell_custom_transform = Transform2D( 295.604, 0, 147.802, 256, 0, 0 )
 cell_tile_origin = 1
 format = 1
-tile_data = PoolIntArray( -65536, 10, 0, 393224, 8, 0, 524295, 27, 0, 655361, 30, 0, 655364, 7, 0, 655366, 5, 0, 655368, 9, 0, 720902, 2, 0, 786436, 12, 0, 851978, 21, 0, 917508, 21, 0, 983046, 1, 0, 983047, 1, 0, 983048, 1, 0 )
 
 [node name="top" type="TileMap" parent="map"]
 mode = 2
@@ -559,7 +496,7 @@ cell_custom_transform = Transform2D( 295.604, 0, 147.802, 256, 0, 0 )
 cell_tile_origin = 1
 centered_textures = true
 format = 1
-tile_data = PoolIntArray( 458758, 28, 0, 589834, 21, 0, 851976, 21, 0 )
+tile_data = PoolIntArray( 524317, 39, 0, 524318, 39, 0, 524319, 39, 0, 524320, 39, 0, 589852, 39, 0, 589853, 9, 0, 589854, 9, 0, 589855, 9, 0, 589856, 39, 0, 655387, 39, 0, 655388, 9, 0, 655389, 17, 0, 655390, 17, 0, 655391, 9, 0, 655392, 39, 0, 720923, 9, 0, 720924, 17, 0, 720925, 0, 0, 720926, 17, 0, 720927, 9, 0, 720928, 39, 0 )
 __meta__ = {
 "_editor_description_": ""
 }

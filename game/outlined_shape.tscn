@@ -9,9 +9,8 @@ script = ExtResource( 1 )
 
 [node name="outline" type="Line2D" parent="."]
 points = PoolVector2Array( 0, 0, 1, 1 )
-width = 0.8
+width = 0.5
 default_color = Color( 1, 1, 1, 1 )
-begin_cap_mode = 1
 sharp_limit = 3.0
 round_precision = 4
 antialiased = true

@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://component_utils.gd" type="Script" id=1]
+[ext_resource path="res://ship_build/components.tres" type="TileSet" id=2]
+
+[node name="component" type="Node"]
+script = ExtResource( 1 )
+tileset = ExtResource( 2 )
+tile_radius = 170.667
+tilset_cell_size = 512.0
+stat_color = {
+"armor": Color( 0.588235, 0.588235, 0.588235, 1 ),
+"plasma_power": Color( 0, 0.839216, 0.937255, 1 ),
+"plasma_supply": Color( 0.827451, 0, 1, 1 ),
+"radar": Color( 1, 0, 0.364706, 1 ),
+"regeneration": Color( 0.85098, 0.85098, 0.85098, 1 ),
+"shield": Color( 0, 0.933333, 0.741176, 1 ),
+"thrust": Color( 0.937255, 0.894118, 0, 1 )
+}

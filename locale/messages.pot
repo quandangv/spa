@@ -155,9 +155,9 @@ msgid "material_output"
 msgstr ""
 
 msgid "need_plasma_output"
-msgstr "no turret or energizer to receive output"
+msgstr ""
 msgid "need_plasma_supply"
-msgstr "no generator to supply plasma"
+msgstr ""
 
 msgid "need_material_output"
 msgstr ""

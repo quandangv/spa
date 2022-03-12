@@ -16,7 +16,6 @@ var type_buttons_anim: AnimationPlayer
 var upgrade_buttons
 var ghost
 var warning
-onready var comp_utils = get_node("/root/utils/component")
 
 func _ready():
 	type_buttons_anim = get_node(type_buttons_path).find_node("anim")
@@ -36,17 +35,21 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		var show_ghost = false
 		var mouse = $map.get_mouse_pos()
-		if Input.is_mouse_button_pressed(BUTTON_RIGHT):
+		if event.button_mask & BUTTON_RIGHT:
 			set_tile(mouse, null)
 			unselect_tile()
-		elif not Input.is_mouse_button_pressed(BUTTON_LEFT):
+		elif event.button_mask & BUTTON_LEFT:
+			var selected = $ui/base/toolbar.get_selected()
+			if selected:
+				set_tile(mouse, {"": selected, "rotation": $ui/base/toolbar.rotation})
+		else:
 			show_ghost = true
 		update_ghost(show_ghost, mouse)
 	if event is InputEventMouseButton:
 		var mouse = $map.get_mouse_pos()
-		if Input.is_mouse_button_pressed(BUTTON_RIGHT):
+		if event.button_mask & BUTTON_RIGHT:
 			set_tile(mouse, null)
-		elif Input.is_mouse_button_pressed(BUTTON_LEFT):
+		elif event.button_mask & BUTTON_LEFT:
 			var selected = $ui/base/toolbar.get_selected()
 			if selected:
 				set_tile(mouse, {"": selected, "rotation": $ui/base/toolbar.rotation})
@@ -69,13 +72,13 @@ func upgrade_selected(rank):
 	var type = tiles[get_tiles_index(selected_pos)][""]
 	var tile = {"rotation": $ui/base/toolbar.rotation}
 	if rank == "super":
-		tile["occupies"] = comp_utils.super_coords
+		tile["occupies"] = ComponentUtils.super_coords
 	elif rank == "super-flip":
-		tile["occupies"] = comp_utils.super_flip_coords
+		tile["occupies"] = ComponentUtils.super_flip_coords
 		rank = "super"
 		tile["flip"] = true
 	elif rank == "mega":
-		tile["occupies"] = comp_utils.mega_coords
+		tile["occupies"] = ComponentUtils.mega_coords
 	tile[""] = rank + type
 	set_tile(selected_pos, tile)
 	unselect_tile()
@@ -93,16 +96,17 @@ func select_tile(pos, tile):
 	$ui/base/stats.selection_changed(tile)
 	$ui/base/toolbar.rotation = tile.get("rotation", 0)
 	selected_pos = pos
-	comp_utils.set_texture($map/selection, comp_utils.get_component_parts(tile)[-1])
+	ComponentUtils.set_texture($map/selection, ComponentUtils.get_component_parts(tile)[-1])
 	$map/selection.flip_v = false
 	if "super" in tile[""]:
 		if tile.get("flip", false):
 			$map/selection.flip_v = true
-			$map/selection.position = comp_utils.map_to_local(pos + Vector2(0.8660254038, -0.8660254038*2))
+			$map/selection.position = ComponentUtils.map_to_local(pos + Vector2(0.8660254038, -0.8660254038*2))
 		else:
-			$map/selection.position = comp_utils.map_to_local(pos + Vector2(0.15, -0.3))
+			$map/selection.position = ComponentUtils.map_to_local(pos + Vector2(0.15, -0.3))
 	else:
-		$map/selection.position = comp_utils.map_to_local(pos)
+		$map/selection.position = ComponentUtils.map_to_local(pos)
+		$map/selection.rotation = tile.get("rotation", 0)*PI/3
 	$map/selection/anim.play("appear")
 	type_buttons_anim.play_backwards("appear")
 	if "warning" in tile:
@@ -110,10 +114,10 @@ func select_tile(pos, tile):
 		warning.get_node("anim").play("appear")
 	else:
 		warning.visible = false
-	var show_super = check_near(pos, tile[""], comp_utils.super_coords)
-	var show_super_flip = check_near(pos, tile[""], comp_utils.super_flip_coords)
+	var show_super = check_near(pos, tile[""], ComponentUtils.super_coords)
+	var show_super_flip = check_near(pos, tile[""], ComponentUtils.super_flip_coords)
 	upgrade_buttons.appear(tile[""], show_super, show_super_flip,
-		show_super and show_super_flip and check_near(pos, tile[""], comp_utils.mega_extra_coords))
+		show_super and show_super_flip and check_near(pos, tile[""], ComponentUtils.mega_extra_coords))
 
 func check_near(pos, type, delta):
 	for d in delta:
@@ -151,7 +155,7 @@ func get_tile(pos):
 
 func update_ghost(show, pos):
 	ghost.target_modulate = Color.white if inrange(pos) and show else Color.transparent
-	ghost.target_pos = comp_utils.map_to_local(pos)
+	ghost.target_pos = ComponentUtils.map_to_local(pos)
 
 func reset_tiles():
 	$map/base.clear()
@@ -160,11 +164,11 @@ func reset_tiles():
 	tiles.resize(size*size)
 
 func set_layers(pos, tile):
-	var parts = comp_utils.get_component_parts(tile)
+	var parts = ComponentUtils.get_component_parts(tile)
 	var rotation = $ui/base/toolbar.rotation
-	comp_utils.set_tile($map/top, pos, tile, parts[0])
+	ComponentUtils.set_tile($map/top, pos, tile, parts[0])
 	if len(parts) > 1:
-		comp_utils.set_tile($map/base, pos, tile, parts[1])
+		ComponentUtils.set_tile($map/base, pos, tile, parts[1])
 	else:
 		$map/base.set_cellv(pos, -1)
 
@@ -193,6 +197,8 @@ func set_tile(pos, tile, reanalyze = true):
 				set_tile(pos + delta, {"": "redirect", "target": -delta}, false)
 	set_layers(pos, tile)
 	if reanalyze:
-		var stats = comp_utils.analyze_components(tiles, size)
-#		print(comp_utils.finalize_ship(tiles, size))
+		var stats = ComponentUtils.analyze_components(tiles, size)
 		$ui/base/stats.set_stat(stats)
+
+func print_ship():
+	print(to_json(ComponentUtils.finalize_ship(tiles, size)))

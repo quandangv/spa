@@ -7,7 +7,7 @@ var _pressed_button = null
 var rotation = 0
 
 func _ready():
-	for button in $container/buttons/types.get_children():
+	for button in $container/container/buttons/types.get_children():
 		if button is Button:
 			button.pressed = false
 			button.set_component(button.name)

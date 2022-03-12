@@ -4,13 +4,11 @@ export var halfsize = 5
 export var grid_color: Color
 export(Vector2) var mapping_offset
 
-onready var comp_utils = get_node("/root/utils/component")
-
 func init(halfsize, tile_set):
 	self.halfsize = halfsize
 	for child in get_children():
 		if child is TileMap:
-			child.cell_custom_transform = comp_utils.tile_transform
+			child.cell_custom_transform = ComponentUtils.tile_transform
 			child.tile_set = tile_set
 			child.cell_size = Vector2(1, 1)
 			child.mode = TileMap.MODE_CUSTOM
@@ -18,12 +16,12 @@ func init(halfsize, tile_set):
 
 func get_mouse_pos():
 	var pos = get_local_mouse_position()
-	return comp_utils.local_to_map(pos)
+	return ComponentUtils.local_to_map(pos)
 
 func _draw():
 	for x in range(-halfsize, halfsize+1):
 		for y in range(-halfsize, halfsize+1):
-			var pos = comp_utils.map_to_local(Vector2(x, y))
+			var pos = ComponentUtils.map_to_local(Vector2(x, y))
 			draw_circle(pos, 50, grid_color)
 	draw_circle(Vector2.ZERO, 50, grid_color)
 # Uncomment this to draw grid

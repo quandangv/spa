@@ -5,10 +5,48 @@ using System;
 public class game_utils : Node
 {
 	[Export] Dictionary<String, Color> side_colors;
+	List<Node> ship_inputs = new List<Node>();
+	Node camera_input;
 	
 	public override void _Ready()
 	{
 		GD.Randomize();
+	}
+	
+	public bool register_camera_input(Node holder) {
+		if (camera_input == null) {
+			camera_input = holder;
+			if (ship_inputs.Count == 0)
+				return true;
+		}
+		holder.Call("lost_input");
+		return false;
+	}
+	public void unregister_camera_input(Node holder) {
+		if (holder == camera_input)
+			camera_input = null;
+	}
+	
+	public bool register_ship_input(Node holder) {
+		ship_inputs.Add(holder);
+		if (ship_inputs.Count == 1) {
+			if (camera_input != null)
+				camera_input.Call("lost_input");
+			return true;
+		}
+		return false;
+	}
+	public void unregister_ship_input(Node holder) {
+		var i = ship_inputs.IndexOf(holder);
+		if (i >= 0) {
+			ship_inputs.RemoveAt(i);
+			if (ship_inputs.Count == 0) {
+				if (camera_input != null)
+					camera_input.Call("gained_input");
+			} else if (i == 0) {
+				ship_inputs[0].Call("gained_input");
+			}
+		}
 	}
 	
 	public bool is_enemy(String side, Node other) {

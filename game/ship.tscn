@@ -1,10 +1,11 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://game/outlined_shape.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/ship.gd" type="Script" id=4]
 [ext_resource path="res://game/turret.tscn" type="PackedScene" id=6]
 [ext_resource path="res://game/thruster.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game/explosion.wav" type="AudioStream" id=8]
+
+[sub_resource type="CircleShape2D" id=3]
 
 [sub_resource type="Animation" id=1]
 length = 0.001
@@ -75,9 +76,8 @@ side = "enemy"
 
 [node name="thruster" parent="." instance=ExtResource( 7 )]
 
-[node name="hull" parent="." instance=ExtResource( 3 )]
-
-[node name="collision" type="CollisionPolygon2D" parent="."]
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource( 3 )
 
 [node name="explosion" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 8 )

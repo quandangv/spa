@@ -3,7 +3,7 @@ extends RigidBody2D
 export(PackedScene) var thruster_scene
 export(PackedScene) var turret_scene
 export var side = "player"
-const border_damage_ratio = 2
+const border_damage_ratio = 4
 const inner_damage = 4
 var border_damage_accum = 0
 var inner_damage_accum = 0
@@ -12,6 +12,7 @@ var turrets:Array = []
 var damage = 10
 var color = null
 var real_mass: float
+var og_mass: float
 
 var dhits = []
 var hhits = []
@@ -21,8 +22,6 @@ var mapsize = 0
 
 onready var shape = load("res://game/outlined_shape.tscn")
 onready var controller = $controller
-onready var hull = $hull
-onready var hull_outline = $hull/outline
 
 func _ready():
 	var _minimal_ship = '{"map":[null,{"":"thruster","hp":5,"rotation":0},{"":"core","hp":5,"rotation":0},{"":"generator","hp":5,"plasma_downstream":[[0,2]],"plasma_supply":6,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":6,"rotation":0},null],"mapsize":2}'
@@ -52,7 +51,7 @@ func load_ship(data):
 			var ins = thruster_scene.instance()
 			ins.name = "thruster"
 			add_child(ins)
-		$thruster.thrust = stats["thrust"]
+		$thruster.init(stats["thrust"])
 	elif $thruster != null:
 		remove_child($thruster)
 	
@@ -84,6 +83,7 @@ func load_ship(data):
 			component['_hp'] = component['hp']
 			real_mass += 1
 	mass = real_mass
+	og_mass = real_mass
 	for i in range(len(hhits)):
 		for j in range(len(hhits[i])):
 			hhits[i][j] = get_map(hhits[i][j])
@@ -105,20 +105,18 @@ func set_side(side):
 		set_color(GameUtils.side_colors.get(side, Color.gray))
 
 func set_color(color):
-	$hull.color = color
 	self.color = color
 
 func init(size):
 	self.size = size
-	var points = PoolVector2Array()
-	points.push_back(Vector2(0, size))
-	points.push_back(Vector2(cos(PI/6), 0.5) * size)
-	points.push_back(Vector2(cos(PI/6), -0.5) * size)
-	points.push_back(Vector2(0, -size))
-	points.push_back(Vector2(-cos(PI/6), -0.5) * size)
-	points.push_back(Vector2(-cos(PI/6), 0.5) * size)
-	$hull.set_points(points)
-	$collision.polygon = points
+	$collision.shape.radius = size
+
+func _draw():
+	var point_count = round(8*sqrt(size))
+	var fill_color = lerp(color, Color.white, inner_damage_accum)
+	fill_color.a = lerp(0.2, 1, real_mass / og_mass)
+	draw_circle(Vector2.ZERO, size, fill_color)
+	draw_arc(Vector2.ZERO, size, 0, PI*2, point_count, lerp(Color.white, Color.red, border_damage_accum), 1, true)
 
 func drop_plasma(component, supply_drop, power_drop):
 	component['_plasma_supply'] -= supply_drop
@@ -162,7 +160,7 @@ func take_damage(component, damage):
 				controller.on_turret_load()
 		match component['']:
 			'thruster':
-				$thruster.thrust -= 1
+				$thruster.init($thruster.thrust - 1)
 			'core':
 				ship_destroyed()
 			'turret':
@@ -171,13 +169,19 @@ func take_damage(component, damage):
 			ship_destroyed()
 		else:
 			self.mass = real_mass
+		damage += component['_hp']
+		component['_hp'] = 0
 	border_damage_accum += border_damage_ratio * damage / size
+	return damage
 func get_component(arr, index):
-	for i in range(len(arr)) if index == 1 else range(-1, -len(arr), -1):
+	for i in range(len(arr)) if index == 1 else range(-1, -len(arr)-1, -1):
 		var component = arr[i]
 		if component['_hp'] > 0:
 			return component
 	return null
+
+func area_interact(other):
+	return GameUtils.is_enemy(side, other)
 func area_collide(other, delta):
 	if GameUtils.is_enemy(side, other):
 		var direction = (int(round(((-other.linear_velocity).angle() - rotation) / PI * 3)) + 6) % 6
@@ -188,20 +192,26 @@ func area_collide(other, delta):
 			3:
 				component = get_component(hhits[randi() % len(hhits)], 1)
 			1:
-				component = get_component(vhits[randi() % len(dhits)], -1)
+				component = get_component(vhits[randi() % len(vhits)], -1)
 			4:
-				component = get_component(vhits[randi() % len(dhits)], 1)
+				component = get_component(vhits[randi() % len(vhits)], 1)
 			2:
 				component = get_component(dhits[randi() % len(dhits)], 1)
 			5:
 				component = get_component(dhits[randi() % len(dhits)], -1)
 		if component:
-			take_damage(component, other.damage*delta)
+			var other_damage = other.damage*delta
+			var damage_ratio = take_damage(component, other_damage) / other_damage
+			return damage * damage_ratio
+	return 0
 
 func _process(delta):
+	var update = false
 	if border_damage_accum > 0:
+		update = true
 		border_damage_accum = max(border_damage_accum - delta, 0)
-		hull_outline.modulate = lerp(Color.white, Color.red, border_damage_accum)
 	if inner_damage_accum > 0:
+		update = true
 		inner_damage_accum = max(inner_damage_accum - delta, 0)
-		hull.color = lerp(color, Color.white, inner_damage_accum)
+	if update:
+		self.update()

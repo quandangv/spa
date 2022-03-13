@@ -9,7 +9,7 @@ var og_hp:float
 var side:String
 
 var overlap_bodies = []
-var overlap_enemies = []
+var overlap_areas = []
 
 func _ready():
 	connect("area_entered", self, "area_entered")
@@ -17,21 +17,21 @@ func _ready():
 	connect("body_entered", self, "body_entered")
 	connect("body_exited", self, "body_exited")
 
-func init_plasma(linear_velocity, hp):
+func init_plasma(size, linear_velocity, hp):
+	self.size = size
+	$collision.shape.radius = size
 	self.lifetime = 0
 	self.linear_velocity = linear_velocity
 	self.hp = hp
 	self.og_hp = hp
 
 func _physics_process(delta):
-	plasma_process(delta)
-func plasma_process(delta):
 	position += linear_velocity * delta
 	var damage = 0
-	for other in overlap_enemies:
+	for other in overlap_areas:
 		damage += other.damage
 	for other in overlap_bodies:
-		other.area_collide(self, delta)
+		damage += other.area_collide(self, delta)
 	if hp > 0:
 		lifetime += delta
 		damage += lifetime * degradation_rate
@@ -48,20 +48,20 @@ func plasma_process(delta):
 func area_entered(other):
 	if GameUtils.is_enemy(side, other):
 		$area_sound.play()
-		overlap_enemies.push_back(other)
+		overlap_areas.push_back(other)
 func area_exited(other):
-	if other in overlap_enemies:
-		overlap_enemies.erase(other)
+	if other in overlap_areas:
+		overlap_areas.erase(other)
 
 func body_entered(other):
-	overlap_bodies.push_back(other)
-	if GameUtils.is_enemy(side, other):
+	if other.area_interact(self):
+		overlap_bodies.push_back(other)
 		if hp > 0:
 			$body_sound.pitch_scale = hp / og_hp
 			$body_sound.play()
-		overlap_enemies.push_back(other)
 func body_exited(other):
 	if other in overlap_bodies:
 		overlap_bodies.erase(other)
-	if other in overlap_enemies:
-		overlap_enemies.erase(other)
+
+func _draw():
+	draw_circle(Vector2.ZERO, size, color)

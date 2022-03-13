@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://backgrounds/galaxy-1.png" type="Texture" id=1]
-[ext_resource path="res://backgrounds/galaxy-0.png" type="Texture" id=2]
-[ext_resource path="res://backgrounds/galaxy-2.png" type="Texture" id=3]
+[ext_resource path="res://backgrounds/galaxy.png" type="Texture" id=1]
+[ext_resource path="res://backgrounds/stars.png" type="Texture" id=2]
+[ext_resource path="res://backgrounds/earth.png" type="Texture" id=3]
 [ext_resource path="res://game/grid_drawer.gd" type="Script" id=4]
 
 [node name="background" type="ParallaxBackground"]

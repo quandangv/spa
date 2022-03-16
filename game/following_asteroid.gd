@@ -17,6 +17,7 @@ func destroyed():
 		follow_distance = secondary_target.offer_capture(self)
 		if follow_distance != null:
 			set("mass", sqrt(og_hp / hp_multiplier))
+			set("mode", RigidBody2D.MODE_KINEMATIC)
 			destroyed_once = true
 			following_secondary = true
 			$collision.disabled = true
@@ -41,8 +42,8 @@ func _physics_process(delta):
 					following_secondary = false
 			else:
 				target = secondary_target.global_position - global_position
-				target = target - follow_distance.rotated(target.length_squared()/100)
+				target = target - follow_distance.rotated(target.length_squared()/400)
 		elif target.length_squared() < primary_target_capture_range_sqr and primary_target.offer_absorb(self):
 			destroyed_once = false
 			.destroyed()
-		call("apply_central_impulse", 8 * get("mass") * delta * (target - get("linear_velocity")))
+		translate(target*0.02)

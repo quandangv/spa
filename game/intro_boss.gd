@@ -3,6 +3,7 @@ extends Node
 export var battle_anim:NodePath
 export var container_anim:NodePath
 export var asteroids_path:NodePath
+export var lone_asteroid:NodePath
 onready var boss = $boss
 onready var asteroids = get_node(asteroids_path)
 onready var parent = get_parent()
@@ -15,6 +16,7 @@ func enter_stage():
 	asteroids.destroyed()
 	get_node(battle_anim).play("battle")
 	get_node(container_anim).play("destroyed")
+	get_node(lone_asteroid).reset()
 
 func spawn_boss():
 	add_child(boss)

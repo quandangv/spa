@@ -4,9 +4,9 @@ using System;
 
 public class game_utils : Node
 {
-	[Export] Dictionary<String, Color> side_colors;
-	List<Node> ship_inputs = new List<Node>();
-	Node camera_input;
+	[Export] public Dictionary<String, Color> side_colors;
+	public List<Node> ship_inputs = new List<Node>();
+	public Node camera_input;
 	
 	public override void _Ready()
 	{
@@ -22,12 +22,16 @@ public class game_utils : Node
 		holder.Call("lost_input");
 		return false;
 	}
+	
 	public void unregister_camera_input(Node holder) {
 		if (holder == camera_input)
 			camera_input = null;
 	}
 	
 	public bool register_ship_input(Node holder) {
+		var i = ship_inputs.IndexOf(holder);
+		if (i >= 0)
+			return i == 0;
 		ship_inputs.Add(holder);
 		if (ship_inputs.Count == 1) {
 			if (camera_input != null)
@@ -51,7 +55,7 @@ public class game_utils : Node
 	
 	public bool is_enemy(String side, Node other) {
 		var other_side = other.Get("side");
-		return other_side != null && !System.Object.Equals(side, other_side);
+		return other_side != null && !other_side.Equals("junk") && !other_side.Equals(side);
 	}
 	
 	/// Calculate the direction to move to dodge the specified projectiles

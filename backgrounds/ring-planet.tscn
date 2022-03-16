@@ -47,6 +47,14 @@ motion_scale = Vector2( 0.25, 0.25 )
 scale = Vector2( 0.3, 0.3 )
 texture = ExtResource( 4 )
 
+[node name="moon" type="ParallaxLayer" parent="."]
+motion_scale = Vector2( 0.25, 0.25 )
+
+[node name="Sprite" type="Sprite" parent="moon"]
+position = Vector2( 100, 100 )
+scale = Vector2( 0.3, 0.3 )
+texture = ExtResource( 8 )
+
 [node name="layer5" type="ParallaxLayer" parent="."]
 motion_scale = Vector2( 0.3, 0.3 )
 
@@ -54,18 +62,10 @@ motion_scale = Vector2( 0.3, 0.3 )
 scale = Vector2( 0.3, 0.3 )
 texture = ExtResource( 5 )
 
-[node name="moon" type="ParallaxLayer" parent="."]
-motion_scale = Vector2( 0.4, 0.4 )
-
-[node name="Sprite" type="Sprite" parent="moon"]
-position = Vector2( 100, 100 )
-scale = Vector2( 0.3, 0.3 )
-texture = ExtResource( 8 )
-
 [node name="grid" type="ParallaxLayer" parent="."]
 motion_mirroring = Vector2( 4000, 4000 )
 
 [node name="grid_drawer" type="Node2D" parent="grid"]
 script = ExtResource( 1 )
 half_repeat = 2.0
-color = Color( 1, 1, 1, 0.12549 )
+color = Color( 1, 1, 1, 0.25098 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://ship_build/hexmap.gd" type="Script" id=1]
 [ext_resource path="res://ship_build/components.tres" type="TileSet" id=2]
@@ -6,13 +6,15 @@
 [ext_resource path="res://ship_build/build_toolbar.gd" type="Script" id=4]
 [ext_resource path="res://ship_build/ship_build.gd" type="Script" id=5]
 [ext_resource path="res://ship_build/theme.tres" type="Theme" id=6]
-[ext_resource path="res://fonts/UbuntuBold.tres" type="DynamicFont" id=7]
+[ext_resource path="res://fonts/GuiBold.tres" type="DynamicFont" id=7]
 [ext_resource path="res://ship_build/stat_bar.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ship_build/interpolator.gd" type="Script" id=9]
 [ext_resource path="res://ship_build/fade_down_anim.tscn" type="PackedScene" id=10]
 [ext_resource path="res://ship_build/upgrade_buttons.gd" type="Script" id=11]
 [ext_resource path="res://ship_build/component_img.gd" type="Script" id=12]
 [ext_resource path="res://ship_build/build_stats.gd" type="Script" id=13]
+[ext_resource path="res://backgrounds/stars.png" type="Texture" id=14]
+[ext_resource path="res://backgrounds/galaxy.png" type="Texture" id=15]
 
 [sub_resource type="Animation" id=1]
 length = 0.001
@@ -205,7 +207,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 6 )
-color = Color( 0.168627, 0.180392, 0.356863, 1 )
+color = Color( 0.0901961, 0.0980392, 0.172549, 1 )
+
+[node name="bg" type="TextureRect" parent="ui/base"]
+anchor_left = -0.5
+anchor_top = -0.5
+anchor_right = 1.5
+anchor_bottom = 1.5
+mouse_filter = 2
+texture = ExtResource( 14 )
+expand = true
+
+[node name="bg" type="TextureRect" parent="ui/base/bg"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource( 15 )
+expand = true
+stretch_mode = 6
 
 [node name="stats" type="MarginContainer" parent="ui/base"]
 margin_right = 240.0
@@ -358,30 +377,30 @@ margin_bottom = 143.0
 mouse_filter = 2
 
 [node name="help" type="HBoxContainer" parent="ui/base/toolbar/container"]
-margin_right = 131.0
+margin_right = 127.0
 margin_bottom = 31.0
 size_flags_horizontal = 0
 
 [node name="rotate" type="PanelContainer" parent="ui/base/toolbar/container/help"]
-margin_right = 131.0
+margin_right = 127.0
 margin_bottom = 31.0
 
 [node name="container" type="HBoxContainer" parent="ui/base/toolbar/container/help/rotate"]
 margin_left = 8.0
 margin_top = 6.0
-margin_right = 123.0
+margin_right = 119.0
 margin_bottom = 25.0
 size_flags_horizontal = 0
 
 [node name="keystroke" type="Label" parent="ui/base/toolbar/container/help/rotate/container"]
-margin_right = 63.0
+margin_right = 59.0
 margin_bottom = 19.0
 custom_fonts/font = ExtResource( 7 )
 text = "[shift] R"
 
 [node name="label" type="Label" parent="ui/base/toolbar/container/help/rotate/container"]
-margin_left = 67.0
-margin_right = 115.0
+margin_left = 63.0
+margin_right = 111.0
 margin_bottom = 19.0
 text = "Rotate"
 

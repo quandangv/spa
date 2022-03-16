@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://game/charge_bot_controller.gd" type="Script" id=1]
 [ext_resource path="res://game/theme.tres" type="Theme" id=2]
@@ -9,8 +9,9 @@
 [ext_resource path="res://game/tracker.gd" type="Script" id=7]
 [ext_resource path="res://Commander Impulse - DivKid.mp3" type="AudioStream" id=8]
 [ext_resource path="res://fonts/TitleFont.tres" type="DynamicFont" id=9]
-[ext_resource path="res://backgrounds/earth.tscn" type="PackedScene" id=10]
+[ext_resource path="res://backgrounds/planet-moon.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/ship.tscn" type="PackedScene" id=11]
+[ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=12]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 160.0
@@ -28,19 +29,8 @@ scene = ExtResource( 4 )
 
 [node name="ship3" parent="." instance=ExtResource( 11 )]
 position = Vector2( 50, 30 )
-side = "player"
 
-[node name="controller" type="Node2D" parent="ship3"]
-script = ExtResource( 1 )
-max_from_anchor = 150.0
-
-[node name="enemy_detect" type="Area2D" parent="ship3/controller"]
-
-[node name="shape" type="CollisionShape2D" parent="ship3/controller/enemy_detect"]
-shape = SubResource( 1 )
-
-[node name="enemy_check" type="Timer" parent="ship3/controller"]
-autostart = true
+[node name="controller" parent="ship3" instance=ExtResource( 12 )]
 
 [node name="ship4" parent="." instance=ExtResource( 11 )]
 position = Vector2( -50, 30 )
@@ -60,7 +50,6 @@ autostart = true
 
 [node name="ship5" parent="." instance=ExtResource( 11 )]
 position = Vector2( 50, -30 )
-side = "player"
 
 [node name="controller" type="Node2D" parent="ship5"]
 script = ExtResource( 1 )
@@ -92,7 +81,6 @@ autostart = true
 
 [node name="music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 8 )
-volume_db = -10.0
 autoplay = true
 
 [node name="camera" type="Camera2D" parent="."]

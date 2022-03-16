@@ -1,12 +1,14 @@
 extends "polygon.gd"
 
-const degradation_rate = 0.2
+const degradation_rate = 0.5
 export var linear_velocity:Vector2
 export var collateral_rate:float = 0.75
 var lifetime:float
 var hp:float
 var og_hp:float
 var side:String
+var color:Color
+onready var fill = $fill
 
 var overlap_bodies = []
 var overlap_areas = []
@@ -47,18 +49,17 @@ func _physics_process(delta):
 
 func area_entered(other):
 	if GameUtils.is_enemy(side, other):
-		$area_sound.play()
+		SoundPlayer.play_audio("plasma_area", global_position)
 		overlap_areas.push_back(other)
 func area_exited(other):
 	if other in overlap_areas:
 		overlap_areas.erase(other)
 
 func body_entered(other):
-	if other.area_interact(self):
+	if other.has_method("area_interact") and other.area_interact(self):
 		overlap_bodies.push_back(other)
 		if hp > 0:
-			$body_sound.pitch_scale = hp / og_hp
-			$body_sound.play()
+			SoundPlayer.play_audio("plasma_body", global_position, hp/og_hp)
 func body_exited(other):
 	if other in overlap_bodies:
 		overlap_bodies.erase(other)

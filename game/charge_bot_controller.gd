@@ -20,9 +20,9 @@ onready var check_timer = $enemy_check
 export var max_from_anchor:float = 200 # maximum distance from the anchor will we pursue a target
 var max_from_anchor_sqr
 var firing_wait = 0.7 # time to wait for turret to cool before firing again
-var firing_wait_random = 4 # randomize waiting time for unpredictability
+var firing_wait_random = [4, 6] # randomize waiting time for unpredictability
 const firing_angle = 0.4 # multiplier of the acceptable turret angular precision to fire
-const distance_kept = [6, 3] # distance to keep from the target instead of heabutting them
+const distance_kept = [10, 3] # distance to keep from the target instead of heabutting them
 const base_bullet_speed = 8 # used along with turret stats to calculate approximate bullet speed
 const keep_target_preference = 70 # preference to keep the target even when there are nearer targets
 const strafe_force = [70, 0]
@@ -35,7 +35,7 @@ func on_turret_load():
 	"""Extract the stats from our ship for better extrapolation"""
 	turret_count = 0
 	var avg_turret_speed = 0
-	var avg_turret_cooldown = 1
+	var avg_turret_cooldown = 0
 	for turret in parent.turrets:
 		if abs(turret.rotation) < 0.001 and not is_nan(turret.reload_time):
 			turret_count += 1
@@ -45,10 +45,7 @@ func on_turret_load():
 		avg_turret_speed /= turret_count
 		avg_turret_cooldown /= turret_count
 		bullet_speed_approx = base_bullet_speed * avg_turret_speed
-		firing_wait = 6 / avg_turret_cooldown
-		set_physics_process(true)
-		set_process(true)
-		check_timer.start()
+		firing_wait = 6 / sqrt(avg_turret_cooldown)
 	else:
 		hibernate()
 	thrust = parent.get_node('thruster').thrust
@@ -64,6 +61,10 @@ func hibernate():
 	set_process(false)
 	check_timer.stop()
 	movement = Vector2.ZERO
+func wake_up():
+	set_physics_process(true)
+	set_process(true)
+	check_timer.start()
 
 func angle_diff(a, b):
 	return fmod(a - b + PI, PI*2) - PI
@@ -106,11 +107,11 @@ func charge_bot_process(delta):
 			else:
 				check_target_wait += delta
 			if waited >= current_firing_wait and (target_speed - parent_speed).dot(diff_norm) < bullet_speed_approx: # only fire if our projectiles can actually close the distance to them
-				var distance = max(diff_length - parent.size + target_obj.size, 0.00001) # modify the distance to decrease the turret angular precision in close range
-				var acceptable_angle = asin(firing_angle * target_obj.size / sqrt(distance))
+				var distance = max(diff_length - parent.size - target_obj.size, 0.00000001) # modify the distance to decrease the turret angular precision in close range
+				var acceptable_angle = asin(clamp(firing_angle * target_obj.size / sqrt(distance), 0, 1))
 				if abs(angle_diff(angle, parent.rotation)) < acceptable_angle:
 					emit_signal("start_firing") # finally, fire the turret
-					current_firing_wait = firing_wait * log(distance / target_obj.size) / (1 + randf() * firing_wait_random)
+					current_firing_wait = firing_wait * log(distance / target_obj.size) / rand_range(firing_wait_random[0], firing_wait_random[1])
 					waited = 0
 	else:
 		new_movement = Vector2.ZERO
@@ -159,10 +160,12 @@ func check_enemy():
 			min_dists[rank] = dist
 			chosen_bodies[rank] = body
 	for i in range(max_rank):
-		target_obj = chosen_bodies.get(i)
-		if target_obj:
-			target_rank = i
-			waited = 0
-			current_firing_wait = 0
-			target_speed = target_obj.linear_velocity
+		var new_target = chosen_bodies.get(i)
+		if new_target:
+			if new_target != target_obj:
+				target_obj = new_target
+				target_rank = i
+				waited = 0
+				current_firing_wait = 0
+				target_speed = target_obj.linear_velocity
 			break

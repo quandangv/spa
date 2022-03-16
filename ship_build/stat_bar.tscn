@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://fonts/UbuntuOutlined.tres" type="DynamicFont" id=1]
+[ext_resource path="res://fonts/GuiOutline.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ship_build/stat_bar.gd" type="Script" id=2]
 
 [sub_resource type="Animation" id=1]
@@ -68,9 +68,6 @@ step = 1.0
 allow_greater = true
 percent_visible = false
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="label" type="Label" parent="."]
 anchor_top = 0.5

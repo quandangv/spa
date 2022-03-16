@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://game/asteroid.tscn" type="PackedScene" id=1]
+[ext_resource path="res://game/following_asteroid.gd" type="Script" id=2]
+[ext_resource path="res://game/autodestroyer.gd" type="Script" id=3]
+
+[node name="polygon" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="notifier" type="VisibilityNotifier2D" parent="." index="2"]
+rect = Rect2( -1, -1, 2, 2 )
+script = ExtResource( 3 )
+grace_period = 10.0

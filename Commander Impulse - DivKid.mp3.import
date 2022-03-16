@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Commander Impulse - DivKid.mp3-b2f96bf659fc59121963f5f0ee5f59b1.mp3str"
+
+[deps]
+
+source_file="res://Commander Impulse - DivKid.mp3"
+dest_files=[ "res://.import/Commander Impulse - DivKid.mp3-b2f96bf659fc59121963f5f0ee5f59b1.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

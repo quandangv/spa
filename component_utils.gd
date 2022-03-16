@@ -72,7 +72,7 @@ func update_range(r, value):
 	if value + 1 > r[1]:
 		r[1] = value + 1
 
-const output_by_side = [0, 6.0, 9.0, 11.0, 11.0, 11.0, 12.0]
+const output_by_side = [0, 10, 10.5, 11.0, 11.0, 11.0, 12.0]
 func analyze_components(tiles, size):
 	var stats = {"thrust":0, "radar":0, "armor": 0, "shield":0}
 	var generators = {}
@@ -292,8 +292,8 @@ func finalize_ship(tiles, size):
 		var drange = stats["drange"]
 		mapsize = hrange[1] - hrange[0]
 		map.resize(mapsize*(vrange[1] - vrange[0]))
-		for x in range(hrange[0], hrange[1]):
-			for y in range(vrange[0], vrange[1]):
+		for y in range(vrange[0], vrange[1]):
+			for x in range(hrange[0], hrange[1]):
 				var tile = tiles[x + y*size]
 				if tile != null:
 					var mapx = x-hrange[0]
@@ -388,5 +388,5 @@ func set_tile(map: TileMap, pos, tile, imgname):
 				map.set_cellv(pos, tileset.find_tile_by_name(imgname), true, flip)
 			_:
 				var flipx = not rotation % 2
-				var flipy = rotation <= 3
+				var flipy = rotation > 3
 				map.set_cellv(pos, tileset.find_tile_by_name(imgname), flipx, flipy)

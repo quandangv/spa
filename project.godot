@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "RadialGradientTexture",
 "language": "GDScript",
 "path": "res://ship_build/RadialGradientTexture.gd"
+}, {
+"base": "Resource",
+"class": "SoundInfo",
+"language": "GDScript",
+"path": "res://game/sound_info.gd"
 } ]
 _global_script_class_icons={
-"RadialGradientTexture": ""
+"RadialGradientTexture": "",
+"SoundInfo": ""
 }
 
 [application]
@@ -28,11 +34,13 @@ config/icon="res://icon.png"
 
 ComponentUtils="*res://component_utils.tscn"
 GameUtils="*res://game_utils.tscn"
+SoundPlayer="*res://sound_player.tscn"
 
 [debug]
 
 settings/fps/force_fps=60
 gdscript/warnings/shadowed_variable=false
+gdscript/warnings/unused_argument=false
 gdscript/warnings/return_value_discarded=false
 
 [global]

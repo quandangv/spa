@@ -12,7 +12,7 @@ onready var particles = $particles
 func _draw():
 	var color = Color.darkgray
 	draw_circle(Vector2.ZERO, thrust, color)
-	draw_rect(Rect2(0, -thrust, thrust, thrust*2), color, true, 0, 0)
+	draw_rect(Rect2(0, -thrust, thrust, thrust*2), color, true)
 
 func move(direction, delta):
 	assert(not is_nan(direction.x) and not is_nan(direction.y), "Controller movement is NAN")
@@ -43,6 +43,7 @@ func init(thrust):
 	particles.speed_scale = thrust
 	self.thrust = thrust
 	visible = thrust > 0
+	update()
 
 func _physics_process(delta):
 	if thrust > 0:

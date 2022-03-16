@@ -1,24 +1,27 @@
 extends Node
 
-signal created(instance)
 export(PackedScene) var scene
 var pool = []
 
 func _create():
-	var instance = scene.instance()
-	instance.connect("destroyed", self, "_recycle", [instance])
-	add_child(instance)
-	emit_signal("created", instance)
-	return instance
+	var object = scene.instance()
+	add_child(object)
+	if object.has_signal("destroyed"):
+		object.connect("destroyed", self, "_recycle", [object])
+	return object
 
 func _recycle(instance):
 	if !instance.has_meta("recycled"):
-		instance.hibernate()
 		instance.set_meta("recycled", true)
+		remove_child(instance)
 		pool.append(instance)
 
 func get_object():
-	var object = _create() if len(pool) == 0 else pool.pop_back()
+	var object
+	if len(pool) == 0:
+		object = _create()
+	else:
+		object = pool.pop_back()
+		add_child(object)
 	object.remove_meta("recycled")
-	object.wake_up()
 	return object

@@ -7,28 +7,28 @@ export var primary_target_path:NodePath
 export var secondary_target_path:NodePath
 
 func _ready():
-	og_position = global_position
-	og_mass = get('mass')
-	following = true
-	primary_target = get_node(primary_target_path)
-	secondary_target = get_node(secondary_target_path)
-	if size > 0:
-		reset()
+  og_position = global_position
+  og_mass = get('mass')
+  following = true
+  primary_target = get_node(primary_target_path)
+  secondary_target = get_node(secondary_target_path)
+  if size > 0:
+    reset()
 
 func reset_physics():
-	global_position = og_position
-	set("linear_velocity", Vector2.ZERO)
+  global_position = og_position
+  set("linear_velocity", Vector2.ZERO)
 
 func _integrate_forces(state):
-	if resetting:
-		state.transform = Transform2D(0.0, og_position)
-		state.linear_velocity = Vector2.ZERO
-		resetting = false
+  if resetting:
+    state.transform = Transform2D(0.0, og_position)
+    state.linear_velocity = Vector2.ZERO
+    resetting = false
 func reset():
-	color.a = 1
-	init_asteroid(size, og_mass, damage, color)
-	update()
-	resetting = true
-	set("mode", RigidBody2D.MODE_RIGID)
-	destroyed_once = false
-	$collision.disabled = false
+  color.a = 1
+  init_asteroid(size, og_mass, damage, color)
+  update()
+  resetting = true
+  set("mode", RigidBody2D.MODE_RIGID)
+  destroyed_once = false
+  $collision.disabled = false

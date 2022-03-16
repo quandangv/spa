@@ -11,5 +11,5 @@ dest_files=[ "res://.import/Cosmic Drift - DivKid.mp3-fa92a5254f89678739ca115586
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0

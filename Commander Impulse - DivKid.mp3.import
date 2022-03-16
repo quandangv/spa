@@ -11,5 +11,5 @@ dest_files=[ "res://.import/Commander Impulse - DivKid.mp3-b2f96bf659fc59121963f
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0

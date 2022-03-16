@@ -8,6 +8,6 @@ onready var collision = $collision
 onready var anim = $anim
 
 func destroyed():
-	anim.play("disappear")
-	yield(anim, "animation_finished")
-	emit_signal("destroyed")
+  anim.play("disappear")
+  yield(anim, "animation_finished")
+  emit_signal("destroyed")

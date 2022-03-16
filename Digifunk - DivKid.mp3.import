@@ -11,5 +11,5 @@ dest_files=[ "res://.import/Digifunk - DivKid.mp3-d97589a7809c608024f4e5f3e7edaf
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0

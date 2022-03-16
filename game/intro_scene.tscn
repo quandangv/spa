@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://game/move-controls.png" type="Texture" id=1]
 [ext_resource path="res://backgrounds/ring-planet.tscn" type="PackedScene" id=2]
@@ -26,7 +26,6 @@
 [ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=24]
 [ext_resource path="res://game/intro_boss.gd" type="Script" id=25]
 [ext_resource path="res://game/collect.png" type="Texture" id=26]
-[ext_resource path="res://game/end_screen.gd" type="Script" id=27]
 
 [sub_resource type="Animation" id=5]
 length = 0.001
@@ -235,11 +234,6 @@ tracks/3/keys = {
 
 [node name="game" type="Node2D"]
 
-[node name="music" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 19 )
-autoplay = true
-bus = "Music"
-
 [node name="plasma_normal" type="Node2D" parent="."]
 z_index = -1
 script = ExtResource( 7 )
@@ -250,7 +244,7 @@ script = ExtResource( 6 )
 scene = ExtResource( 5 )
 
 [node name="ship" parent="." instance=ExtResource( 8 )]
-position = Vector2( -2000, 0 )
+position = Vector2( -2700, 0 )
 rotation = 0.0
 type = "asteroid_breaker"
 
@@ -373,7 +367,7 @@ but that might mess up your aim"
 
 [node name="asteroid" parent="." instance=ExtResource( 15 )]
 position = Vector2( -2078, 78 )
-mass = 500.0
+mass = 2000.0
 angular_damp = 1.0
 script = ExtResource( 22 )
 size = 10.0
@@ -512,6 +506,8 @@ battle_anim = NodePath("../asteroid_warning/anim")
 container_anim = NodePath("../blue_container/anim")
 asteroids_path = NodePath("../notifier/asteroids")
 lone_asteroid = NodePath("../asteroid")
+boss_music = ExtResource( 19 )
+boss_music_position = 35.0
 
 [node name="boss" parent="boss" instance=ExtResource( 8 )]
 show_behind_parent = true
@@ -522,10 +518,6 @@ type = "asteroid_breaker"
 [node name="controller" parent="boss/boss" instance=ExtResource( 24 )]
 max_from_anchor = 10000.0
 
-[node name="end_screen" type="Node2D" parent="boss"]
-z_index = 4
-script = ExtResource( 27 )
-
 [connection signal="pressed" from="ui/reset_button" to="ship" method="reset"]
 [connection signal="pressed" from="ui/reset_button" to="asteroid" method="reset"]
 [connection signal="pressed" from="ui/reset_button" to="blue_container" method="reset"]
@@ -533,4 +525,3 @@ script = ExtResource( 27 )
 [connection signal="screen_entered" from="notifier" to="notifier/asteroids" method="attach"]
 [connection signal="filled" from="blue_container" to="boss" method="enter_stage"]
 [connection signal="destroyed" from="boss/boss" to="boss" method="end_game"]
-[connection signal="destroyed" from="boss/boss" to="boss/end_screen" method="wake_up"]

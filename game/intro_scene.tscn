@@ -15,7 +15,7 @@
 [ext_resource path="res://game/fire-control.svg" type="Texture" id=13]
 [ext_resource path="res://game/circle.svg" type="Texture" id=14]
 [ext_resource path="res://game/asteroid.tscn" type="PackedScene" id=15]
-[ext_resource path="res://game/follower_asteroid_field.gd" type="Script" id=16]
+[ext_resource path="res://game/following_asteroid_field.gd" type="Script" id=16]
 [ext_resource path="res://game/following_asteroid.tscn" type="PackedScene" id=17]
 [ext_resource path="res://game/exclamation.svg" type="Texture" id=18]
 [ext_resource path="res://Digifunk - DivKid.mp3" type="AudioStream" id=19]

@@ -1,4 +1,2 @@
 extends Control
-
-func _draw():
-  draw_circle(Vector2.ZERO, 10, Color.white)
+func _draw(): draw_circle(Vector2.ZERO, 10, Color.white)

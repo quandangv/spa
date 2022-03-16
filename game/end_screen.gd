@@ -1,4 +1,4 @@
-extends Node2D
+tends Node2D
 
 signal finished
 export var speed:float = 1000

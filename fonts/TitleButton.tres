@@ -1,7 +1,7 @@
 [gd_resource type="DynamicFont" load_steps=2 format=2]
 
-[ext_resource path="res://fonts/SmoochSans-Medium.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/SmoochSans-Light.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 48
+size = 144
 font_data = ExtResource( 1 )

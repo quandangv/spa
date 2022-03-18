@@ -1,7 +1,7 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
+[ext_resource path="res://fonts/SmoochSans-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://game/theme.tres" type="Theme" id=2]
-[ext_resource path="res://fonts/TitleButton.tres" type="DynamicFont" id=3]
 [ext_resource path="res://game/plasma.tscn" type="PackedScene" id=4]
 [ext_resource path="res://game/object_pool.gd" type="Script" id=5]
 [ext_resource path="res://game/plasma_pool.gd" type="Script" id=6]
@@ -11,6 +11,19 @@
 [ext_resource path="res://game/ship.tscn" type="PackedScene" id=11]
 [ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=12]
 [ext_resource path="res://game/main_menu.gd" type="Script" id=13]
+
+[sub_resource type="DynamicFont" id=1]
+size = 75
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 8.0
+content_margin_right = 8.0
+bg_color = Color( 0, 0.517647, 1, 0.670588 )
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="game" type="Node2D"]
 
@@ -53,18 +66,25 @@ type = "play_ship"
 
 [node name="camera" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.3, 0.3 )
 script = ExtResource( 7 )
 tracked_obj = [ NodePath("../ship3"), NodePath("../ship4"), NodePath("../ship5"), NodePath("../ship6") ]
 
 [node name="background" parent="." instance=ExtResource( 10 )]
 
-[node name="menu" type="Label" parent="."]
-margin_left = -76.8
-margin_top = -50.0
-margin_right = 435.2
-margin_bottom = 217.0
-rect_scale = Vector2( 0.3, 0.3 )
+[node name="Control" type="Control" parent="."]
+rect_scale = Vector2( 0.1, 0.1 )
+
+[node name="menu" type="Label" parent="Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -349.5
+margin_top = -393.0
+margin_right = 349.5
+margin_bottom = 393.0
+grow_horizontal = 2
+grow_vertical = 2
 custom_fonts/font = ExtResource( 9 )
 text = "Spaceship
 Pilot
@@ -73,7 +93,7 @@ align = 1
 valign = 1
 script = ExtResource( 13 )
 
-[node name="play" type="Button" parent="menu"]
+[node name="play" type="Button" parent="Control/menu"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -81,8 +101,26 @@ anchor_bottom = 1.0
 margin_left = -35.5
 margin_top = 20.0
 margin_right = 35.5
+grow_horizontal = 2
 theme = ExtResource( 2 )
-custom_fonts/font = ExtResource( 3 )
 text = "PLAY"
 
-[connection signal="pressed" from="menu/play" to="menu" method="play"]
+[node name="alpha" type="Label" parent="Control/menu"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -91.0
+margin_right = 142.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+text = "alpha 0.0.1"
+align = 1
+valign = 1
+script = ExtResource( 13 )
+
+[connection signal="pressed" from="Control/menu/play" to="Control/menu" method="play"]

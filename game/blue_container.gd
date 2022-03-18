@@ -5,7 +5,8 @@ signal filled
 export var damage:float = 20
 export var radius:float = 10
 export var color:Color
-export var progress_speed:float = 2.5
+export var progress_speed:float = 4
+const reset_cost = 100
 var progress = 10
 var filled:bool = false
 
@@ -13,7 +14,7 @@ func _ready():
   $col.shape.radius = radius
 func _draw():
   var angle = inverse_e_minus_sin_e(progress / (radius * radius / 2))
-  if angle > PI*2:
+  if angle >= PI*2 and not filled:
     angle = PI*2
     draw_circle(Vector2.ZERO, radius, Color.white)
     filled = true
@@ -36,7 +37,7 @@ func inverse_e_minus_sin_e(m):
   return e
 
 func reset():
-  progress = 0
+  progress = max(0, progress - reset_cost)
   update()
 
 func area_interact(other):

@@ -1,11 +1,11 @@
 extends Node2D
 
-export var spawn_rate:float = 0.25
 export var spawn_range:Rect2
 export var available_sizes_range:Vector2
 export var colors:Gradient
 export var autostart:bool = true
 onready var pool = $pool
+var spawn_rate:float = 5
 
 func _process(delta):
   if randf() < spawn_rate * delta:

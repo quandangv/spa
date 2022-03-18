@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/grid_drawer.gd" type="Script" id=1]
 [ext_resource path="res://backgrounds/ring-1.png" type="Texture" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://backgrounds/ring-0.png" type="Texture" id=6]
 [ext_resource path="res://backgrounds/ring-planet.png" type="Texture" id=7]
 [ext_resource path="res://backgrounds/ice-moon.png" type="Texture" id=8]
+[ext_resource path="res://game/color_stabilizer.gd" type="Script" id=9]
 
 [node name="background" type="ParallaxBackground"]
 
@@ -69,3 +70,6 @@ motion_mirroring = Vector2( 4000, 4000 )
 script = ExtResource( 1 )
 half_repeat = 2.0
 color = Color( 1, 1, 1, 0.25098 )
+
+[node name="modulate" type="CanvasModulate" parent="."]
+script = ExtResource( 9 )

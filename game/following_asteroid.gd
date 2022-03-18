@@ -12,6 +12,7 @@ var follow_distance
 func _enter_tree():
   destroyed_once = false
   $collision.disabled = false
+  set("mode", RigidBody2D.MODE_RIGID)
 func destroyed():
   if following and hp <= 0 and not destroyed_once:
     follow_distance = secondary_target.offer_capture(self)

@@ -84,6 +84,8 @@ tracks/2/keys = {
 
 [node name="polygon" type="RigidBody2D"]
 z_index = 1
+collision_layer = 2
+collision_mask = 3
 gravity_scale = 0.0
 linear_damp = 0.0
 angular_damp = 0.1

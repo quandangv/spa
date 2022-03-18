@@ -3,5 +3,5 @@
 [ext_resource path="res://fonts/SmoochSans-ExtraLight.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 72
+size = 216
 font_data = ExtResource( 1 )

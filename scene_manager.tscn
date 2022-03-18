@@ -1,32 +1,32 @@
 [gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://game/scene_loader.gd" type="Script" id=1]
-[ext_resource path="res://circle_drawer.gd" type="Script" id=2]
-[ext_resource path="res://scene_info.gd" type="Script" id=3]
-[ext_resource path="res://Commander Impulse - DivKid.mp3" type="AudioStream" id=4]
-[ext_resource path="res://Cosmic Drift - DivKid.mp3" type="AudioStream" id=5]
-[ext_resource path="res://music_fader.gd" type="Script" id=6]
-[ext_resource path="res://resource_queue.gd" type="Script" id=7]
+[ext_resource path="res://Cosmic Drift - DivKid.mp3" type="AudioStream" id=1]
+[ext_resource path="res://music_fader.gd" type="Script" id=2]
+[ext_resource path="res://Commander Impulse - DivKid.mp3" type="AudioStream" id=3]
+[ext_resource path="res://scene_manager.gd" type="Script" id=4]
+[ext_resource path="res://resource_queue.gd" type="Script" id=5]
+[ext_resource path="res://circle_drawer.gd" type="Script" id=6]
+[ext_resource path="res://scene_info.gd" type="Script" id=7]
 
 [sub_resource type="Resource" id=3]
 resource_local_to_scene = true
-script = ExtResource( 3 )
+script = ExtResource( 7 )
 name = "main_menu"
 path = "res://game/main_menu.tscn"
-color = Color( 0, 0.447059, 0.713726, 1 )
-music = ExtResource( 4 )
+color = Color( 0, 0.145098, 0.713726, 1 )
+music = ExtResource( 3 )
 
 [sub_resource type="Resource" id=4]
 resource_local_to_scene = true
-script = ExtResource( 3 )
+script = ExtResource( 7 )
 name = "intro"
 path = "res://game/intro_scene.tscn"
 color = Color( 0.87451, 0.72549, 0, 1 )
-music = ExtResource( 5 )
+music = ExtResource( 1 )
 
 [sub_resource type="Resource" id=5]
 resource_local_to_scene = true
-script = ExtResource( 3 )
+script = ExtResource( 7 )
 name = "victory"
 path = "res://game/victory.tscn"
 color = Color( 0, 0.670588, 1, 1 )
@@ -94,6 +94,18 @@ tracks/4/keys = {
 "update": 0,
 "values": [ true ]
 }
+tracks/5/type = "value"
+tracks/5/path = NodePath("rect:rect_position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
 
 [sub_resource type="Animation" id=6]
 resource_name = "exp_circle"
@@ -133,6 +145,18 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("rect:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ Vector2( 0, 0 ), Vector2( 0, 0 ) ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -177,7 +201,7 @@ tracks/2/keys = {
 
 [node name="scene_loader" type="CanvasLayer"]
 layer = 2
-script = ExtResource( 1 )
+script = ExtResource( 4 )
 scenes = [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ]
 
 [node name="anim" type="AnimationPlayer" parent="."]
@@ -188,16 +212,14 @@ anims/fade = SubResource( 2 )
 [node name="rect" type="Control" parent="."]
 visible = false
 modulate = Color( 0, 0.647059, 1, 0.12549 )
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
 rect_scale = Vector2( 1000, 1000 )
-script = ExtResource( 2 )
-
-[node name="music" type="AudioStreamPlayer" parent="."]
-volume_db = -40.0
 script = ExtResource( 6 )
 
+[node name="music" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+volume_db = -40.0
+script = ExtResource( 2 )
+
 [node name="queue" type="Node" parent="."]
-script = ExtResource( 7 )
+pause_mode = 2
+script = ExtResource( 5 )

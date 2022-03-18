@@ -13,8 +13,12 @@ public class game_utils : Node
     GD.Randomize();
   }
   
+  void connect_exit(string signal, Node arg) {
+    arg.Connect("tree_exiting", this, signal, new Godot.Collections.Array {arg});
+  }
   public bool register_camera_input(Node holder) {
     if (camera_input == null) {
+      connect_exit("unregister_camera_input", holder);
       camera_input = holder;
       if (ship_inputs.Count == 0)
         return true;
@@ -26,16 +30,13 @@ public class game_utils : Node
     if (holder == camera_input)
       camera_input = null;
   }
-  public void kill_camera_input() {
-    camera_input.Call("lost_input");
-    camera_input = null;
-  }
   
   public bool register_ship_input(Node holder) {
     var i = ship_inputs.IndexOf(holder);
     if (i >= 0)
       return i == 0;
     ship_inputs.Add(holder);
+    connect_exit("unregister_ship_input", holder);
     if (ship_inputs.Count == 1) {
       if (camera_input != null)
         camera_input.Call("lost_input");
@@ -161,3 +162,4 @@ public class game_utils : Node
     return result;
   }
 }
+ 

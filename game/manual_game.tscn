@@ -24,6 +24,7 @@ script = ExtResource( 5 )
 scene = ExtResource( 2 )
 
 [node name="ship" parent="." instance=ExtResource( 3 )]
+starting_side = "enemy"
 
 [node name="controller" type="Node2D" parent="ship"]
 script = ExtResource( 1 )
@@ -40,15 +41,13 @@ autostart = true
 [node name="ship2" parent="." instance=ExtResource( 3 )]
 position = Vector2( -50, 0 )
 rotation = 0.0
-side = "player"
 
 [node name="controller" type="Node2D" parent="ship2"]
 script = ExtResource( 4 )
 
 [node name="camera" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.3, 0.3 )
 script = ExtResource( 7 )
 tracked_obj = [ NodePath("../ship2") ]
 
-[node name="background2" parent="." instance=ExtResource( 8 )]
+[node name="background" parent="." instance=ExtResource( 8 )]

@@ -73,7 +73,7 @@ func target_condition(obj):
   return obj.is_inside_tree() and obj.side != 'junk' and (obj.global_position - anchored_position).length_squared() <= max_from_anchor_sqr
 
 const max_rank = 2
-func target_rank(obj):
+func get_target_rank(obj):
   var turrets = obj.get('turrets')
   if turrets:
     var has_turret = false
@@ -152,7 +152,7 @@ func check_enemy():
       var dist = (body.global_position - parent.global_position).length_squared()
       if body == target_obj:
         dist -= keep_target_preference / max(thrust, 1)
-      var rank = target_rank(body)
+      var rank = get_target_rank(body)
       if rank in min_dists:
         var min_dist = min_dists[rank]
         if dist >= min_dist:

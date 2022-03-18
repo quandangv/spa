@@ -1,14 +1,16 @@
 extends Node2D
 
 export var thrust:float = 1
-const thrust_to_torque = 1000
-const thrust_to_force = 200
+const thrust_to_torque = 1500
+const thrust_to_force = 300
 const min_movement = 0.01
 const particle_base_amount = 5
 onready var controller = get_node("../controller")
 onready var parent = get_parent()
 onready var particles = $particles
 
+func _ready():
+  init(thrust)
 func _draw():
   var color = Color.darkgray
   draw_circle(Vector2.ZERO, thrust, color)
@@ -23,7 +25,7 @@ func move(direction, delta):
     if length != 0 and length < thrust * thrust_to_force * delta / parent.mass:
       parent.linear_velocity = Vector2.ZERO
       length = 0
-  if length > 1:
+  if length >= 0.99:
     direction = direction.normalized()
     length = 1
   if length > 0.1:

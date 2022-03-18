@@ -5,6 +5,9 @@ export(Array, Resource) var scenes
 var scene_dict = {}
 var fade_animation:Animation
 var fade_modulate_track:int
+var exp_circle_animation:Animation
+var exp_circle_modulate_track:int
+var exp_circle_position_track:int
 var loading:bool = false
 onready var anim = $anim
 onready var music = $music
@@ -14,14 +17,21 @@ onready var queue = $queue
 func _ready():
   fade_animation = $anim.get_animation("fade")
   fade_modulate_track = fade_animation.find_track("rect:modulate")
+  exp_circle_animation = $anim.get_animation("exp_circle")
+  exp_circle_modulate_track = exp_circle_animation.find_track("rect:modulate")
+  exp_circle_position_track = exp_circle_animation.find_track("rect:rect_position")
   for scene in scenes:
     scene_dict[scene.name] = scene
 
 
-func exp_circle_load(to_scene, starting_position):
+func exp_circle_load(to_scene, starting_screen_position, color = Color.white):
   if not loading:
-#    $rect.rect_global_position = starting_position
     to_scene = scene_dict[to_scene]
+    var max_size = $rect.get_parent_area_size()
+#    starting_screen_position = Vector2
+    exp_circle_animation.track_set_key_value(exp_circle_modulate_track, 0, color)
+    exp_circle_animation.track_set_key_value(exp_circle_position_track, 0, starting_screen_position)
+    exp_circle_animation.track_set_key_value(exp_circle_position_track, 1, max_size/2)
     _load_scene(to_scene.path, "exp_circle", to_scene.music)
 
 
@@ -29,19 +39,17 @@ func fade_load(from_scene, to_scene):
   if not loading:
     from_scene = scene_dict[from_scene]
     to_scene = scene_dict[to_scene]
-    customize_fade(from_scene.color, to_scene.color)
+    var start_color = from_scene.color
+    var end_color = to_scene.color
+    var mid_color = (start_color + end_color)/2
+    mid_color.a = 1
+    start_color.a = 0
+    end_color.a = 0
+    fade_animation.track_set_key_value(fade_modulate_track, 0, start_color)
+    fade_animation.track_set_key_value(fade_modulate_track, 1, mid_color)
+    fade_animation.track_set_key_value(fade_modulate_track, 2, mid_color)
+    fade_animation.track_set_key_value(fade_modulate_track, 3, end_color)
     _load_scene(to_scene.path, "fade", to_scene.music)
-
-
-func customize_fade(start_color, end_color):
-  var mid_color = (start_color + end_color)/2
-  mid_color.a = 1
-  start_color.a = 0
-  end_color.a = 0
-  fade_animation.track_set_key_value(fade_modulate_track, 0, start_color)
-  fade_animation.track_set_key_value(fade_modulate_track, 1, mid_color)
-  fade_animation.track_set_key_value(fade_modulate_track, 2, mid_color)
-  fade_animation.track_set_key_value(fade_modulate_track, 3, end_color)
 
 
 func _load_scene(path, animation, stream):

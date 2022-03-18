@@ -70,14 +70,18 @@ func is_ready(path):
   return ret
 
 func _wait_for_resource(res, path):
-  _unlock("wait_for_resource")
-  while true:
-    VisualServer.sync()
-    OS.delay_usec(16000) # Wait approximately 1 frame.
-    _lock("wait_for_resource")
-    if queue.size() == 0 || queue[0] != res:
-      return pending[path]
+  if thread:
     _unlock("wait_for_resource")
+    while true:
+      VisualServer.sync()
+      OS.delay_usec(16000) # Wait approximately 1 frame.
+      _lock("wait_for_resource")
+      if queue.size() == 0 || queue[0] != res:
+        return pending[path]
+      _unlock("wait_for_resource")
+  else:
+    res.wait()
+    return res.get_resource()
 
 func get_resource(path):
   _lock("get_resource")
@@ -128,5 +132,8 @@ func thread_func(_u):
 func _ready():
   mutex = Mutex.new()
   sem = Semaphore.new()
-  thread = Thread.new()
-  thread.start(self, "thread_func", 0)
+  if OS.can_use_threads():
+    thread = Thread.new()
+    thread.start(self, "thread_func", 0)
+  else:
+    thread = null

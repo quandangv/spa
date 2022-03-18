@@ -1,6 +1,8 @@
 extends RigidBody2D
 
 signal destroyed
+signal bumped(amount)
+signal explode()
 
 export(PackedScene) var thruster_scene
 export(PackedScene) var turret_scene
@@ -8,11 +10,12 @@ export var starting_side:String = "player"
 export var max_capture:int = 10
 export var type:String = 'minimal_ship'
 const border_damage_ratio = 4
-const inner_damage = 4
 const collision_threshold = 20
 const collision_damage_multiplier = 0.03
 const capture_distance = 10
 const release_distance_sqr = 90000
+const max_opacity = 0.95
+const damaged_color = Color(0.7, 0, 0, 0.7)
 var border_damage_accum = 0
 var inner_damage_accum = 0
 var size:float = 2
@@ -30,8 +33,8 @@ var vhits = []
 var map = []
 var mapsize = 0
 
-onready var shape = load("res://game/outlined_shape.tscn")
 onready var controller = $controller
+onready var rank = $rank
 
 const ship_types = {
   'minimal_ship': '{"map":[null,{"":"thruster","hp":5,"rotation":0},{"":"core","hp":5,"rotation":0},{"":"generator","hp":5,"plasma_downstream":[[0,2]],"plasma_supply":6,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":6,"rotation":0},null],"mapsize":2}',
@@ -58,11 +61,13 @@ func _physics_process(_delta):
 func body_entered(other):
   # Godot is inconsistent about when to emit this signal, the velocity of the other body may be before or after collision
   # So we just ignore the other body and track our velocity before and after collision
-  var damage = (last_velocity - linear_velocity).length() - collision_threshold
+  var dir = linear_velocity - last_velocity
+  var damage = dir.length() - collision_threshold
   if damage > 0:
     damage *= mass * collision_damage_multiplier
     var damage_scale = clamp(inverse_lerp(1, 10, damage), 0, 1)
     SoundPlayer.play_audio("collision", global_position, lerp(2, 0.4, damage_scale), lerp(0, 10, damage_scale))
+    emit_signal("bumped", dir)
     for _i in range(100):
       damage -= take_damage((other.global_position - global_position).angle(), damage)
       if damage <= 0: break
@@ -106,7 +111,7 @@ func load_ship(data):
     add_child(ins)
     turrets.append(ins)
   for _i in range(len(turret_pos), len(turrets)):
-    remove_child(turrets.pop_back())
+    turrets.pop_back().queue_free()
   for component in map:
     if component != null and 'turret' in component['']:
       component['_squeeze'] = data['turret_rotations'][component['rotation']]
@@ -116,6 +121,8 @@ func reset():
   $anim.play("RESET")
   self.color = null
   set_side(starting_side)
+  inner_damage_accum = 1
+  border_damage_accum = 1
   controller.wake_up()
   var thrust = 0
   var turret_count = 0
@@ -137,13 +144,15 @@ func reset():
       thrust += 1
   mass = real_mass
   og_mass = real_mass
-  color.a = 1
+  color.a = max_opacity
   if thrust > 0:
     if $thruster == null:
       var ins = thruster_scene.instance()
-      add_child(ins)
+      ins.thrust = thrust
       ins.name = "thruster"
-    $thruster.init(thrust)
+      add_child(ins)
+    else:
+      $thruster.init(thrust)
   elif $thruster != null:
     remove_child($thruster)
   for i in range(len(captured)-1, -1, -1):
@@ -169,9 +178,8 @@ func init(size):
 
 func _draw():
   var point_count = round(8*sqrt(size))
-  var fill_color = lerp(color, Color.white, inner_damage_accum)
-  draw_circle(Vector2.ZERO, size, fill_color)
-  draw_arc(Vector2.ZERO, size, 0, PI*2, point_count, lerp(Color.white, Color.red, border_damage_accum), 1, true)
+  draw_circle(Vector2.ZERO, size, lerp(color, Color.white, inner_damage_accum))
+  draw_arc(Vector2.ZERO, size, 0, PI*2, point_count, rank.modulate, 1, true)
 
 func drop_plasma(component, supply_drop, power_drop):
   component['_plasma_supply'] -= supply_drop
@@ -223,8 +231,9 @@ func take_damage(angle, damage):
           break
     component['_hp'] -= damage
     if component['_hp'] <= 0:
+      emit_signal("explode")
       SoundPlayer.play_audio("explosion", global_position)
-      inner_damage_accum += inner_damage / size
+      inner_damage_accum += 1
       real_mass -= 1
       if 'plasma_downstream' in component:
         var supply_drop = component['_plasma_supply']
@@ -243,7 +252,7 @@ func take_damage(angle, damage):
         ship_destroyed()
       else:
         self.mass = real_mass
-        color.a = lerp(0.2, 1, real_mass / og_mass)
+        color.a = lerp(0.2, max_opacity, real_mass / og_mass)
       damage += component['_hp']
       component['_hp'] = 0
     border_damage_accum += border_damage_ratio * damage / size
@@ -261,8 +270,8 @@ func area_interact(other):
 func area_collide(other, delta):
   if GameUtils.is_enemy(side, other):
     var other_damage = other.damage*delta
-    var damage_ratio = take_damage((-other.linear_velocity).angle(), other_damage) / other_damage
-    return damage * damage_ratio
+    var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
+    return damage * actual_damage / other_damage
   return 0
 
 func _process(delta):
@@ -270,6 +279,7 @@ func _process(delta):
   if border_damage_accum > 0:
     update = true
     border_damage_accum = max(border_damage_accum - delta, 0)
+    rank.modulate = lerp(Color.white, damaged_color, min(border_damage_accum, 1))
   if inner_damage_accum > 0:
     update = true
     inner_damage_accum = max(inner_damage_accum - delta, 0)

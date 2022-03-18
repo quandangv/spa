@@ -5,20 +5,21 @@ const turret_hot_color = Color("FF4444")
 const base_spread = 2
 const base_fire_delay = 0.05
 const turret_cooldown_base = 0.8
-var plasma_pool = null
 onready var controller = get_node("../controller")
 onready var parent = get_parent()
 onready var timer = $timer
 onready var turret = $shape
+var plasma_pool = null
 
 var base_speed = 10
 var reload_time:float = NAN
 var plasma_hp:float = 12
 var plasma_damage:float = 30
 var fire_delay: float = 0
+var turret_cooldown_speed:float
+var wait_then_fire:float
 
 var turret_heat:float = 0
-var turret_cooldown_speed:float
 var fire_interval = 0
 
 func _ready():
@@ -28,6 +29,12 @@ func _ready():
 func _process(delta):
   fire_interval += delta * turret_cooldown_speed
   turret.color = lerp(turret_hot_color, turret_color, clamp(fire_interval, 0, 4)/4)
+  if wait_then_fire >= 0:
+    if wait_then_fire < fire_delay:
+      wait_then_fire += delta
+    else:
+      _fire()
+      wait_then_fire = -1
 
 func init(component):
   var size = 1
@@ -37,7 +44,6 @@ func init(component):
   var squeeze = component["_squeeze"]
   var position = component["position"]
   var spread = clamp(inverse_lerp(12, 0, supply), 0, 1)
-  var points = PoolVector2Array()
   var base_width = size * lerp(1.5, 1, spread)
   var muzzle_width = size * lerp(1.5, 2, spread) if supply > 0 else 0.2
   var length = size * lerp(6, 2, spread)
@@ -53,6 +59,7 @@ func init(component):
   self.plasma_hp = 1.5 * size
   self.plasma_damage = 8 + power * 6
   self.fire_delay = base_fire_delay * position
+  var points = PoolVector2Array()
   points.push_back(Vector2(-length, base_width))
   points.push_back(Vector2(-length, -base_width))
   points.push_back(Vector2(0, -muzzle_width))
@@ -72,12 +79,11 @@ func hibernate():
 func _on_fire_timer():
   if abs(timer.wait_time - fire_delay) > 0.0001:
     if controller.firing:
-      fire()
+      wait_then_fire = 0
     else:
       timer.stop()
 
-func fire():
-  yield(get_tree().create_timer(fire_delay), "timeout")
+func _fire():
   var turret_heat = pow(turret_cooldown_base, fire_interval)
   turret_heat += 1
   var buildup = clamp(1 / turret_heat, 0, 1)
@@ -89,5 +95,5 @@ func fire():
 
 func start_firing():
   if timer.is_stopped() and not is_nan(reload_time):
-    fire()
+    wait_then_fire = 0
     timer.start()

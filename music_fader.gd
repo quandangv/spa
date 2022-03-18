@@ -11,3 +11,6 @@ func restore(volume_db = 0):
 
 func _process(delta):
   volume_db -= delta * fade_speed_db
+
+func _ready():
+  set_process(false)

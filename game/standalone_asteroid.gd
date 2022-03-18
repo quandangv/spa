@@ -2,7 +2,7 @@ extends "res://game/following_asteroid.gd"
 
 var og_position:Vector2
 var og_mass:float
-var resetting = false
+var reset_count = 0
 export var primary_target_path:NodePath
 export var secondary_target_path:NodePath
 
@@ -20,15 +20,15 @@ func reset_physics():
   set("linear_velocity", Vector2.ZERO)
 
 func _integrate_forces(state):
-  if resetting:
+  if reset_count:
     state.transform = Transform2D(0.0, og_position)
     state.linear_velocity = Vector2.ZERO
-    resetting = false
+    reset_count -= 1
 func reset():
   color.a = 1
   init_asteroid(size, og_mass, damage, color)
-  update()
-  resetting = true
   set("mode", RigidBody2D.MODE_RIGID)
+  update()
+  reset_count = 2
   destroyed_once = false
   $collision.disabled = false

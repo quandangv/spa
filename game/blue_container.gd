@@ -13,20 +13,21 @@ var filled:bool = false
 func _ready():
   $col.shape.radius = radius
 func _draw():
-  var angle = inverse_e_minus_sin_e(progress / (radius * radius / 2))
+  var angle = inverse_e_minus_sin_e(progress / (radius * radius / 2)) # this calculates the angle of the circular segment that would have the area specified by the progress
   if angle >= PI*2 and not filled:
     angle = PI*2
     draw_circle(Vector2.ZERO, radius, Color.white)
     filled = true
     emit_signal("filled")
-  elif angle > 0.1:
+  else:
     var starting_angle = (PI*2 - angle) / 2 - PI/2
-    var point_count = ceil(angle * radius *0.2)
-    var step = angle / point_count
-    var points = PoolVector2Array()
-    for i in range(point_count+1):
-      points.push_back(Vector2(radius, 0).rotated(i*step + starting_angle))
-    draw_colored_polygon(points, color)
+    var sector_count = ceil(angle * radius *0.2)
+    if sector_count > 2:
+      var step = angle / sector_count
+      var points = PoolVector2Array()
+      for i in range(sector_count+1):
+        points.push_back(Vector2(radius, 0).rotated(i*step + starting_angle))
+      draw_colored_polygon(points, color)
   draw_arc(Vector2.ZERO, radius, 0, PI*2, 20, Color.white, 1, true)
 
 func inverse_e_minus_sin_e(m):

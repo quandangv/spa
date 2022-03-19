@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://game/charge_bot_controller.gd" type="Script" id=1]
+[ext_resource path="res://game/bot_controller.gd" type="Script" id=1]
 [ext_resource path="res://game/plasma.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/ship.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/input_controller.gd" type="Script" id=4]
 [ext_resource path="res://game/object_pool.gd" type="Script" id=5]
 [ext_resource path="res://game/plasma_pool.gd" type="Script" id=6]
 [ext_resource path="res://game/tracker.gd" type="Script" id=7]
-[ext_resource path="res://backgrounds/ring-planet.tscn" type="PackedScene" id=8]
+[ext_resource path="res://backgrounds/galaxy.tscn" type="PackedScene" id=8]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 120.0

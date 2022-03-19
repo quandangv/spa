@@ -2,7 +2,8 @@ extends RigidBody2D
 
 signal destroyed
 signal bumped(amount)
-signal explode()
+signal explode
+signal design_loaded
 
 export(PackedScene) var thruster_scene
 export(PackedScene) var turret_scene
@@ -116,6 +117,7 @@ func load_ship(data):
     if component != null and 'turret' in component['']:
       component['_squeeze'] = data['turret_rotations'][component['rotation']]
   reset()
+  emit_signal("design_loaded")
 
 func reset():
   $anim.play("RESET")
@@ -175,6 +177,7 @@ func set_color(color):
 func init(size):
   self.size = size
   $collision.shape.radius = size
+  rank.scale = Vector2(0.02, 0.02) * size
 
 func _draw():
   var point_count = round(8*sqrt(size))
@@ -195,6 +198,7 @@ func drop_plasma(component, supply_drop, power_drop):
       var comp2 = get_map(pos)
       if comp2['_hp'] > 0:
         drop_plasma(comp2, supply_drop, power_drop)
+
 func ship_destroyed():
   if side != "junk":
     self.color = null

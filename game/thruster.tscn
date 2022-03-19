@@ -13,7 +13,7 @@ min_value = 1.0
 max_value = 10.0
 _data = [ Vector2( 0, 2.23838 ), 0.0, 4.83334, 0, 0, Vector2( 1, 10 ), 10.1734, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=6]
+[sub_resource type="CurveTexture" id=9]
 curve = SubResource( 4 )
 
 [sub_resource type="ParticlesMaterial" id=1]
@@ -30,7 +30,7 @@ angular_velocity_random = 1.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale_random = 0.2
-scale_curve = SubResource( 6 )
+scale_curve = SubResource( 9 )
 color_ramp = SubResource( 8 )
 
 [node name="thruster" type="Node2D"]

@@ -43,6 +43,7 @@ GameUtils="*res://game_utils.tscn"
 SoundPlayer="*res://sound_player.tscn"
 SceneManager="*res://scene_manager.tscn"
 Storage="*res://game/storage.gd"
+InputCoordinator="*res://input_coordinator.gd"
 
 [debug]
 

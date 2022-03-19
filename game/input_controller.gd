@@ -17,13 +17,13 @@ func _ready():
   parent.connect("explode", self, "_explode")
 
 func wake_up():
-  if GameUtils.register_ship_input(self):
+  if InputCoordinator.register_implicit_controller("ship", self):
     gained_input()
   else:
     lost_input()
 
 func hibernate():
-  GameUtils.unregister_ship_input(self)
+  InputCoordinator.unregister_implicit_controller(self)
   lost_input()
 
 func _unhandled_input(_event):

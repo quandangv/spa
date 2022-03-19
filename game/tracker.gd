@@ -11,7 +11,8 @@ var shake:Vector2
 func _ready():
   get_tree().connect("screen_resized", self, "_screen_resized")
   _screen_resized()
-  GameUtils.register_camera_input(self)
+  if not InputCoordinator.register_implicit_controller("camera", self):
+    lost_input()
   for i in range(len(tracked_obj)):
     tracked_obj[i] = get_node(tracked_obj[i])
 

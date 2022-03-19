@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://game/charge_bot_controller.gd" type="Script" id=1]
+[ext_resource path="res://game/bot_controller.gd" type="Script" id=1]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 300.0

@@ -1,16 +1,19 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://fonts/SmoochSans-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://game/theme.tres" type="Theme" id=2]
+[ext_resource path="res://backgrounds/planet_moon.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/plasma.tscn" type="PackedScene" id=4]
 [ext_resource path="res://game/object_pool.gd" type="Script" id=5]
 [ext_resource path="res://game/plasma_pool.gd" type="Script" id=6]
 [ext_resource path="res://game/tracker.gd" type="Script" id=7]
+[ext_resource path="res://game/meta_controller.gd" type="Script" id=8]
 [ext_resource path="res://fonts/TitleFont.tres" type="DynamicFont" id=9]
-[ext_resource path="res://backgrounds/planet-moon.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/ship.tscn" type="PackedScene" id=11]
 [ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=12]
 [ext_resource path="res://game/main_menu.gd" type="Script" id=13]
+
+[sub_resource type="CircleShape2D" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 75
@@ -50,6 +53,16 @@ type = "play_ship"
 
 [node name="controller" parent="ship4" instance=ExtResource( 12 )]
 
+[node name="controller" type="Node2D" parent="ship4/controller"]
+script = ExtResource( 8 )
+
+[node name="selector" type="Area2D" parent="ship4/controller/controller"]
+collision_layer = 2147483648
+collision_mask = 0
+
+[node name="shape" type="CollisionShape2D" parent="ship4/controller/controller/selector"]
+shape = SubResource( 3 )
+
 [node name="ship5" parent="." instance=ExtResource( 11 )]
 position = Vector2( 50, -30 )
 starting_side = "enemy"
@@ -68,8 +81,6 @@ type = "play_ship"
 current = true
 script = ExtResource( 7 )
 tracked_obj = [ NodePath("../ship3"), NodePath("../ship4"), NodePath("../ship5"), NodePath("../ship6") ]
-
-[node name="background" parent="." instance=ExtResource( 10 )]
 
 [node name="Control" type="Control" parent="."]
 rect_scale = Vector2( 0.1, 0.1 )
@@ -122,5 +133,7 @@ text = "alpha 0.0.1"
 align = 1
 valign = 1
 script = ExtResource( 13 )
+
+[node name="background" parent="." instance=ExtResource( 3 )]
 
 [connection signal="pressed" from="Control/menu/play" to="Control/menu" method="play"]

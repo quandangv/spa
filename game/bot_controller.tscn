@@ -3,16 +3,12 @@
 [ext_resource path="res://game/bot_controller.gd" type="Script" id=1]
 
 [sub_resource type="CircleShape2D" id=1]
-radius = 300.0
+radius = 100.0
 
 [node name="controller" type="Node2D"]
 script = ExtResource( 1 )
-max_from_anchor = 150.0
 
-[node name="enemy_detect" type="Area2D" parent="."]
+[node name="detector" type="Area2D" parent="."]
 
-[node name="shape" type="CollisionShape2D" parent="enemy_detect"]
+[node name="shape" type="CollisionShape2D" parent="detector"]
 shape = SubResource( 1 )
-
-[node name="enemy_check" type="Timer" parent="."]
-autostart = true

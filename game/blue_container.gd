@@ -2,12 +2,12 @@ extends Node2D
 
 signal filled
 
+const reset_cost = 100
 export var damage:float = 20
 export var radius:float = 10
 export var color:Color
 export var progress_speed:float = 4
-const reset_cost = 100
-var progress = 10
+export var progress:float = 10
 var filled:bool = false
 
 func _ready():

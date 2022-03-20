@@ -30,6 +30,7 @@ func unregister_implicit_controller(controller):
   if index >= 0:
     _implicit_controllers.remove(index)
     _implicit_controllers_priorities.remove(index)
+    controller.disconnect("tree_exiting", self, "unregister_implicit_controller")
     if index == 0 and len(_implicit_controllers) > 0:
       _implicit_controllers.front().gained_input()
 

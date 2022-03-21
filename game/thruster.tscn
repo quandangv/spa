@@ -3,7 +3,8 @@
 [ext_resource path="res://game/thruster.gd" type="Script" id=1]
 
 [sub_resource type="Gradient" id=7]
-colors = PoolColorArray( 1, 1, 1, 1, 0.253906, 0.755188, 1, 0 )
+offsets = PoolRealArray( 0, 0.997214, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0.0194986, 0.253906, 0.755188, 1, 0 )
 
 [sub_resource type="GradientTexture" id=8]
 gradient = SubResource( 7 )

@@ -4,7 +4,6 @@ export var thrust:float = 1
 const thrust_to_torque = 1500
 const thrust_to_force = 300
 const min_movement = 0.01
-const particle_base_amount = 5
 onready var controller = get_node("../controller")
 onready var parent = get_parent()
 onready var particles = $particles
@@ -30,14 +29,7 @@ func move(direction, delta):
     length = 1
   if length > 0.1:
     rotation = lerp_angle(rotation, (-direction).angle() - parent.rotation, 0.05)
-  var amount = particle_base_amount * length
-  if amount < 1:
-    particles.emitting = false
-  else:
-    if not particles.emitting:
-      particles.emitting = true
-    if particles.amount != amount:
-      particles.amount = amount
+  particles.emitting = randf() < length
   if length > 0:
     parent.apply_central_impulse(direction * thrust * thrust_to_force * delta)
 

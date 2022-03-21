@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://game/move-controls.png" type="Texture" id=1]
 [ext_resource path="res://backgrounds/ring-planet.tscn" type="PackedScene" id=2]
@@ -30,6 +30,9 @@
 [ext_resource path="res://game/pause.svg" type="Texture" id=28]
 [ext_resource path="res://game/pause.gd" type="Script" id=29]
 [ext_resource path="res://game/resume.svg" type="Texture" id=30]
+
+[sub_resource type="CircleShape2D" id=8]
+radius = 1.0
 
 [sub_resource type="Animation" id=5]
 length = 0.001
@@ -308,8 +311,11 @@ position = Vector2( -2700, 0 )
 rotation = 0.0
 type = "asteroid_breaker"
 
-[node name="controller" type="Node2D" parent="ship"]
+[node name="controller" type="Area2D" parent="ship"]
 script = ExtResource( 4 )
+
+[node name="shape" type="CollisionShape2D" parent="ship/controller"]
+shape = SubResource( 8 )
 
 [node name="background" parent="." instance=ExtResource( 2 )]
 

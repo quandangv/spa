@@ -9,6 +9,6 @@ func get_plasma(side, hp, damage, position, velocity):
   plasma.global_position = position
   plasma.damage = damage
   plasma.side = side
-  plasma.color = GameUtils.side_colors.get(side, Color.gray)
+  plasma.color = GameUtils.plasma_colors.get(side, Color.gray)
   plasma.init_plasma(plasma_size, velocity, hp)
   return plasma

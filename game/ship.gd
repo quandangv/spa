@@ -3,11 +3,12 @@ extends RigidBody2D
 signal destroyed
 signal bumped(amount)
 signal explode
-signal design_loaded
+signal stats_changed
+signal design_changed
 
 export(PackedScene) var thruster_scene
 export(PackedScene) var turret_scene
-export var starting_side:String = "player"
+export var starting_side:String = "friendly"
 export var max_capture:int = 10
 export var type:String = 'minimal_ship'
 const border_damage_ratio = 4
@@ -17,12 +18,15 @@ const capture_distance = 10
 const release_distance_sqr = 90000
 const max_opacity = 0.95
 const damaged_color = Color(0.7, 0, 0, 0.7)
+const default_color = Color(0.3, 0.3, 0.3)
 var border_damage_accum = 0
 var inner_damage_accum = 0
 var size:float = 2
 var turrets:Array = []
 var damage = 10
-var color = null
+var color = null setget set_color
+var color_modifier:Color = Color.white setget set_color_modifier
+var final_color:Color = default_color
 var real_mass: float
 var og_mass:float
 var side:String
@@ -117,7 +121,8 @@ func load_ship(data):
     if component != null and 'turret' in component['']:
       component['_squeeze'] = data['turret_rotations'][component['rotation']]
   reset()
-  emit_signal("design_loaded")
+  emit_signal("design_changed")
+  emit_signal("stats_changed")
 
 func reset():
   $anim.play("RESET")
@@ -160,8 +165,6 @@ func reset():
   for i in range(len(captured)-1, -1, -1):
     captured[i].released()
     captured.remove(i)
-  if controller.has_method('on_turret_load'):
-    controller.on_turret_load()
 
 func get_map(pos):
   return self.map[pos[0] + pos[1] * mapsize]
@@ -169,10 +172,19 @@ func get_map(pos):
 func set_side(side):
   self.side = side
   if self.color == null:
-    set_color(GameUtils.side_colors.get(side, Color.gray))
+    self.color = GameUtils.ship_colors.get(side, Color.gray)
 
-func set_color(color):
-  self.color = color
+func set_color(value):
+  if value != color:
+    color = value
+    final_color = (color * color_modifier) if color else default_color
+    update()
+
+func set_color_modifier(value):
+  if value != color_modifier:
+    color_modifier = value
+    final_color = (color * color_modifier) if color else default_color
+    update()
 
 func init(size):
   self.size = size
@@ -181,7 +193,7 @@ func init(size):
 
 func _draw():
   var point_count = round(8*sqrt(size))
-  draw_circle(Vector2.ZERO, size, lerp(color, Color.white, inner_damage_accum))
+  draw_circle(Vector2.ZERO, size, lerp(final_color, Color.white, inner_damage_accum))
   draw_arc(Vector2.ZERO, size, 0, PI*2, point_count, rank.modulate, 1, true)
 
 func drop_plasma(component, supply_drop, power_drop):
@@ -243,8 +255,7 @@ func take_damage(angle, damage):
         var supply_drop = component['_plasma_supply']
         var power_drop = component.get('_plasma_power', 0)
         drop_plasma(component, supply_drop, power_drop)
-        if controller.has_method('on_turret_load'):
-          controller.on_turret_load()
+        emit_signal("stats_changed")
       match component['']:
         'thruster':
           $thruster.init($thruster.thrust - 1)

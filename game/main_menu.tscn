@@ -46,6 +46,7 @@ starting_side = "enemy"
 type = "play_ship"
 
 [node name="controller" parent="ship3" instance=ExtResource( 12 )]
+distance_kept = [ 6, 3 ]
 
 [node name="target_selector" type="Node2D" parent="ship3/controller"]
 script = ExtResource( 14 )
@@ -60,6 +61,7 @@ rotation = 0.0
 type = "play_ship"
 
 [node name="controller" parent="ship4" instance=ExtResource( 12 )]
+distance_kept = [ 6, 3 ]
 
 [node name="controller" type="Node2D" parent="ship4/controller"]
 script = ExtResource( 8 )
@@ -84,6 +86,7 @@ starting_side = "enemy"
 type = "play_ship"
 
 [node name="controller" parent="ship5" instance=ExtResource( 12 )]
+distance_kept = [ 6, 3 ]
 
 [node name="target_selector" type="Node2D" parent="ship5/controller"]
 script = ExtResource( 14 )
@@ -98,6 +101,7 @@ rotation = 0.0
 type = "play_ship"
 
 [node name="controller" parent="ship6" instance=ExtResource( 12 )]
+distance_kept = [ 6, 3 ]
 
 [node name="target_selector" type="Node2D" parent="ship6/controller"]
 script = ExtResource( 14 )

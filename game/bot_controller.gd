@@ -30,11 +30,11 @@ const strafe_max = 3
 var firing_wait = 0.7 # time to wait for turret to cool before firing again
 var firing_wait_random = [4, 6] # randomize waiting time for unpredictability
 const firing_angle = 0.4 # multiplier of the acceptable turret angular precision to fire
-const distance_kept = [10, 3] # distance to keep from the target instead of heabutting them
+export(Array, float) var distance_kept = [10, 3] # distance to keep from the target instead of heabutting them
 const base_bullet_speed = 8 # used along with turret stats to calculate approximate bullet speed
 const strafe_force = [70, 0]
 
-func on_turret_load():
+func stats_changed():
   """Extract the stats from our ship for better extrapolation"""
   turret_count = 0
   var avg_turret_speed = 0
@@ -117,7 +117,7 @@ func _physics_process(delta):
           waited = 0
   else:
     new_movement = Vector2.ZERO
-  movement = combine_movement(new_movement * parent.mass / 2000) # combine with the movement from the base
+  movement = combine_movement(new_movement * parent.mass / 1000) # combine with the movement from the base
   if movement.length_squared() < 0.0001:
     emit_signal("idle", delta)
 
@@ -130,7 +130,8 @@ func target_check(target_accel):
   diff = GameUtils.extrapolate(diff, target_speed, target_accel, bullet_speed_approx, parent_speed)
   diff_length = diff.length()
   diff_norm = diff / diff_length
-  var movement_target = diff - diff_norm * distance_kept[target_rank] * parent.size
+  var movement_target = diff_norm * (log(diff_length / (distance_kept[target_rank] * parent.size)))*50
+  print(log(diff_length / (distance_kept[target_rank] * parent.size))*50, ' ', diff_length - distance_kept[target_rank] * parent.size)
   new_movement = movement_target - parent_speed
   if new_movement.length() < thrust*10: # if we don't need to move much, randomly perform one of our idle action
     if strafe_direction != 0: # strafing to dodge projectiles
@@ -157,3 +158,6 @@ func set_target(new_target):
 func remove_target():
   target_obj = null
   emit_signal("target_removed")
+
+func _ready():
+  parent.connect("stats_changed", self, "stats_changed")

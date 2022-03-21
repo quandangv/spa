@@ -12,10 +12,12 @@ const base_safe_distance = 3
 
 onready var parent = get_parent()
 onready var detector = $detector
+export var detect_radius:float = 100
 
 func _ready():
   detector.connect("area_entered", self, "area_entered")
   detector.connect("area_exited", self, "area_exited")
+  detector.get_node("shape").shape.radius = detect_radius
   safe_distance_sqr = parent.size * base_safe_distance
   safe_distance_sqr *= safe_distance_sqr
 

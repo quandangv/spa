@@ -7,6 +7,7 @@ var lifetime:float
 var hp:float
 var og_hp:float
 var side:String
+var source
 var color:Color
 onready var fill = $fill
 

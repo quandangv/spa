@@ -29,7 +29,6 @@ func init_asteroid(asteroid):
   asteroid.linear_velocity = initial_velocity.rotated((randf()-0.5)*velocity_angle_range)
   if asteroid.color.r < 0.3 and asteroid.color.g > 0.5 and asteroid.color.b > 0.6:
     asteroid.following = true
-    asteroid.secondary_target = target
     asteroid.primary_target = blue_container
   else:
     asteroid.following = false
@@ -37,7 +36,5 @@ func init_asteroid(asteroid):
 func destroyed():
   set_process(false)
   for asteroid in $pool.get_children():
-    asteroid.hp = 0
-    asteroid.secondary_target = blue_container
-    asteroid.destroyed()
+    asteroid.destroyed_by(self)
   hibernate()

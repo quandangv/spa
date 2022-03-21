@@ -1,9 +1,13 @@
 extends Node2D
 
 onready var parent = get_parent().get_parent()
+
 func _ready():
   parent.connect("design_changed", self, "_load")
-  $selector.connect("input_event", self, "_input_event")
+  get_parent().connect("wake_up", self, "wake_up")
+
+func wake_up():
+  parent.color = GameUtils.ship_colors.get("controlled", Color.gray)
 
 func _load():
-  $selector/shape.shape.radius = parent.size
+  $shape.shape.radius = parent.size

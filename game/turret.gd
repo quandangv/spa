@@ -90,7 +90,7 @@ func _fire():
   var velocity = (Vector2(base_speed, 0) * lerp(1, 8, buildup)).rotated(self.global_rotation\
       + (randf()-0.5) * (1 - buildup) * base_spread) + parent.linear_velocity
   fire_interval = log(turret_heat)/log(turret_cooldown_base)
-  plasma_pool.get_plasma(parent.side, plasma_hp, plasma_damage * buildup, self.global_position, velocity)
+  plasma_pool.get_plasma(parent, plasma_hp, plasma_damage * buildup, self.global_position, velocity)
   $audio.play()
 
 func start_firing():

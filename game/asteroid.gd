@@ -41,7 +41,7 @@ func area_collide(other, delta):
   if hp > 0:
     hp -= other.damage * delta
     if hp <= 0:
-      destroyed()
+      destroyed_by(other)
     else:
       update()
       color.a = lerp(0.2, 1, hp/og_hp)
@@ -49,6 +49,8 @@ func area_collide(other, delta):
   else:
     return 0
   return damage
+func destroyed_by(other):
+  destroyed()
 
 func hibernate():
   collision.disabled = true

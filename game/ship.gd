@@ -151,7 +151,7 @@ func reset():
       thrust += 1
   mass = real_mass
   og_mass = real_mass
-  color.a = max_opacity
+  final_color.a = max_opacity
   if thrust > 0:
     if $thruster == null:
       var ins = thruster_scene.instance()
@@ -171,20 +171,25 @@ func get_map(pos):
 
 func set_side(side):
   self.side = side
-  if self.color == null:
-    self.color = GameUtils.ship_colors.get(side, Color.gray)
+  self.color = GameUtils.ship_colors.get(side, Color.gray)
 
 func set_color(value):
   if value != color:
     color = value
-    final_color = (color * color_modifier) if color else default_color
+    update_final_color()
     update()
 
 func set_color_modifier(value):
   if value != color_modifier:
     color_modifier = value
-    final_color = (color * color_modifier) if color else default_color
+    update_final_color()
     update()
+
+func update_final_color():
+  var opaque = (color * color_modifier) if color else default_color
+  final_color.r = opaque.r
+  final_color.g = opaque.g
+  final_color.b = opaque.b
 
 func init(size):
   self.size = size
@@ -267,7 +272,7 @@ func take_damage(angle, damage):
         ship_destroyed()
       else:
         self.mass = real_mass
-        color.a = lerp(0.2, max_opacity, real_mass / og_mass)
+        final_color.a = lerp(0.2, max_opacity, real_mass / og_mass)
       damage += component['_hp']
       component['_hp'] = 0
     border_damage_accum += border_damage_ratio * damage / size

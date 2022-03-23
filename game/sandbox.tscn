@@ -1,0 +1,206 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://game/object_pool.gd" type="Script" id=1]
+[ext_resource path="res://game/html5_notice.gd" type="Script" id=2]
+[ext_resource path="res://game/plasma_pool.gd" type="Script" id=4]
+[ext_resource path="res://backgrounds/galaxy.tscn" type="PackedScene" id=5]
+[ext_resource path="res://game/plasma.tscn" type="PackedScene" id=6]
+[ext_resource path="res://game/tracker.gd" type="Script" id=7]
+[ext_resource path="res://game_theme.tres" type="Theme" id=9]
+[ext_resource path="res://small_game_theme.tres" type="Theme" id=12]
+[ext_resource path="res://game/multiplayer_ui.gd" type="Script" id=13]
+[ext_resource path="res://game/dual_state_button.gd" type="Script" id=14]
+[ext_resource path="res://edit.svg" type="Texture" id=15]
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends Button
+
+func on_player_info_changed(info):
+  text = info[\"name\"]
+  add_color_override(\"font_color\", info[\"color\"])
+
+func change_color(color):
+  set(\"custom_colors/font_color\", color)
+  set(\"custom_colors/font_color_focus\", color)
+
+func _ready():
+  Storage.connect(\"player_info_changed\", self, \"on_player_info_changed\")
+  text = Storage.player[\"name\"]
+  add_color_override(\"font_color\", Storage.player[\"color\"])
+"
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Button
+
+export var text_box_path:NodePath
+onready var text_box = get_node(text_box_path)
+export var helper_path:NodePath
+onready var helper = get_node(helper_path)
+
+func _toggled(button_pressed):
+  text_box.visible = button_pressed
+  helper.visible = button_pressed
+  text = \"<\" if button_pressed else \">\"
+
+
+func _text_box_visibility_changed():
+  text = \"<\" if text_box.visible else \">\"
+  pressed = text_box.visible
+"
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends Button
+
+func _pressed():
+  var instance = Multiplayer.spawn_local(\"controlled_ship\")
+
+func _ready():
+  Multiplayer.spawn_local(\"controlled_ship\", 0)
+  Multiplayer.spawn_local(\"bot_ship\", 1)
+"
+
+[node name="game" type="Node2D"]
+
+[node name="plasma_normal" type="Node2D" parent="."]
+z_index = -1
+script = ExtResource( 4 )
+plasma_size = 2.0
+
+[node name="pool" type="Node" parent="plasma_normal"]
+script = ExtResource( 1 )
+scene = ExtResource( 6 )
+
+[node name="camera" type="Camera2D" parent="."]
+current = true
+smoothing_enabled = true
+smoothing_speed = 2.0
+script = ExtResource( 7 )
+
+[node name="background" parent="." instance=ExtResource( 5 )]
+
+[node name="ui" type="CanvasLayer" parent="."]
+
+[node name="container" type="VBoxContainer" parent="ui"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+theme = ExtResource( 9 )
+custom_constants/separation = 10
+
+[node name="buttons" type="HBoxContainer" parent="ui/container"]
+margin_right = 565.0
+margin_bottom = 61.0
+mouse_filter = 2
+custom_constants/separation = 20
+
+[node name="host_game" type="Button" parent="ui/container/buttons"]
+margin_right = 142.0
+margin_bottom = 61.0
+text = "Host LAN"
+flat = true
+script = ExtResource( 14 )
+other_text = "Stop Hosting"
+
+[node name="join_game" type="Button" parent="ui/container/buttons"]
+margin_left = 162.0
+margin_right = 325.0
+margin_bottom = 61.0
+text = "Join Game"
+flat = true
+script = ExtResource( 14 )
+other_text = "Exit Game"
+
+[node name="name" type="Button" parent="ui/container/buttons"]
+margin_left = 345.0
+margin_right = 565.0
+margin_bottom = 61.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Anonymous"
+icon = ExtResource( 15 )
+flat = true
+script = SubResource( 5 )
+
+[node name="text_box" type="HBoxContainer" parent="ui/container"]
+margin_top = 71.0
+margin_right = 565.0
+margin_bottom = 109.0
+mouse_filter = 2
+theme = ExtResource( 12 )
+custom_constants/separation = 7
+
+[node name="color_picker" type="ColorPicker" parent="ui/container/text_box"]
+visible = false
+margin_left = 728.0
+margin_top = 728.0
+margin_right = 1018.0
+margin_bottom = 1194.0
+edit_alpha = false
+presets_enabled = false
+presets_visible = false
+
+[node name="text_box" type="LineEdit" parent="ui/container/text_box"]
+visible = false
+margin_right = 200.0
+margin_bottom = 38.0
+rect_min_size = Vector2( 200, 0 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+max_length = 64
+editable = false
+expand_to_text_length = true
+context_menu_enabled = false
+placeholder_alpha = 0.4
+script = ExtResource( 13 )
+helper_path = NodePath("../helper")
+join_path = NodePath("../../buttons/join_game")
+host_path = NodePath("../../buttons/host_game")
+color_path = NodePath("../color_picker")
+close_button_path = NodePath("../close")
+
+[node name="helper" type="Button" parent="ui/container/text_box"]
+visible = false
+margin_right = 16.0
+margin_bottom = 38.0
+grow_horizontal = 0
+size_flags_vertical = 0
+
+[node name="close" type="Button" parent="ui/container/text_box"]
+margin_right = 28.0
+margin_bottom = 38.0
+focus_mode = 0
+size_flags_vertical = 0
+disabled = true
+toggle_mode = true
+text = ">"
+script = SubResource( 4 )
+text_box_path = NodePath("../text_box")
+helper_path = NodePath("../helper")
+
+[node name="html5_notice" type="Label" parent="ui/container/text_box"]
+visible = false
+margin_left = 35.0
+margin_right = 600.0
+margin_bottom = 75.0
+text = "The web platform does not support our multiplayer feature :(
+Please download the PC version to play LAN multiplayer"
+script = ExtResource( 2 )
+closed_nodes = [ NodePath("../close"), NodePath("../../buttons") ]
+
+[node name="spawn" type="Button" parent="ui"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -12.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = 20.0
+grow_horizontal = 0
+theme = ExtResource( 9 )
+text = "Spawn"
+script = SubResource( 7 )
+
+[connection signal="pressed" from="ui/container/buttons/name" to="ui/container/text_box/text_box" method="prep_name_player"]
+[connection signal="color_changed" from="ui/container/text_box/color_picker" to="ui/container/buttons/name" method="change_color"]
+[connection signal="visibility_changed" from="ui/container/text_box/text_box" to="ui/container/text_box/close" method="_text_box_visibility_changed"]
+[connection signal="pressed" from="ui/container/text_box/helper" to="ui/container/text_box/text_box" method="helper_pressed"]

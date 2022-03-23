@@ -19,7 +19,7 @@ func move(direction, delta):
   assert(not is_nan(direction.x) and not is_nan(direction.y), "Controller movement is NAN")
   var length = direction.length()
   if length < min_movement:
-    direction = -parent.linear_velocity * parent.mass * controller.stop_multiplier
+    direction = -parent.linear_velocity * controller.stop_multiplier
     length = direction.length()
     if length != 0 and length < thrust * thrust_to_force * delta / parent.mass:
       parent.linear_velocity = Vector2.ZERO
@@ -40,7 +40,7 @@ func init(thrust):
   update()
 
 func _physics_process(delta):
-  if thrust > 0:
+  if thrust > 0 and controller:
     move(controller.movement, delta)
     assert(not is_nan(controller.angle), "Controller angle is NAN")
     var rotation_delta = controller.angle - parent.rotation

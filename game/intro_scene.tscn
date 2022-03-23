@@ -20,7 +20,7 @@
 [ext_resource path="res://game/exclamation.svg" type="Texture" id=18]
 [ext_resource path="res://Digifunk - DivKid.mp3" type="AudioStream" id=19]
 [ext_resource path="res://game/reset.svg" type="Texture" id=20]
-[ext_resource path="res://no_background_theme.tres" type="Theme" id=21]
+[ext_resource path="res://game_theme.tres" type="Theme" id=21]
 [ext_resource path="res://game/standalone_asteroid.gd" type="Script" id=22]
 [ext_resource path="res://game/blue_container.gd" type="Script" id=23]
 [ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=24]
@@ -312,7 +312,6 @@ scene = ExtResource( 5 )
 [node name="ship" parent="." instance=ExtResource( 8 )]
 position = Vector2( -2700, 0 )
 rotation = 0.0
-type = "asteroid_breaker"
 
 [node name="controller" type="Area2D" parent="ship"]
 script = ExtResource( 4 )
@@ -333,13 +332,9 @@ grow_horizontal = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource( 21 )
-custom_colors/font_color_focus = Color( 1, 1, 1, 1 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0.694118, 0.898039, 1, 1 )
-custom_colors/font_color_pressed = Color( 0.694118, 0.898039, 1, 0.584314 )
-custom_fonts/font = ExtResource( 27 )
 text = "RESET"
 icon = ExtResource( 20 )
+flat = true
 
 [node name="pause" type="Button" parent="ui"]
 pause_mode = 2
@@ -348,23 +343,19 @@ margin_bottom = 64.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource( 21 )
-custom_colors/font_color_focus = Color( 1, 1, 1, 1 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_colors/font_color_hover = Color( 0.694118, 0.898039, 1, 1 )
-custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 27 )
 toggle_mode = true
 text = "PAUSE"
 icon = ExtResource( 28 )
+flat = true
 script = ExtResource( 29 )
 resume_icon = ExtResource( 30 )
 
-[node name="stage" type="Label" parent="ui"]
+[node name="stage" type="Label" parent="ui/pause"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -44.5
-margin_right = 44.5
-margin_bottom = 46.0
+margin_left = 389.5
+margin_right = 478.5
+margin_bottom = 59.0
 grow_horizontal = 2
 custom_fonts/font = ExtResource( 27 )
 text = "intro"
@@ -525,7 +516,7 @@ initial_velocity = Vector2( -70, 0 )
 velocity_angle_range = 1.0
 attach_distance = Vector2( 600, 0 )
 target = NodePath("../../camera")
-stage_name = NodePath("../../ui/stage")
+stage_name = NodePath("../../ui/pause/stage")
 blue_container = NodePath("../../blue_container")
 
 [node name="pool" type="Node" parent="notifier/asteroids"]
@@ -611,7 +602,6 @@ boss_music_position = 35.0
 show_behind_parent = true
 rotation = 0.0
 starting_side = "enemy"
-type = "asteroid_breaker"
 
 [node name="rank" parent="boss/boss" index="3"]
 visible = true

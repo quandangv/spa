@@ -8,6 +8,7 @@ public class game_utils : Node
   [Export] public Dictionary<String, Color> plasma_colors;
   public List<Node> ship_inputs = new List<Node>();
   public Node camera_input;
+  public bool networking = false;
   
   public override void _Ready()
   {

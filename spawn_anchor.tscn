@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+var current_spawn_index:int = -1
+
+func spawn(instance):
+  current_spawn_index = (current_spawn_index+1) % get_child_count()
+  var anchor = get_child(current_spawn_index)
+  instance.global_position = anchor.global_position
+  instance.global_rotation = anchor.global_rotation
+"
+
+[node name="anchor0" type="Node2D"]
+position = Vector2( 50, 0 )
+rotation = 3.14159
+script = SubResource( 1 )
+
+[node name="spawn0" type="Node2D" parent="."]
+rotation = 3.14159
+
+[node name="spawn1" type="Node2D" parent="."]
+position = Vector2( 0, 10 )
+rotation = 3.14159
+
+[node name="spawn2" type="Node2D" parent="."]
+position = Vector2( 0, -10 )
+rotation = 3.14159
+
+[node name="spawn3" type="Node2D" parent="."]
+position = Vector2( 0, 20 )
+rotation = 3.14159
+
+[node name="spawn4" type="Node2D" parent="."]
+position = Vector2( 0, -20 )
+rotation = 3.14159

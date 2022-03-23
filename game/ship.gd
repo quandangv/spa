@@ -10,7 +10,7 @@ export(PackedScene) var thruster_scene
 export(PackedScene) var turret_scene
 export var starting_side:String = "friendly"
 export var max_capture:int = 10
-export var type:String = 'minimal_ship'
+export var type:String = 'intro_ship'
 const border_damage_ratio = 4
 const collision_threshold = 20
 const collision_damage_multiplier = 0.03
@@ -43,7 +43,7 @@ onready var rank = $rank
 
 const ship_types = {
   'minimal_ship': '{"map":[null,{"":"thruster","hp":5,"rotation":0},{"":"core","hp":5,"rotation":0},{"":"generator","hp":5,"plasma_downstream":[[0,2]],"plasma_supply":6,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":6,"rotation":0},null],"mapsize":2}',
-  'asteroid_breaker': '{"map":[null,null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,{"":"thruster","covered":[[2,0]],"hp":5,"rotation":0},{"":"turret","covered":[[2,0],[3,0]],"hp":5,"plasma_power":2,"plasma_supply":6,"position":1,"rotation":0},{"":"energizer","covered":[[3,0],[4,1]],"hp":5,"plasma_downstream":[[2,1]],"plasma_power":1,"plasma_supply":2,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"thruster","hp":5,"rotation":0},{"":"energizer","hp":5,"plasma_downstream":[[2,1]],"plasma_power":1,"plasma_supply":2,"rotation":2,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"generator","hp":5,"plasma_downstream":[[1,2],[2,1],[3,1],[3,2],[2,3],[1,3]],"plasma_supply":12,"rotation":0},{"":"energizer","covered":[[3,3],[4,1]],"hp":5,"plasma_downstream":[[2,3]],"plasma_power":1,"plasma_supply":2,"rotation":5,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"thruster","covered":[[3,3],[4,1]],"hp":5,"rotation":0},{"":"core","covered":[[0,4]],"hp":5,"rotation":0},{"":"turret","covered":[[0,4],[1,4]],"hp":5,"plasma_power":2,"plasma_supply":6,"position":0,"rotation":0},{"":"energizer","chained":true,"covered":[[1,4],[3,3]],"hp":5,"plasma_downstream":[[1,3]],"plasma_power":2,"plasma_supply":4,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,null],"mapsize":5}',
+  'intro_ship': '{"map":[null,null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,{"":"thruster","covered":[[2,0]],"hp":5,"rotation":0},{"":"turret","covered":[[2,0],[3,0]],"hp":5,"plasma_power":2,"plasma_supply":6,"position":1,"rotation":0},{"":"energizer","covered":[[3,0],[4,1]],"hp":5,"plasma_downstream":[[2,1]],"plasma_power":1,"plasma_supply":2,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"thruster","hp":5,"rotation":0},{"":"energizer","hp":5,"plasma_downstream":[[2,1]],"plasma_power":1,"plasma_supply":2,"rotation":2,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"generator","hp":5,"plasma_downstream":[[1,2],[2,1],[3,1],[3,2],[2,3],[1,3]],"plasma_supply":12,"rotation":0},{"":"energizer","covered":[[3,3],[4,1]],"hp":5,"plasma_downstream":[[2,3]],"plasma_power":1,"plasma_supply":2,"rotation":5,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"thruster","covered":[[3,3],[4,1]],"hp":5,"rotation":0},{"":"core","covered":[[0,4]],"hp":5,"rotation":0},{"":"turret","covered":[[0,4],[1,4]],"hp":5,"plasma_power":2,"plasma_supply":6,"position":0,"rotation":0},{"":"energizer","chained":true,"covered":[[1,4],[3,3]],"hp":5,"plasma_downstream":[[1,3]],"plasma_power":2,"plasma_supply":4,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,null],"mapsize":5}',
   'asteroid_breaker2': '{"map":[null,null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"thruster","covered":[[2,0]],"hp":5,"rotation":0},{"":"thruster","covered":[[4,1]],"hp":5,"rotation":0},null,{"":"turret","covered":[[2,0]],"hp":5,"plasma_power":3,"plasma_supply":6,"position":0,"rotation":0},{"":"energizer","chained":true,"covered":[[2,0]],"hp":5,"plasma_downstream":[[1,1]],"plasma_power":3,"plasma_supply":6,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"energizer","chained":true,"covered":[[4,1]],"hp":5,"plasma_downstream":[[2,1]],"plasma_power":2,"plasma_supply":4,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"core","hp":5,"rotation":0},{"":"energizer","hp":5,"plasma_downstream":[[1,3]],"plasma_power":1,"plasma_supply":2,"rotation":4,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"generator","hp":5,"plasma_downstream":[[1,2],[2,1],[3,1],[3,2],[2,3],[1,3]],"plasma_supply":12,"rotation":0},{"":"energizer","covered":[[3,3],[4,1],[4,2]],"hp":5,"plasma_downstream":[[3,1]],"plasma_power":1,"plasma_supply":2,"rotation":1,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"turret","covered":[[0,4]],"hp":5,"plasma_power":3,"plasma_supply":6,"position":1,"rotation":0},{"":"energizer","chained":true,"covered":[[0,4]],"hp":5,"plasma_downstream":[[0,3]],"plasma_power":3,"plasma_supply":6,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"energizer","covered":[[3,3]],"hp":5,"plasma_downstream":[[1,3]],"plasma_power":1,"plasma_supply":2,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"thruster","covered":[[0,4]],"hp":5,"rotation":0},{"":"thruster","covered":[[3,3]],"hp":5,"rotation":0},null,null],"mapsize":5}',
   'energizer_chain_ship': '{"map":[null,null,null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,{"":"thruster","covered":[[0,2]],"hp":5,"rotation":0},{"":"energizer","chained":true,"covered":[[3,0]],"hp":5,"plasma_downstream":[[3,1]],"plasma_power":2,"plasma_supply":4,"rotation":3,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"energizer","chained":true,"covered":[[3,0],[4,1]],"hp":5,"plasma_downstream":[[3,2]],"plasma_power":3,"plasma_supply":6,"rotation":4,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},{"":"energizer","covered":[[0,2]],"hp":5,"plasma_downstream":[[2,1]],"plasma_power":1,"plasma_supply":2,"rotation":2,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"generator","hp":5,"plasma_downstream":[[1,2],[2,1],[3,1],[3,2],[2,3],[1,3]],"plasma_supply":12,"rotation":0},{"":"energizer","chained":true,"covered":[[3,3],[4,1]],"hp":5,"plasma_downstream":[[2,3]],"plasma_power":4,"plasma_supply":8,"rotation":5,"wasted_plasma_power":0,"wasted_plasma_supply":0},null,{"":"core","covered":[[0,2]],"hp":5,"rotation":0},{"":"turret","covered":[[1,4]],"hp":5,"plasma_power":5,"plasma_supply":12,"rotation":0},{"":"energizer","chained":true,"covered":[[1,4],[3,3]],"hp":5,"plasma_downstream":[[1,3]],"plasma_power":5,"plasma_supply":10,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,{"":"armor","armor":1,"hp":10,"material_supply":0,"rotation":0,"warning":"need_material_supply"},null,null,null],"mapsize":5}',
   'dodger_ship': '{"map":[null,null,{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},{"":"thruster","rotation":0},{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},null,{"":"thruster","rotation":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":1,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":2,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"core","rotation":0},{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":0,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"generator","plasma_output":12,"rotation":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":3,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},{"":"thruster","rotation":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":5,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"energizer","plasma_power":1,"plasma_supply":2,"rotation":4,"wasted_plasma_power":0,"wasted_plasma_supply":0},{"":"shield","rotation":0},null,{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},{"":"thruster","rotation":0},{"":"turret","plasma_power":1,"plasma_supply":2,"rotation":0},null,null],"mapsize":5}',
@@ -54,11 +54,25 @@ const ship_types = {
   'multi_dir_ship': '{"map":[null,{"":"core","hp":5,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":2},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":1},null,{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":3},{"":"generator","hp":5,"plasma_downstream":[[1,1],[2,0],[3,0],[3,1],[2,2],[1,2]],"plasma_supply":12,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":0},{"":"thruster","hp":5,"rotation":0},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":4},{"":"turret","hp":5,"plasma_power":0,"plasma_supply":2,"rotation":5},null],"mapsize":4}',
 }
 
+func serialize():
+  return {"position": global_position, "rotation":global_rotation, "type":type}
+
+func init_deserialize(data):
+  type = data["type"]
+
+func deserialize(data):
+  global_position = data["position"]
+  global_rotation = data["rotation"]
+
 func _ready():
   load_ship(parse_json(ship_types[type]))
   contact_monitor = true
   contacts_reported = 10
   connect("body_entered", self, "body_entered")
+  if GameUtils.networking and is_network_master():
+    $sync.start()
+  else:
+    $sync.queue_free()
 
 var last_velocity:Vector2
 func _physics_process(_delta):
@@ -73,9 +87,12 @@ func body_entered(other):
     var damage_scale = clamp(inverse_lerp(1, 10, damage), 0, 1)
     SoundPlayer.play_audio("collision", global_position, lerp(2, 0.4, damage_scale), lerp(0, 10, damage_scale))
     emit_signal("bumped", dir)
-    for _i in range(100):
-      damage -= take_damage((other.global_position - global_position).angle(), damage)
-      if damage <= 0: break
+    if not GameUtils.networking or is_network_master():
+      if GameUtils.networking:
+        rpc("show_take_damage", damage)
+      for _i in range(100):
+        damage -= take_damage((other.global_position - global_position).angle(), damage)
+        if damage <= 0: break
 
 func offer_capture(other):
   for i in range(len(captured)-1, -1, -1):
@@ -117,9 +134,12 @@ func load_ship(data):
     turrets.append(ins)
   for _i in range(len(turret_pos), len(turrets)):
     turrets.pop_back().queue_free()
-  for component in map:
-    if component != null and 'turret' in component['']:
-      component['_squeeze'] = data['turret_rotations'][component['rotation']]
+  for i in range(len(map)):
+    var component = map[i]
+    if component != null:
+      component["_map_index"] = i
+      if 'turret' in component['']:
+        component['_squeeze'] = data['turret_rotations'][component['rotation']]
   reset()
   emit_signal("design_changed")
   emit_signal("stats_changed")
@@ -130,7 +150,8 @@ func reset():
   set_side(starting_side)
   inner_damage_accum = 1
   border_damage_accum = 1
-  controller.wake_up()
+  if controller:
+    controller.wake_up()
   var thrust = 0
   var turret_count = 0
   real_mass = 0
@@ -219,7 +240,8 @@ func drop_plasma(component, supply_drop, power_drop):
 func ship_destroyed():
   if side != "junk":
     self.color = null
-    controller.hibernate()
+    if controller:
+      controller.hibernate()
     set_side('junk')
   if real_mass == 0:
     $anim.play("disappear")
@@ -252,32 +274,41 @@ func take_damage(angle, damage):
           break
     component['_hp'] -= damage
     if component['_hp'] <= 0:
-      emit_signal("explode")
-      SoundPlayer.play_audio("explosion", global_position)
-      inner_damage_accum += 1
-      real_mass -= 1
-      if 'plasma_downstream' in component:
-        var supply_drop = component['_plasma_supply']
-        var power_drop = component.get('_plasma_power', 0)
-        drop_plasma(component, supply_drop, power_drop)
-        emit_signal("stats_changed")
-      match component['']:
-        'thruster':
-          $thruster.init($thruster.thrust - 1)
-        'core':
-          ship_destroyed()
-        'turret':
-          component['_ref'].hibernate()
-      if real_mass <= 0:
-        ship_destroyed()
-      else:
-        self.mass = real_mass
-        final_color.a = lerp(0.2, max_opacity, real_mass / og_mass)
-      damage += component['_hp']
-      component['_hp'] = 0
+      if GameUtils.networking:
+        rpc("receive_explosion", component["_map_index"])
+      damage += exploded(component)
     border_damage_accum += border_damage_ratio * damage / size
     return damage
   return 0
+
+puppet func receive_explosion(component_index):
+  exploded(map[component_index])
+func exploded(component):
+  emit_signal("explode")
+  SoundPlayer.play_audio("explosion", global_position)
+  inner_damage_accum += 1
+  real_mass -= 1
+  if 'plasma_downstream' in component:
+    var supply_drop = component['_plasma_supply']
+    var power_drop = component.get('_plasma_power', 0)
+    drop_plasma(component, supply_drop, power_drop)
+    emit_signal("stats_changed")
+  match component['']:
+    'thruster':
+      $thruster.init($thruster.thrust - 1)
+    'core':
+      ship_destroyed()
+    'turret':
+      component['_ref'].hibernate()
+  if real_mass <= 0:
+    ship_destroyed()
+  else:
+    self.mass = real_mass
+    final_color.a = lerp(0.2, max_opacity, real_mass / og_mass)
+  var last_hp = component['_hp']
+  component['_hp'] = 0
+  return last_hp
+
 func get_component(arr, index):
   for i in range(len(arr)) if index == 1 else range(-1, -len(arr)-1, -1):
     var component = arr[i]
@@ -289,10 +320,18 @@ func area_interact(other):
   return GameUtils.is_enemy(side, other)
 func area_collide(other, delta):
   if GameUtils.is_enemy(side, other):
-    var other_damage = other.damage*delta
-    var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
-    return damage * actual_damage / other_damage
+    if not GameUtils.networking or is_network_master():
+      var other_damage = other.damage*delta
+      var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
+      var damage_back = damage * actual_damage / other_damage
+      if GameUtils.networking:
+        rpc("show_take_damage", actual_damage)
+        other.rpc("take_damage", damage_back * delta)
+      return damage_back
   return 0
+
+puppet func show_take_damage(damage):
+  border_damage_accum += border_damage_ratio * damage / size
 
 func _process(delta):
   var update = false
@@ -305,3 +344,22 @@ func _process(delta):
     inner_damage_accum = max(inner_damage_accum - delta, 0)
   if update:
     self.update()
+
+var target_velocity = null
+var position_diff:Vector2
+func _sync():
+  rpc_unreliable("request_sync", global_position, linear_velocity)
+puppet func request_sync(pos, velocity):
+  target_velocity = velocity
+  position_diff = pos - global_position
+
+func _integrate_forces(state):
+  if target_velocity != null:
+    state.linear_velocity = target_velocity
+    target_velocity = null
+  if position_diff != Vector2.ZERO:
+    var change = position_diff * 0.05
+    state.transform.origin += change
+    position_diff -= change
+    if position_diff.length_squared() < 0.0001:
+      position_diff = Vector2.ZERO

@@ -5,11 +5,15 @@ var _explicit_controllers = []
 var _implicit_controllers = []
 var _implicit_controllers_priorities = []
 
-func register_implicit_controller(type, controller):
+func register_implicit_controller(type, controller, front = false):
   var priority = controller_priorities[type]
   var index = _implicit_controllers_priorities.bsearch(priority)
-  while index < len(_implicit_controllers) and _implicit_controllers_priorities[index] == priority:
+  var front_index = index
+  while index < len(_implicit_controllers) and _implicit_controllers_priorities[index] == priority: # Check if the controller have already been added
     if _implicit_controllers[index] == controller:
+      if front:
+        index = front_index
+        break
       if index == 0:
         return true
       else:

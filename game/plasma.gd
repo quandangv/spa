@@ -2,7 +2,7 @@ extends "polygon.gd"
 
 const degradation_rate = 0.5
 export var linear_velocity:Vector2
-export var collateral_rate:float = 0.75
+export var collateral_rate:float = 0.9
 var lifetime:float
 var hp:float
 var og_hp:float
@@ -30,23 +30,33 @@ func init_plasma(size, linear_velocity, hp):
 
 func _physics_process(delta):
   position += linear_velocity * delta
-  var damage = 0
+  var damage_amount = 0
   for other in overlap_areas:
-    damage += other.damage
+    damage_amount += other.damage
   for other in overlap_bodies:
-    damage += other.area_collide(self, delta)
+    var other_damage = other.area_collide(self, delta)
+    damage_amount += other_damage
+  lifetime += delta
+  damage_amount += lifetime * degradation_rate
+  take_damage(damage_amount * delta)
+
+puppetsync func master_destroyed(current_damage):
+  damage = current_damage
+  destroyed()
+remote func take_damage(amount):
   if hp > 0:
-    lifetime += delta
-    damage += lifetime * degradation_rate
-    hp -= damage*delta
+    hp -= amount
     if hp <= 0:
       damage *= pow(collateral_rate, hp)
-      destroyed()
+      if not GameUtils.networking:
+        destroyed()
+      elif is_network_master():
+        rpc("master_destroyed", damage)
     else:
-      fill.self_modulate = Color(1, 1, 1, lerp(0.2, 1, hp/og_hp))
+      color.a = lerp(0.2, 1, hp/og_hp)
+      update()
   elif damage:
-    damage *= delta
-    damage *= pow(collateral_rate, -damage)
+    damage *= pow(collateral_rate, -amount)
 
 func area_entered(other):
   if GameUtils.is_enemy(side, other):

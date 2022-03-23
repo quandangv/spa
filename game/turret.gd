@@ -17,24 +17,32 @@ var plasma_hp:float = 12
 var plasma_damage:float = 30
 var fire_delay: float = 0
 var turret_cooldown_speed:float
-var wait_then_fire:float
+var wait_before_fire:float
 
 var turret_heat:float = 0
 var fire_interval = 0
+var queued_shots = 0
+const max_queued_time = 0.5
+var max_queued_shots:int
 
 func _ready():
-  controller.connect("start_firing", self, "start_firing")
+  if controller:
+    controller.connect("start_firing", self, "start_firing")
   timer.connect("timeout", self, "_on_fire_timer")
 
 func _process(delta):
   fire_interval += delta * turret_cooldown_speed
   turret.color = lerp(turret_hot_color, turret_color, clamp(fire_interval, 0, 4)/4)
-  if wait_then_fire >= 0:
-    if wait_then_fire < fire_delay:
-      wait_then_fire += delta
+  if wait_before_fire >= 0:
+    if wait_before_fire < fire_delay:
+      wait_before_fire += delta
     else:
-      _fire()
-      wait_then_fire = -1
+      if GameUtils.networking:
+        if is_network_master():
+          rpc("_fire", "plasma" + String(Multiplayer.get_unique_id()))
+      else:
+        _fire()
+      wait_before_fire = -1
 
 func init(component):
   var size = 1
@@ -54,6 +62,7 @@ func init(component):
   if supply:
     self.reload_time = 3.0/supply
     self.turret_cooldown_speed = supply
+    self.max_queued_shots = round(max_queued_time / reload_time)
   else:
     self.reload_time = NAN
   self.plasma_hp = 1.5 * size
@@ -78,22 +87,32 @@ func hibernate():
 
 func _on_fire_timer():
   if abs(timer.wait_time - fire_delay) > 0.0001:
-    if controller.firing:
-      wait_then_fire = 0
-    else:
-      timer.stop()
+    if not controller.firing:
+      if queued_shots <= 0:
+        timer.stop()
+        return
+      else:
+        queued_shots -= 1
+    wait_before_fire = 0
 
-func _fire():
+puppetsync func _fire(plasma_name = null):
   var turret_heat = pow(turret_cooldown_base, fire_interval)
   turret_heat += 1
   var buildup = clamp(1 / turret_heat, 0, 1)
   var velocity = (Vector2(base_speed, 0) * lerp(1, 8, buildup)).rotated(self.global_rotation\
       + (randf()-0.5) * (1 - buildup) * base_spread) + parent.linear_velocity
   fire_interval = log(turret_heat)/log(turret_cooldown_base)
-  plasma_pool.get_plasma(parent, plasma_hp, plasma_damage * buildup, self.global_position, velocity)
   $audio.play()
+  var plasma = plasma_pool.get_plasma(parent, plasma_hp, plasma_damage * buildup, self.global_position, velocity)
+  if plasma_name != null:
+    plasma.name = plasma_name
 
 func start_firing():
-  if timer.is_stopped() and not is_nan(reload_time):
-    wait_then_fire = 0
-    timer.start()
+  if not is_nan(reload_time):
+    print(timer.is_stopped())
+    if timer.is_stopped():
+      wait_before_fire = 0
+      timer.start()
+      queued_shots = 0
+    elif queued_shots < max_queued_shots:
+      queued_shots += 1

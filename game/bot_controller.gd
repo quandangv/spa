@@ -86,7 +86,7 @@ func get_target_rank(obj):
   return 1
 
 var check_target_wait:float
-const check_target_interval = 0.2
+const check_target_interval = 0.1
 const focus_period = 0.1
 var diff_norm:Vector2
 var diff_length:float
@@ -131,7 +131,6 @@ func target_check(target_accel):
   diff_length = diff.length()
   diff_norm = diff / diff_length
   var movement_target = diff_norm * (log(diff_length / (distance_kept[target_rank] * parent.size)))*50
-  print(log(diff_length / (distance_kept[target_rank] * parent.size))*50, ' ', diff_length - distance_kept[target_rank] * parent.size)
   new_movement = movement_target - parent_speed
   if new_movement.length() < thrust*10: # if we don't need to move much, randomly perform one of our idle action
     if strafe_direction != 0: # strafing to dodge projectiles

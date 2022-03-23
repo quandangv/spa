@@ -1,6 +1,6 @@
 extends Camera2D
 
-const adjustment_speed = 100
+const adjustment_speed = 300
 const mouse_adjustment_range = 0.4
 const manual_adjustment_limit = [0.5, 2]
 export(Array, NodePath) var tracked_obj
@@ -40,7 +40,7 @@ func _process(delta):
     last_track_offset = track_offset
   global_position = manual_adjustment + shake.rotated(randf()*PI*2)
   if have_inputs:
-    manual_adjustment += Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")) * delta * adjustment_speed
+    manual_adjustment += Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")) * delta * adjustment_speed * zoom.x
   if shake != Vector2.ZERO:
     if shake.length_squared() < 0.001:
       shake = Vector2.ZERO

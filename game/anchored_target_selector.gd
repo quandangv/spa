@@ -13,7 +13,7 @@ func _process(delta):
     parent.remove_target()
 
 func _idle(delta):
-  if anchored_position:
+  if anchored_position != null:
     parent.movement += (anchored_position - parent.parent.global_position - parent.parent.linear_velocity)
   parent.angle = parent.movement.angle()
 

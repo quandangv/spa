@@ -5,12 +5,14 @@ signal client_connect_failed
 signal my_stat_changed
 signal network_changed
 signal connection_closed
+signal player_info_updated
 
 const default_port = 10753
 const max_player = 4
 
+var active:bool = false
 var my_port = null
-var next_anchor = null
+var available_anchors = []
 var player_info = {}
 var player_stats = {}
 var my_stat = null
@@ -29,9 +31,12 @@ func _ready():
   get_tree().connect("server_disconnected", self, "_server_disconnected")
   Storage.connect("player_info_changed", self, "update_my_info")
 
-func update_my_info():
-  if GameUtils.networking:
-    rpc("update_player_info", Storage.player)
+func update_my_info(info):
+  if active:
+    rpc("update_player_info", info)
+    for item in spawner.spawned.get_children():
+      if item.is_network_master():
+        item.color = info["color"]
 
 func serialize(item):
   var result = item.serialize()
@@ -45,13 +50,17 @@ func _player_connected(id):
   for item in spawner.spawned.get_children():
     if item.is_network_master():
       rpc_id(id, "spawn", serialize(item))
-  if get_tree().is_network_server():
-    var new_stat = {"anchor":next_anchor}
+  if get_tree().is_network_server() and available_anchors:
+    var new_stat = {"anchor":available_anchors.pop_back()}
     rpc_id(id, "sync_init", new_stat)
-    next_anchor += 1
 
 func _player_disconnected(id):
-    player_info.erase(id)
+  available_anchors.append(player_stats[id]["anchor"])
+  for item in spawner.spawned.get_children():
+    if item.get_network_master() == id:
+      item.queue_free()
+  player_info.erase(id)
+  player_stats.erase(id)
 
 func _connected_ok():
     emit_signal("client_connected")
@@ -64,7 +73,11 @@ func _server_disconnected():
 
 remote func update_player_info(info):
   var id = get_tree().get_rpc_sender_id()
+  emit_signal("player_info_updated", id, info)
   player_info[id] = info
+  for item in spawner.spawned.get_children():
+    if item.get_network_master() == id:
+      item.color = info["color"]
 
 remote func update_player_stat(stat):
   player_stats[get_tree().get_rpc_sender_id()] = stat
@@ -111,11 +124,12 @@ remote func spawn(data):
   instance.deserialize(data)
 
 func close_connection():
-  get_tree().network_peer.close_connection()
-  get_tree().network_peer = null
-  emit_signal("connection_closed")
+  if active:
+    get_tree().network_peer.close_connection()
+    get_tree().network_peer = null
+    emit_signal("connection_closed")
+    active = false
   spawner.clear()
-  GameUtils.networking = false
 
 func host_game(port):
   if get_tree().network_peer == null:
@@ -123,12 +137,15 @@ func host_game(port):
     if peer.create_server(port, max_player) != OK:
       return "can't create server"
     get_tree().network_peer = peer
-    GameUtils.networking = true
+    active = true
     my_port = port
     spawner.clear()
     emit_signal("network_changed")
     set_my_stat({"anchor":0})
-    next_anchor = 1
+    available_anchors.clear()
+    for i in range(max_player-1, 0, -1):
+      available_anchors.append(i)
+    print(available_anchors)
     $seed_sync.start()
   else:
     return "already connected"
@@ -142,7 +159,7 @@ func join_game(address):
     if peer.create_client(split[0], int(split[1])) != OK:
       return "can't create client"
     get_tree().network_peer = peer
-    GameUtils.networking = true
+    active = true
     spawner.clear()
     emit_signal("network_changed")
     set_my_stat(null)

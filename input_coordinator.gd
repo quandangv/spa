@@ -12,13 +12,14 @@ func register_implicit_controller(type, controller, front = false):
   while index < len(_implicit_controllers) and _implicit_controllers_priorities[index] == priority: # Check if the controller have already been added
     if _implicit_controllers[index] == controller:
       if front:
-        index = front_index
         break
       if index == 0:
         return true
       else:
         return false
     index += 1
+  if front:
+    index = front_index
   _implicit_controllers_priorities.insert(index, priority)
   _implicit_controllers.insert(index, controller)
   controller.connect("tree_exiting", self, "unregister_implicit_controller", [controller])

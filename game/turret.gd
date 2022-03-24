@@ -37,7 +37,7 @@ func _process(delta):
     if wait_before_fire < fire_delay:
       wait_before_fire += delta
     else:
-      if GameUtils.networking:
+      if Multiplayer.active:
         if is_network_master():
           rpc("_fire", "plasma" + String(Multiplayer.get_unique_id()))
       else:
@@ -109,7 +109,6 @@ puppetsync func _fire(plasma_name = null):
 
 func start_firing():
   if not is_nan(reload_time):
-    print(timer.is_stopped())
     if timer.is_stopped():
       wait_before_fire = 0
       timer.start()

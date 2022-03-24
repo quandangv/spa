@@ -3,7 +3,6 @@ extends Label
 export(Array, NodePath) var closed_nodes
 
 func _ready():
-  print(OS.get_name())
   if OS.get_name() == "HTML5":
     visible = true
     for item in closed_nodes:

@@ -21,9 +21,21 @@ func _ready():
   Multiplayer.connect("client_connected", self, "join_success")
   Multiplayer.connect("client_connect_failed", self, "join_failure")
   Multiplayer.connect("connection_closed", self, "clear_address")
+  Multiplayer.connect("player_info_updated", self, "info_update")
 
 func clear_address():
   address = null
+
+func info_update(id, info):
+  var name = info["name"]
+  if id in Multiplayer.player_info:
+    var old_name = Multiplayer.player_info[id]["name"]
+    if old_name != name:
+      show_textbox(false, old_name + " changed their name to " + name, "close", "Okay")
+    else:
+      show_textbox(false, old_name + " changed their color", "close", "Okay")
+  else:
+    show_textbox(false, info["name"] + " has joined!", "close", "Yay!")
 
 func not_already_initialized():
   var tree = get_tree()
@@ -43,6 +55,7 @@ func host_game():
   if not error:
     host_button.is_original = false
     join_button.disabled = true
+    print(IP.get_local_addresses())
     address = IP.get_local_addresses()[0] + ":" + String(Multiplayer.my_port)
     show_address()
   else:
@@ -80,7 +93,7 @@ func prep_name_player():
 func name_player():
   color_picker.visible = false
   Storage.set_player_display(text, color_picker.color)
-  show_textbox(false, text, "close", "Changed")
+  self.visible = false
 
 func close_connection():
   host_button.is_original = true

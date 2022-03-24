@@ -14,23 +14,24 @@ onready var bg_modulate = get_node("/root/game/background/modulate")
 onready var parent = get_parent()
 
 func _ready():
-  if not GameUtils.networking or is_network_master():
+  if not Multiplayer.active or is_network_master():
     parent.connect("bumped", self, "_bumped")
     parent.connect("explode", self, "_explode")
     parent.get_node("rank").visible = Storage.player["rank"] > 0
     connect("mouse_entered", self, "_mouse_entered")
     connect("mouse_exited", self, "update_color")
+  else:
+    input_pickable = false
 
 func wake_up():
   disabled = false
-  if not GameUtils.networking or is_network_master():
+  if not Multiplayer.active or is_network_master():
     parent.set_color(GameUtils.ship_colors["self"])
     $shape.shape.radius = parent.size
-    if InputCoordinator.register_implicit_controller("ship", self):
+    if InputCoordinator.register_implicit_controller("ship", self, true):
       gained_input()
     else:
       lost_input()
-      update_color()
   else:
     lost_input()
 
@@ -43,14 +44,14 @@ func _process(delta):
   register_input("movement", Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")))
   register_input("firing", Input.is_action_pressed("fire"))
   if Input.is_action_just_pressed("fire"):
-    if GameUtils.networking:
+    if Multiplayer.active:
       rpc("set_start_firing")
     else:
       set_start_firing()
   register_input("angle", (self.get_global_mouse_position() - parent.global_position).angle())
 
 func register_input(name, value):
-  if GameUtils.networking:
+  if Multiplayer.active:
     if value != get(name):
       rpc("set_" + name, value)
   else:
@@ -70,6 +71,7 @@ func lost_input():
   camera.tracked_obj.erase(parent)
   movement = Vector2.ZERO
   firing = false
+  update_color()
 
 func gained_input():
   set_process(true)
@@ -94,7 +96,6 @@ func _input_event(viewport, event, shape_idx):
         if event.doubleclick:
           InputCoordinator.unregister_implicit_controller(self)
           lost_input()
-          update_color()
       elif not disabled and InputCoordinator.register_implicit_controller("ship", self, event.doubleclick):
         gained_input()
 
@@ -102,7 +103,7 @@ func _mouse_entered():
   if not disabled:
     parent.color_modifier = mid_color
 func update_color():
-  parent.color_modifier = Color.white if is_processing() else off_color
+  parent.color_modifier = Color.white if is_processing() or not input_pickable else off_color
 
 func _exit_tree():
   camera.tracked_obj.erase(parent)

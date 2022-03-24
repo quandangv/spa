@@ -350,11 +350,11 @@ flat = true
 script = ExtResource( 29 )
 resume_icon = ExtResource( 30 )
 
-[node name="stage" type="Label" parent="ui/pause"]
+[node name="stage" type="Label" parent="ui"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = 389.5
-margin_right = 478.5
+margin_left = -44.5
+margin_right = 44.5
 margin_bottom = 59.0
 grow_horizontal = 2
 custom_fonts/font = ExtResource( 27 )
@@ -516,7 +516,7 @@ initial_velocity = Vector2( -70, 0 )
 velocity_angle_range = 1.0
 attach_distance = Vector2( 600, 0 )
 target = NodePath("../../camera")
-stage_name = NodePath("../../ui/pause/stage")
+stage_name = NodePath("../../ui/stage")
 blue_container = NodePath("../../blue_container")
 
 [node name="pool" type="Node" parent="notifier/asteroids"]

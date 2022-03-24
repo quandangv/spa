@@ -48,7 +48,7 @@ remote func take_damage(amount):
     hp -= amount
     if hp <= 0:
       damage *= pow(collateral_rate, hp)
-      if not GameUtils.networking:
+      if not Multiplayer.active:
         destroyed()
       elif is_network_master():
         rpc("master_destroyed", damage)

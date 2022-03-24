@@ -69,7 +69,7 @@ func _ready():
   contact_monitor = true
   contacts_reported = 10
   connect("body_entered", self, "body_entered")
-  if GameUtils.networking and is_network_master():
+  if Multiplayer.active and is_network_master():
     $sync.start()
   else:
     $sync.queue_free()
@@ -87,8 +87,8 @@ func body_entered(other):
     var damage_scale = clamp(inverse_lerp(1, 10, damage), 0, 1)
     SoundPlayer.play_audio("collision", global_position, lerp(2, 0.4, damage_scale), lerp(0, 10, damage_scale))
     emit_signal("bumped", dir)
-    if not GameUtils.networking or is_network_master():
-      if GameUtils.networking:
+    if not Multiplayer.active or is_network_master():
+      if Multiplayer.active:
         rpc("show_take_damage", damage)
       for _i in range(100):
         damage -= take_damage((other.global_position - global_position).angle(), damage)
@@ -167,6 +167,7 @@ func reset():
       var turret = turrets[turret_count]
       component['_ref'] = turret
       turret.init(component)
+      turret.name = "turret" + String(turret_count)
       turret_count += 1
     elif 'thruster' in component['']:
       thrust += 1
@@ -274,7 +275,7 @@ func take_damage(angle, damage):
           break
     component['_hp'] -= damage
     if component['_hp'] <= 0:
-      if GameUtils.networking:
+      if Multiplayer.active:
         rpc("receive_explosion", component["_map_index"])
       damage += exploded(component)
     border_damage_accum += border_damage_ratio * damage / size
@@ -320,11 +321,11 @@ func area_interact(other):
   return GameUtils.is_enemy(side, other)
 func area_collide(other, delta):
   if GameUtils.is_enemy(side, other):
-    if not GameUtils.networking or is_network_master():
+    if not Multiplayer.active or is_network_master():
       var other_damage = other.damage*delta
       var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
       var damage_back = damage * actual_damage / other_damage
-      if GameUtils.networking:
+      if Multiplayer.active:
         rpc("show_take_damage", actual_damage)
         other.rpc("take_damage", damage_back * delta)
       return damage_back

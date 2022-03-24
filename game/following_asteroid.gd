@@ -18,6 +18,7 @@ func _enter_tree():
 func destroyed_by(other):
   if following and not destroyed_once:
     var target = other.get("source")
+    following_secondary = false
     if target:
       follow_distance = target.offer_capture(self)
       if follow_distance != null:
@@ -26,7 +27,6 @@ func destroyed_by(other):
     set("mass", sqrt(og_hp / hp_multiplier))
     set("mode", RigidBody2D.MODE_KINEMATIC)
     destroyed_once = true
-    following_secondary = false
     $collision.disabled = true
     color.a = 1
     update()

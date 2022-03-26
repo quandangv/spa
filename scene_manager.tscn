@@ -225,6 +225,7 @@ script = ExtResource( 6 )
 [node name="music" type="AudioStreamPlayer" parent="."]
 pause_mode = 2
 volume_db = -40.0
+bus = "Music"
 script = ExtResource( 2 )
 
 [node name="queue" type="Node" parent="."]

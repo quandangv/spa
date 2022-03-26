@@ -152,7 +152,7 @@ func host_game(port):
 
 func join_game(address):
   if get_tree().network_peer == null:
-    var split = address.split(":")
+    var split = address.rsplit(":", true, 1)
     if len(split) != 2:
       return "invalid address"
     var peer = NetworkedMultiplayerENet.new()

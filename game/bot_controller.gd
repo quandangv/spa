@@ -5,6 +5,7 @@ signal hibernate
 signal wake_up
 signal target_removed
 signal idle(delta)
+signal before_combine_movement
 
 var movement:Vector2
 const firing = false
@@ -117,6 +118,7 @@ func _physics_process(delta):
           waited = 0
   else:
     new_movement = Vector2.ZERO
+  emit_signal("before_combine_movement")
   movement = combine_movement(new_movement * parent.mass / 1000) # combine with the movement from the base
   if movement.length_squared() < 0.0001:
     emit_signal("idle", delta)
@@ -126,7 +128,7 @@ func target_check(target_accel):
   new_movement = Vector2.ZERO
   check_target_wait = 0
   var diff = target_obj.global_position - global_position
-  diff -= diff.normalized() * parent.size # Approximate the distance from our turret to the target, which is more accurate
+  diff -= diff.normalized() * parent.size # Approximate the distance from our turret to the target, which is more accurate than the distance from our center
   diff = GameUtils.extrapolate(diff, target_speed, target_accel, bullet_speed_approx, parent_speed)
   diff_length = diff.length()
   diff_norm = diff / diff_length

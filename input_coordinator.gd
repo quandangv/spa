@@ -25,20 +25,28 @@ func register_implicit_controller(type, controller, front = false):
   controller.connect("tree_exiting", self, "unregister_implicit_controller", [controller])
   if index == 0:
     if len(_implicit_controllers) >= 2:
-      _implicit_controllers[1].lost_input()
+      if _implicit_controllers[1] == null:
+        _implicit_controllers.remove(1)
+        _implicit_controllers_priorities.remove(1)
+      else:
+        _implicit_controllers[1].lost_input()
     return true
   else:
     return false
 
 func unregister_implicit_controller(controller):
-  var index = _implicit_controllers.find(controller)
-  if index >= 0:
-    _implicit_controllers.remove(index)
-    _implicit_controllers_priorities.remove(index)
-    controller.disconnect("tree_exiting", self, "unregister_implicit_controller")
-    if index == 0 and len(_implicit_controllers) > 0:
-      _implicit_controllers.front().gained_input()
-
+  for i in range(len(_implicit_controllers) - 1, -1, -1):
+    var item = _implicit_controllers[i]
+    if item == null:
+      _implicit_controllers.remove(i)
+      _implicit_controllers_priorities.remove(i)
+    elif item == controller:
+      _implicit_controllers.remove(i)
+      _implicit_controllers_priorities.remove(i)
+      controller.disconnect("tree_exiting", self, "unregister_implicit_controller")
+      if i == 0 and len(_implicit_controllers) > 0:
+        _implicit_controllers.front().gained_input()
+      break
 func replace_explicit_controllers(controller):
   _explicit_controllers.clear()
   _explicit_controllers.append(controller)

@@ -137,9 +137,9 @@ func host_game(port):
     if peer.create_server(port, max_player) != OK:
       return "can't create server"
     get_tree().network_peer = peer
+    spawner.clear()
     active = true
     my_port = port
-    spawner.clear()
     emit_signal("network_changed")
     set_my_stat({"anchor":0})
     available_anchors.clear()
@@ -159,8 +159,8 @@ func join_game(address):
     if peer.create_client(split[0], int(split[1])) != OK:
       return "can't create client"
     get_tree().network_peer = peer
-    active = true
     spawner.clear()
+    active = true
     emit_signal("network_changed")
     set_my_stat(null)
     player_stats.clear()

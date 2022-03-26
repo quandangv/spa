@@ -4,6 +4,7 @@ export var thrust:float = 1
 const thrust_to_torque = 1500
 const thrust_to_force = 300
 const min_movement = 0.01
+const modulate_factor = 0.1
 onready var controller = get_node("../controller")
 onready var parent = get_parent()
 onready var particles = $particles
@@ -11,7 +12,7 @@ onready var particles = $particles
 func _ready():
   init(thrust)
 func _draw():
-  var color = Color.darkgray
+  var color = Color.white
   draw_circle(Vector2.ZERO, thrust, color)
   draw_rect(Rect2(0, -thrust, thrust, thrust*2), color, true)
 
@@ -35,6 +36,7 @@ func move(direction, delta):
 
 func init(thrust):
   particles.speed_scale = thrust
+  particles.modulate = Color(1, 1, 1, modulate_factor * thrust)
   self.thrust = thrust
   visible = thrust > 0
   update()

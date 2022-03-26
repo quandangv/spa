@@ -22,7 +22,8 @@ func register_implicit_controller(type, controller, front = false):
     index = front_index
   _implicit_controllers_priorities.insert(index, priority)
   _implicit_controllers.insert(index, controller)
-  controller.connect("tree_exiting", self, "unregister_implicit_controller", [controller])
+  if not controller.is_connected("tree_exiting", self, "unregister_implicit_controller"):
+    controller.connect("tree_exiting", self, "unregister_implicit_controller", [controller])
   if index == 0:
     if len(_implicit_controllers) >= 2:
       if _implicit_controllers[1] == null:

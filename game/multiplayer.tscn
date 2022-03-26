@@ -24,8 +24,6 @@ func clear():
 
 [node name="multiplayer" type="Node2D"]
 script = ExtResource( 1 )
-spawner_path = NodePath("../spawner")
-camera_path = NodePath("../camera")
 
 [node name="seed_sync" type="Timer" parent="."]
 wait_time = 2.0

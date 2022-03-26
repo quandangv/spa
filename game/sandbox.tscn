@@ -12,6 +12,20 @@
 [ext_resource path="res://game/dual_state_button.gd" type="Script" id=14]
 [ext_resource path="res://edit.svg" type="Texture" id=15]
 
+[sub_resource type="GDScript" id=8]
+script/source = "extends Button
+
+func _ready():
+  $confirm.connect(\"confirmed\", self, \"exit\")
+
+func _pressed():
+  $confirm.popup_centered()
+
+func exit():
+  SceneManager.fade_load(\"sandbox\", \"main_menu\")
+  Multiplayer.close_connection()
+"
+
 [sub_resource type="GDScript" id=5]
 script/source = "extends Button
 
@@ -53,28 +67,17 @@ func _text_box_visibility_changed():
 "
 
 [sub_resource type="GDScript" id=7]
-script/source = "extends Button
+script/source = "extends Control
 
-func _pressed():
-  Multiplayer.spawn_local(\"controlled_ship\")
+func spawn_controlled():
+  Multiplayer.spawn_local(\"controlled_ship\", null if Multiplayer.active else 0)
 
-func _ready():
-  Multiplayer.spawn_local(\"controlled_ship\", 0)
-  Multiplayer.spawn_local(\"bot_ship\", 1)
-"
-
-[sub_resource type="GDScript" id=8]
-script/source = "extends Button
+func spawn_bot():
+  Multiplayer.spawn_local(\"bot_ship\", null if Multiplayer.active else 1)
 
 func _ready():
-  $confirm.connect(\"confirmed\", self, \"exit\")
-
-func _pressed():
-  $confirm.popup_centered()
-
-func exit():
-  SceneManager.fade_load(\"sandbox\", \"main_menu\")
-  Multiplayer.close_connection()
+  spawn_controlled()
+  spawn_bot()
 "
 
 [node name="game" type="Node2D"]
@@ -98,22 +101,51 @@ script = ExtResource( 7 )
 
 [node name="ui" type="CanvasLayer" parent="."]
 
-[node name="multiplayer" type="VBoxContainer" parent="ui"]
+[node name="base" type="Control" parent="ui"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 9 )
+
+[node name="exit" type="Button" parent="ui/base"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_top = 20.0
+margin_right = -20.0
+grow_horizontal = 0
+text = "Exit"
+script = SubResource( 8 )
+
+[node name="confirm" type="ConfirmationDialog" parent="ui/base/exit"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -619.0
+margin_top = 200.5
+margin_right = -298.0
+margin_bottom = 298.5
+grow_horizontal = 2
+grow_vertical = 2
+window_title = ""
+dialog_text = "You are exiting to the main menu"
+
+[node name="multiplayer" type="VBoxContainer" parent="ui/base"]
 margin_left = 20.0
 margin_top = 20.0
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 585.0
+margin_bottom = 129.0
 mouse_filter = 2
 theme = ExtResource( 9 )
 custom_constants/separation = 10
 
-[node name="buttons" type="HBoxContainer" parent="ui/multiplayer"]
+[node name="buttons" type="HBoxContainer" parent="ui/base/multiplayer"]
 margin_right = 565.0
 margin_bottom = 61.0
 mouse_filter = 2
 custom_constants/separation = 20
 
-[node name="host_game" type="Button" parent="ui/multiplayer/buttons"]
+[node name="host_game" type="Button" parent="ui/base/multiplayer/buttons"]
 margin_right = 142.0
 margin_bottom = 61.0
 text = "Host LAN"
@@ -121,7 +153,7 @@ flat = true
 script = ExtResource( 14 )
 other_text = "Stop Hosting"
 
-[node name="join_game" type="Button" parent="ui/multiplayer/buttons"]
+[node name="join_game" type="Button" parent="ui/base/multiplayer/buttons"]
 margin_left = 162.0
 margin_right = 325.0
 margin_bottom = 61.0
@@ -130,7 +162,7 @@ flat = true
 script = ExtResource( 14 )
 other_text = "Exit Game"
 
-[node name="name" type="Button" parent="ui/multiplayer/buttons"]
+[node name="name" type="Button" parent="ui/base/multiplayer/buttons"]
 margin_left = 345.0
 margin_right = 565.0
 margin_bottom = 61.0
@@ -140,7 +172,7 @@ icon = ExtResource( 15 )
 flat = true
 script = SubResource( 5 )
 
-[node name="text_box" type="HBoxContainer" parent="ui/multiplayer"]
+[node name="text_box" type="HBoxContainer" parent="ui/base/multiplayer"]
 margin_top = 71.0
 margin_right = 565.0
 margin_bottom = 109.0
@@ -148,17 +180,17 @@ mouse_filter = 2
 theme = ExtResource( 12 )
 custom_constants/separation = 7
 
-[node name="color_picker" type="ColorPicker" parent="ui/multiplayer/text_box"]
+[node name="color_picker" type="ColorPicker" parent="ui/base/multiplayer/text_box"]
 visible = false
-margin_left = 792.0
-margin_top = 792.0
-margin_right = 1082.0
-margin_bottom = 1258.0
+margin_left = 904.0
+margin_top = 904.0
+margin_right = 1194.0
+margin_bottom = 1370.0
 edit_alpha = false
 presets_enabled = false
 presets_visible = false
 
-[node name="text_box" type="LineEdit" parent="ui/multiplayer/text_box"]
+[node name="text_box" type="LineEdit" parent="ui/base/multiplayer/text_box"]
 visible = false
 margin_right = 200.0
 margin_bottom = 38.0
@@ -177,14 +209,14 @@ host_path = NodePath("../../buttons/host_game")
 color_path = NodePath("../color_picker")
 close_button_path = NodePath("../close")
 
-[node name="helper" type="Button" parent="ui/multiplayer/text_box"]
+[node name="helper" type="Button" parent="ui/base/multiplayer/text_box"]
 visible = false
 margin_right = 16.0
 margin_bottom = 38.0
 grow_horizontal = 0
 size_flags_vertical = 0
 
-[node name="close" type="Button" parent="ui/multiplayer/text_box"]
+[node name="close" type="Button" parent="ui/base/multiplayer/text_box"]
 margin_right = 28.0
 margin_bottom = 38.0
 focus_mode = 0
@@ -197,7 +229,7 @@ text_box_path = NodePath("../text_box")
 helper_path = NodePath("../helper")
 color_picker_path = NodePath("../color_picker")
 
-[node name="html5_notice" type="Label" parent="ui/multiplayer/text_box"]
+[node name="html5_notice" type="Label" parent="ui/base/multiplayer/text_box"]
 visible = false
 margin_left = 35.0
 margin_right = 600.0
@@ -207,47 +239,37 @@ Please download the PC version to play LAN multiplayer"
 script = ExtResource( 2 )
 closed_nodes = [ NodePath("../close"), NodePath("../../buttons") ]
 
-[node name="commands" type="HBoxContainer" parent="ui"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -118.0
-margin_top = 20.0
-margin_right = -20.0
-margin_bottom = 61.0
-grow_horizontal = 0
+[node name="commands" type="HBoxContainer" parent="ui/base"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = -61.0
+margin_right = 118.0
+margin_bottom = -20.0
+grow_vertical = 0
 theme = ExtResource( 9 )
 custom_constants/separation = 10
+script = SubResource( 7 )
 
-[node name="spawn" type="Button" parent="ui/commands"]
+[node name="spawn" type="Button" parent="ui/base/commands"]
 margin_right = 118.0
 margin_bottom = 61.0
 grow_horizontal = 0
 text = "Spawn"
-script = SubResource( 7 )
+flat = true
 
-[node name="exit" type="Button" parent="ui/commands"]
+[node name="spawn_bot" type="Button" parent="ui/base/commands"]
 margin_left = 128.0
-margin_right = 195.0
+margin_right = 302.0
 margin_bottom = 61.0
 grow_horizontal = 0
-text = "Exit"
-script = SubResource( 8 )
+text = "Spawn Bot"
+flat = true
 
-[node name="confirm" type="ConfirmationDialog" parent="ui/commands/exit"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -619.0
-margin_top = 200.5
-margin_right = -298.0
-margin_bottom = 298.5
-grow_horizontal = 2
-grow_vertical = 2
-window_title = ""
-dialog_text = "You are exiting to the main menu"
-
-[connection signal="pressed" from="ui/multiplayer/buttons/name" to="ui/multiplayer/text_box/text_box" method="prep_name_player"]
-[connection signal="color_changed" from="ui/multiplayer/text_box/color_picker" to="ui/multiplayer/buttons/name" method="change_color"]
-[connection signal="visibility_changed" from="ui/multiplayer/text_box/text_box" to="ui/multiplayer/text_box/close" method="_text_box_visibility_changed"]
-[connection signal="pressed" from="ui/multiplayer/text_box/helper" to="ui/multiplayer/text_box/text_box" method="helper_pressed"]
+[connection signal="pressed" from="ui/base/multiplayer/buttons/name" to="ui/base/multiplayer/text_box/text_box" method="prep_name_player"]
+[connection signal="color_changed" from="ui/base/multiplayer/text_box/color_picker" to="ui/base/multiplayer/buttons/name" method="change_color"]
+[connection signal="visibility_changed" from="ui/base/multiplayer/text_box/text_box" to="ui/base/multiplayer/text_box/close" method="_text_box_visibility_changed"]
+[connection signal="pressed" from="ui/base/multiplayer/text_box/helper" to="ui/base/multiplayer/text_box/text_box" method="helper_pressed"]
+[connection signal="pressed" from="ui/base/commands/spawn" to="ui/base/commands" method="spawn_controlled"]
+[connection signal="pressed" from="ui/base/commands/spawn_bot" to="plasma_normal" method="spawn_bot"]
+[connection signal="pressed" from="ui/base/commands/spawn_bot" to="ui/base/commands" method="spawn_bot"]

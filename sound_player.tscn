@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://sound_player.gd" type="Script" id=1]
-[ext_resource path="res://game/audio_player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://game/object_pool.gd" type="Script" id=3]
+[ext_resource path="res://game/audio_player_pool.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game/sound_info.gd" type="Script" id=4]
 [ext_resource path="res://game/explosion.wav" type="AudioStream" id=5]
 [ext_resource path="res://game/plasma-fire.wav" type="AudioStream" id=6]
@@ -13,11 +12,12 @@
 [sub_resource type="Resource" id=1]
 script = ExtResource( 4 )
 name = "explosion"
-volume_db = 0.0
+volume_db = -10.0
 pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 5 )
+simultaneity = 1.0
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 4 )
@@ -27,6 +27,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 8 )
+simultaneity = 0.4
 
 [sub_resource type="Resource" id=3]
 script = ExtResource( 4 )
@@ -36,6 +37,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 7 )
+simultaneity = 1.5
 
 [sub_resource type="Resource" id=4]
 script = ExtResource( 4 )
@@ -45,6 +47,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 6 )
+simultaneity = 0.3
 
 [sub_resource type="Resource" id=5]
 script = ExtResource( 4 )
@@ -54,11 +57,9 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 9 )
+simultaneity = 1.0
 
 [node name="player" type="Node"]
 script = ExtResource( 1 )
+player_pool_scene = ExtResource( 2 )
 sounds = [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ]
-
-[node name="pool" type="Node" parent="."]
-script = ExtResource( 3 )
-scene = ExtResource( 2 )

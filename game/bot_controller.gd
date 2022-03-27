@@ -9,7 +9,7 @@ signal before_combine_movement
 
 var movement:Vector2
 const firing = false
-var angle:float
+var angle:float = 0
 const stop_multiplier = 1
 const thrust_to_rotate_speed = 3
 
@@ -23,6 +23,7 @@ var bullet_speed_approx:float
 var turret_count:int
 var approach_bias = null
 var ignore_junk:bool = true
+var active:bool = false
 
 var strafe_time:float
 var strafe_direction = 1
@@ -45,7 +46,7 @@ func stats_changed():
       turret_count += 1
       avg_turret_speed += turret.base_speed
       avg_turret_cooldown += turret.turret_cooldown_speed
-  if turret_count:
+  if turret_count and avg_turret_speed > 0:
     avg_turret_speed /= turret_count
     avg_turret_cooldown /= turret_count
     bullet_speed_approx = base_bullet_speed * avg_turret_speed
@@ -55,6 +56,9 @@ func stats_changed():
   thrust = parent.get_node('thruster').thrust
 
 func hibernate():
+  active = false
+  if parent.is_connected("stats_changed", self, "stats_changed"):
+    parent.disconnect("stats_changed", self, "stats_changed")
   set_physics_process(false)
   set_process(false)
   for child in get_children():
@@ -63,8 +67,13 @@ func hibernate():
   movement = Vector2.ZERO
   emit_signal("hibernate")
 func wake_up():
+  active = true
+  parent.connect("stats_changed", self, "stats_changed")
+  stats_changed()
   set_physics_process(true)
   set_process(true)
+  angle = 0
+  movement = Vector2.ZERO
   for child in get_children():
     child.set_physics_process(true)
     child.set_process(true)
@@ -124,6 +133,9 @@ func _physics_process(delta):
     emit_signal("idle", delta)
 
 func target_check(target_accel):
+  if bullet_speed_approx == 0:
+    hibernate()
+    return
   var parent_speed = parent.linear_velocity
   new_movement = Vector2.ZERO
   check_target_wait = 0
@@ -131,7 +143,12 @@ func target_check(target_accel):
   diff -= diff.normalized() * parent.size # Approximate the distance from our turret to the target, which is more accurate than the distance from our center
   diff = GameUtils.extrapolate(diff, target_speed, target_accel, bullet_speed_approx, parent_speed)
   diff_length = diff.length()
-  diff_norm = diff / diff_length
+  if diff_length > 1000000000:
+    diff_length = 1000000000
+    diff_norm = Vector2.RIGHT
+    diff = Vector2(1000000000, 0)
+  else:
+    diff_norm = diff / diff_length
   var movement_target = diff_norm * (log(diff_length / (distance_kept[target_rank] * parent.size)))*50
   new_movement = movement_target - parent_speed
   if new_movement.length() < thrust*10: # if we don't need to move much, randomly perform one of our idle action
@@ -144,6 +161,7 @@ func target_check(target_accel):
       else:
         strafe_time = 0
   angle = GameUtils.moving_aim(parent_speed + new_movement*0.025 * turret_count, diff, bullet_speed_approx)
+  assert(not is_nan(angle))
 
 func set_target(new_target):
   if new_target != target_obj:
@@ -159,6 +177,3 @@ func set_target(new_target):
 func remove_target():
   target_obj = null
   emit_signal("target_removed")
-
-func _ready():
-  parent.connect("stats_changed", self, "stats_changed")

@@ -8,6 +8,7 @@ func _ready():
 
 func wake_up():
   parent.color = GameUtils.ship_colors.get("controlled", Color.gray)
+  _load()
 
 func _load():
   $shape.shape.radius = parent.size

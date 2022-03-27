@@ -30,6 +30,7 @@ var final_color:Color = default_color
 var real_mass: float
 var og_mass:float
 var side:String
+var side_layer
 var captured = []
 
 var dhits = []
@@ -140,9 +141,9 @@ func load_ship(data):
       component["_map_index"] = i
       if 'turret' in component['']:
         component['_squeeze'] = data['turret_rotations'][component['rotation']]
-  reset()
-  emit_signal("design_changed")
   emit_signal("stats_changed")
+  emit_signal("design_changed")
+  reset()
 
 func reset():
   $anim.play("RESET")
@@ -150,8 +151,6 @@ func reset():
   set_side(starting_side)
   inner_damage_accum = 1
   border_damage_accum = 1
-  if controller:
-    controller.wake_up()
   var thrust = 0
   var turret_count = 0
   real_mass = 0
@@ -187,12 +186,16 @@ func reset():
   for i in range(len(captured)-1, -1, -1):
     captured[i].released()
     captured.remove(i)
+  if controller:
+    controller.wake_up()
 
 func get_map(pos):
   return self.map[pos[0] + pos[1] * mapsize]
 
 func set_side(side):
   self.side = side
+  if side_layer == null:
+    side_layer = GameUtils.get_layer_index(side)
   self.color = GameUtils.ship_colors.get(side, Color.gray)
 
 func set_color(value):
@@ -320,15 +323,14 @@ func get_component(arr, index):
 func area_interact(other):
   return GameUtils.is_enemy(side, other)
 func area_collide(other, delta):
-  if GameUtils.is_enemy(side, other):
-    if not Multiplayer.active or is_network_master():
-      var other_damage = other.damage*delta
-      var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
-      var damage_back = damage * actual_damage / other_damage
-      if Multiplayer.active:
-        rpc("show_take_damage", actual_damage)
-        other.rpc("take_damage", damage_back * delta)
-      return damage_back
+  if not Multiplayer.active or is_network_master():
+    var other_damage = other.damage * delta
+    var actual_damage = take_damage((-other.linear_velocity).angle(), other_damage)
+    var damage_back = damage * actual_damage / other_damage
+    if Multiplayer.active:
+      rpc("show_take_damage", actual_damage)
+      other.rpc("take_damage", damage_back * delta)
+    return damage_back
   return 0
 
 puppet func show_take_damage(damage):

@@ -85,6 +85,18 @@ tracks/3/keys = {
 "update": 1,
 "values": [ "hit this baby!" ]
 }
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
 
 [sub_resource type="Animation" id=6]
 resource_name = "battle"
@@ -104,19 +116,19 @@ tracks/0/keys = {
 FOR THE ASTEROID!" ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath(".:self_modulate")
+tracks/1/path = NodePath("Label3:text")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
+"values": [ "HIT this baby!" ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Exclamation:self_modulate")
+tracks/2/path = NodePath(".:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -126,18 +138,6 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("Label3:text")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ "Hit this baby!" ]
 }
 
 [sub_resource type="Gradient" id=1]
@@ -501,6 +501,12 @@ texture = ExtResource( 14 )
 anims/RESET = SubResource( 5 )
 anims/battle = SubResource( 6 )
 
+[node name="underline" type="ColorRect" parent="asteroid_warning"]
+margin_left = 87.0
+margin_top = 90.0
+margin_right = 350.0
+margin_bottom = 93.0
+
 [node name="notifier" type="VisibilityNotifier2D" parent="."]
 position = Vector2( -1500, 3.55 )
 rect = Rect2( -1, -1, 2, 2 )
@@ -607,6 +613,7 @@ starting_side = "enemy"
 visible = true
 
 [node name="controller" parent="boss/boss" instance=ExtResource( 24 )]
+dodge_bodies = false
 
 [node name="wanderer" type="Node" parent="boss/boss/controller"]
 script = ExtResource( 25 )

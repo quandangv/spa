@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://game/object_pool.gd" type="Script" id=1]
+[ext_resource path="res://game/retaining_pool.gd" type="Script" id=1]
 [ext_resource path="res://game/html5_notice.gd" type="Script" id=2]
+[ext_resource path="res://flat_buttons.tres" type="Theme" id=3]
 [ext_resource path="res://game/plasma_pool.gd" type="Script" id=4]
 [ext_resource path="res://backgrounds/galaxy.tscn" type="PackedScene" id=5]
 [ext_resource path="res://game/plasma.tscn" type="PackedScene" id=6]
@@ -141,31 +142,31 @@ custom_constants/separation = 10
 
 [node name="buttons" type="HBoxContainer" parent="ui/base/multiplayer"]
 margin_right = 565.0
-margin_bottom = 61.0
+margin_bottom = 59.0
 mouse_filter = 2
-custom_constants/separation = 20
+theme = ExtResource( 3 )
 
 [node name="host_game" type="Button" parent="ui/base/multiplayer/buttons"]
-margin_right = 142.0
-margin_bottom = 61.0
+margin_right = 126.0
+margin_bottom = 59.0
 text = "Host LAN"
 flat = true
 script = ExtResource( 14 )
 other_text = "Stop Hosting"
 
 [node name="join_game" type="Button" parent="ui/base/multiplayer/buttons"]
-margin_left = 162.0
-margin_right = 325.0
-margin_bottom = 61.0
+margin_left = 156.0
+margin_right = 303.0
+margin_bottom = 59.0
 text = "Join Game"
 flat = true
 script = ExtResource( 14 )
 other_text = "Exit Game"
 
 [node name="name" type="Button" parent="ui/base/multiplayer/buttons"]
-margin_left = 345.0
-margin_right = 565.0
-margin_bottom = 61.0
+margin_left = 333.0
+margin_right = 537.0
+margin_bottom = 59.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "Anonymous"
 icon = ExtResource( 15 )
@@ -173,19 +174,19 @@ flat = true
 script = SubResource( 5 )
 
 [node name="text_box" type="HBoxContainer" parent="ui/base/multiplayer"]
-margin_top = 71.0
+margin_top = 69.0
 margin_right = 565.0
-margin_bottom = 109.0
+margin_bottom = 69.0
 mouse_filter = 2
 theme = ExtResource( 12 )
 custom_constants/separation = 7
 
 [node name="color_picker" type="ColorPicker" parent="ui/base/multiplayer/text_box"]
 visible = false
-margin_left = 904.0
-margin_top = 904.0
-margin_right = 1194.0
-margin_bottom = 1370.0
+margin_left = 928.0
+margin_top = 928.0
+margin_right = 1218.0
+margin_bottom = 1394.0
 edit_alpha = false
 presets_enabled = false
 presets_visible = false
@@ -217,11 +218,11 @@ grow_horizontal = 0
 size_flags_vertical = 0
 
 [node name="close" type="Button" parent="ui/base/multiplayer/text_box"]
+visible = false
 margin_right = 28.0
 margin_bottom = 38.0
 focus_mode = 0
 size_flags_vertical = 0
-disabled = true
 toggle_mode = true
 text = ">"
 script = SubResource( 4 )
@@ -239,37 +240,47 @@ Please download the PC version to play LAN multiplayer"
 script = ExtResource( 2 )
 closed_nodes = [ NodePath("../close"), NodePath("../../buttons") ]
 
-[node name="commands" type="HBoxContainer" parent="ui/base"]
+[node name="spawn" type="VBoxContainer" parent="ui/base"]
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
-margin_top = -61.0
-margin_right = 118.0
+margin_top = -121.0
+margin_right = 248.0
 margin_bottom = -20.0
 grow_vertical = 0
-theme = ExtResource( 9 )
-custom_constants/separation = 10
+
+[node name="title" type="Label" parent="ui/base/spawn"]
+margin_right = 248.0
+margin_bottom = 36.0
+theme = ExtResource( 12 )
+text = "Spawn"
+
+[node name="commands" type="HBoxContainer" parent="ui/base/spawn"]
+margin_top = 40.0
+margin_right = 248.0
+margin_bottom = 99.0
+grow_vertical = 0
+theme = ExtResource( 3 )
 script = SubResource( 7 )
 
-[node name="spawn" type="Button" parent="ui/base/commands"]
+[node name="spawn" type="Button" parent="ui/base/spawn/commands"]
 margin_right = 118.0
-margin_bottom = 61.0
+margin_bottom = 59.0
 grow_horizontal = 0
-text = "Spawn"
+text = "Friendly"
 flat = true
 
-[node name="spawn_bot" type="Button" parent="ui/base/commands"]
-margin_left = 128.0
-margin_right = 302.0
-margin_bottom = 61.0
+[node name="spawn_bot" type="Button" parent="ui/base/spawn/commands"]
+margin_left = 148.0
+margin_right = 248.0
+margin_bottom = 59.0
 grow_horizontal = 0
-text = "Spawn Bot"
+text = "Enemy"
 flat = true
 
 [connection signal="pressed" from="ui/base/multiplayer/buttons/name" to="ui/base/multiplayer/text_box/text_box" method="prep_name_player"]
 [connection signal="color_changed" from="ui/base/multiplayer/text_box/color_picker" to="ui/base/multiplayer/buttons/name" method="change_color"]
 [connection signal="visibility_changed" from="ui/base/multiplayer/text_box/text_box" to="ui/base/multiplayer/text_box/close" method="_text_box_visibility_changed"]
 [connection signal="pressed" from="ui/base/multiplayer/text_box/helper" to="ui/base/multiplayer/text_box/text_box" method="helper_pressed"]
-[connection signal="pressed" from="ui/base/commands/spawn" to="ui/base/commands" method="spawn_controlled"]
-[connection signal="pressed" from="ui/base/commands/spawn_bot" to="plasma_normal" method="spawn_bot"]
-[connection signal="pressed" from="ui/base/commands/spawn_bot" to="ui/base/commands" method="spawn_bot"]
+[connection signal="pressed" from="ui/base/spawn/commands/spawn" to="ui/base/spawn/commands" method="spawn_controlled"]
+[connection signal="pressed" from="ui/base/spawn/commands/spawn_bot" to="ui/base/spawn/commands" method="spawn_bot"]

@@ -5,16 +5,42 @@ using System;
 public class game_utils : Node
 {
   [Export] public Dictionary<String, Color> ship_colors;
+  [Export] public Dictionary<String, int> side_layers;
   [Export] public Dictionary<String, Color> plasma_colors;
+  [Export] public float delta;
+  public float target_delta;
   public List<Node> ship_inputs = new List<Node>();
   public Node camera_input;
   public bool networking = false;
+  public const int side_layer_count = 8;
+  public int junk_layer;
   
-  public override void _Ready()
-  {
+  public override void _Ready() {
     GD.Randomize();
+    junk_layer = 0;
+    for (int i = 0; i < side_layer_count; i++)
+      junk_layer += get_plasma_layer(i);
+    this.target_delta = 1.2f / Engine.TargetFps;
+  }
+  public override void _Process(float delta) {
+    this.delta = delta;
   }
   
+  public int get_layer_index(String side) {
+    if ("junk".Equals(side))
+      return -1;
+    return side_layers[side];
+  }
+  public int get_plasma_layer(int layer_index) {
+    if (layer_index == -1)
+      return junk_layer;
+    return 1 << (31 - layer_index);
+  }
+  public int get_plasma_mask(int layer_index) {
+//    if (layer_index == -1)
+      return ~0;
+//    return ~get_plasma_layer(layer_index);
+  }
   void connect_exit(string signal, Node arg) {
     arg.Connect("tree_exiting", this, signal, new Godot.Collections.Array {arg});
   }
@@ -69,7 +95,7 @@ public class game_utils : Node
   /// - sqr_gap: only try to dodge projectiles that would come within this gap to our ship
   /// - projectiles: list of projectiles
   /// - max_check: maximum number of projectiles to consider, used to improve performance at the cost of accuracy
-  public Vector2 dodge_projectiles(Vector2 pos, Vector2 speed, float sqr_gap, Node2D[] projectiles, int max_check) {
+  public Vector2 dodge_projectiles(Node2D self, float safe_distance_ratio, Node2D[] projectiles, int max_check, float max_approach_time) {
     List<Node2D> removed; // List to store projectiles that don't pose a risk to our ship
     if (max_check > projectiles.Length) {
       max_check = projectiles.Length;
@@ -81,15 +107,15 @@ public class game_utils : Node
     var count = 0; // Number of contributing projectile to calculate the average
     for (int i = 0; i < max_check; i++) {
       // Formula to calculate the approach time, the time that the projectile reaches nearest to our ship
-      var diff = (Vector2)projectiles[i].GlobalPosition - pos;
-      var vdiff = (Vector2)projectiles[i].Get("linear_velocity") - speed;
+      var diff = projectiles[i].GlobalPosition - self.GlobalPosition;
+      var vdiff = (Vector2)projectiles[i].Get("linear_velocity") - (Vector2)self.Get("linear_velocity");
       if (Mathf.Abs(vdiff.x) + Mathf.Abs(vdiff.y) < 0.0001) continue; // Projectile not moving relative to us, will take forever to reach
       float approach_time = - vdiff.Dot(diff) / vdiff.LengthSquared();
       if (approach_time > 0) { // Skips the case of approach_time <= 0, ie. the projectile is moving away from us
         var approach_diff = diff + vdiff * approach_time; // The difference vector when the projectile is nearest to our ship, this is the resulting vector of the projectile
-        var sqr_length = approach_diff.LengthSquared();
-        if (sqr_length < sqr_gap) {
-          if (approach_time <= 2) { // Also skip the case when the projectile is still far away, so that we can focus on dodging urgent ones
+        var length = approach_diff.Length();
+        if (length < safe_distance_ratio * ((float)projectiles[i].Get("size") + (float)self.Get("size"))) {
+          if (approach_time <= max_approach_time) { // Also skip the case when the projectile is still far away, so that we can focus on dodging urgent ones
             count++;
             total += approach_diff / approach_time;
           }

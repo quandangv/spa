@@ -17,7 +17,6 @@ func _draw():
   draw_rect(Rect2(0, -thrust, thrust, thrust*2), color, true)
 
 func move(direction, delta):
-  assert(not is_nan(direction.x) and not is_nan(direction.y), "Controller movement is NAN")
   var length = direction.length()
   if length < min_movement:
     direction = -parent.linear_velocity * controller.stop_multiplier
@@ -43,8 +42,13 @@ func init(thrust):
 
 func _physics_process(delta):
   if thrust > 0 and controller:
+    assert(not is_nan(controller.movement.x) and not is_nan(controller.movement.y), "Controller movement is NAN")
+    if is_nan(controller.movement.x) or is_nan(controller.movement.y):
+      controller.movement = Vector2.ZERO
     move(controller.movement, delta)
     assert(not is_nan(controller.angle), "Controller angle is NAN")
+    if is_nan(controller.angle):
+      controller.angle = 0
     var rotation_delta = controller.angle - parent.rotation
     if rotation_delta < -PI:
       rotation_delta += PI*2

@@ -24,6 +24,8 @@ var fire_interval = 0
 var queued_shots = 0
 const max_queued_time = 0.5
 var max_queued_shots:int
+var plasma_mask
+var plasma_layer
 
 func _ready():
   if controller:
@@ -68,6 +70,8 @@ func init(component):
   self.plasma_hp = 1.5 * size
   self.plasma_damage = 8 + power * 6
   self.fire_delay = base_fire_delay * position
+  self.plasma_mask = GameUtils.get_plasma_mask(parent.side_layer)
+  self.plasma_layer = GameUtils.get_plasma_layer(parent.side_layer)
   var points = PoolVector2Array()
   points.push_back(Vector2(-length, base_width))
   points.push_back(Vector2(-length, -base_width))
@@ -104,6 +108,8 @@ puppetsync func _fire(plasma_name = null):
   fire_interval = log(turret_heat)/log(turret_cooldown_base)
   $audio.play()
   var plasma = plasma_pool.get_plasma(parent, plasma_hp, plasma_damage * buildup, self.global_position, velocity)
+  plasma.collision_mask = plasma_mask
+  plasma.collision_layer = plasma_layer
   if plasma_name != null:
     plasma.name = plasma_name
 

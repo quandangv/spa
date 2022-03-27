@@ -16,6 +16,7 @@ func _idle(delta):
     var velocity = parent.parent.linear_velocity
     movement = Vector2(rand_range(movement_intensity[0], movement_intensity[1]), 0).rotated(randf()*PI*2) + (bias_target - parent.global_position - velocity) * 0.001
     angle = movement.angle()
+    assert(not is_nan(angle))
     movement -= velocity * 0.01 / until_movement_change
   parent.movement = movement
   parent.angle = angle

@@ -28,13 +28,17 @@ func init_plasma(size, linear_velocity, hp):
   self.hp = hp
   self.og_hp = hp
 
+func _process(delta):
+  update()
 func _physics_process(delta):
   position += linear_velocity * delta
   var damage_amount = 0
   for other in overlap_areas:
     damage_amount += other.damage
+    assert(not is_nan(other.damage))
   for other in overlap_bodies:
     var other_damage = other.area_collide(self, delta)
+    assert(not is_nan(other_damage))
     damage_amount += other_damage
   lifetime += delta
   damage_amount += lifetime * degradation_rate
@@ -44,19 +48,24 @@ puppetsync func master_destroyed(current_damage):
   damage = current_damage
   destroyed()
 remote func take_damage(amount):
+  if is_nan(hp):
+    assert(false, "plasma hp is NAN")
+    hp = 0
+  assert(not is_nan(amount))
   if hp > 0:
     hp -= amount
     if hp <= 0:
-      damage *= pow(collateral_rate, hp)
+      damage *= pow(collateral_rate, -hp)
+      assert(not is_inf(damage))
       if not Multiplayer.active:
         destroyed()
       elif is_network_master():
         rpc("master_destroyed", damage)
     else:
       color.a = lerp(0.2, 1, hp/og_hp)
-      update()
   elif damage:
-    damage *= pow(collateral_rate, -amount)
+    damage *= pow(collateral_rate, amount)
+    assert(not is_inf(damage))
 
 func area_entered(other):
   if GameUtils.is_enemy(side, other):

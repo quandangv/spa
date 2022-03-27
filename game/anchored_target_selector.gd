@@ -8,6 +8,7 @@ func _idle(delta):
   if anchored_position != null:
     parent.movement += (anchored_position - parent.parent.global_position - parent.parent.linear_velocity)
   parent.angle = parent.movement.angle()
+  assert(not is_nan(parent.angle))
 
 func before_combine_movement():
   if anchored_position != null and parent.target_obj == null or (parent.target_obj.global_position - anchored_position).length_squared() > max_from_anchor_sqr:

@@ -100,7 +100,7 @@ func close_connection():
   join_button.is_original = true
   host_button.disabled = false
   join_button.disabled = false
-  close_button.disabled = true
+  close_button.visible = false
   self.visible = false
   Multiplayer.close_connection()
 
@@ -111,7 +111,7 @@ func show_textbox(editable, text, action, helper_text, placeholder = ""):
   helper.text = helper_text
   self.visible = true
   self.placeholder_text = placeholder
-  close_button.disabled = false
+  close_button.visible = true
 
 func copy():
   OS.clipboard = text

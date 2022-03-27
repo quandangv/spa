@@ -7,3 +7,4 @@ export var pitch:float
 export var attenuation:float
 export var bus:String
 export var sound:AudioStream
+export var simultaneity:float = 1

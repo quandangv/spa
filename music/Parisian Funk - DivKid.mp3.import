@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Parisian Funk - DivKid.mp3-6ce84dafcb8438c6f092dbfdfd175aff.mp3str"
+
+[deps]
+
+source_file="res://music/Parisian Funk - DivKid.mp3"
+dest_files=[ "res://.import/Parisian Funk - DivKid.mp3-6ce84dafcb8438c6f092dbfdfd175aff.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

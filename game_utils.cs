@@ -95,69 +95,98 @@ public class game_utils : Node
   /// - sqr_gap: only try to dodge projectiles that would come within this gap to our ship
   /// - projectiles: list of projectiles
   /// - max_check: maximum number of projectiles to consider, used to improve performance at the cost of accuracy
-  public Vector2 dodge_projectiles(Node2D self, float safe_distance_ratio, Node2D[] projectiles, int max_check, float max_approach_time) {
-    List<Node2D> removed; // List to store projectiles that don't pose a risk to our ship
-    if (max_check > projectiles.Length) {
-      max_check = projectiles.Length;
-      removed = new List<Node2D>(0);
-    } else {
-      removed = new List<Node2D>(Mathf.Min(projectiles.Length - max_check, max_check)); // The capacity will be the smaller of the number of checked projectiles and the number of projectiles left unchecked
-    }
+  public Vector2 dodge_projectiles(Node2D self, float safe_distance_ratio, Godot.Collections.Array<Node2D> projectiles, Godot.Collections.Array<Node2D> removed, int max_check, float max_approach_time) {
+    int max_remove;
+    (max_check, max_remove) = get_max_remove(max_check, projectiles);
+    removed.Clear();
     var total = Vector2.Zero; // The sum of results calculated from each of the contributing projectile
     var count = 0; // Number of contributing projectile to calculate the average
+    var my_speed = (Vector2)self.Get("linear_velocity");
+    var my_pos = self.GlobalPosition;
+    var my_size = (float)self.Get("size");
     for (int i = 0; i < max_check; i++) {
       // Formula to calculate the approach time, the time that the projectile reaches nearest to our ship
-      var diff = projectiles[i].GlobalPosition - self.GlobalPosition;
-      var vdiff = (Vector2)projectiles[i].Get("linear_velocity") - (Vector2)self.Get("linear_velocity");
-      if (Mathf.Abs(vdiff.x) + Mathf.Abs(vdiff.y) < 0.0001) continue; // Projectile not moving relative to us, will take forever to reach
-      float approach_time = - vdiff.Dot(diff) / vdiff.LengthSquared();
-      if (approach_time > 0) { // Skips the case of approach_time <= 0, ie. the projectile is moving away from us
-        var approach_diff = diff + vdiff * approach_time; // The difference vector when the projectile is nearest to our ship, this is the resulting vector of the projectile
-        var length = approach_diff.Length();
-        if (length < safe_distance_ratio * ((float)projectiles[i].Get("size") + (float)self.Get("size"))) {
-          if (approach_time <= max_approach_time) { // Also skip the case when the projectile is still far away, so that we can focus on dodging urgent ones
+      var diff = projectiles[i].GlobalPosition - my_pos;
+      var vdiff = (Vector2)projectiles[i].Get("linear_velocity") - my_speed;
+      var vdiff_sqr = vdiff.LengthSquared();
+      if (vdiff_sqr > 0.0001) { // Projectile not moving relative to us, will take forever to reach
+        float approach_time = - vdiff.Dot(diff) / vdiff_sqr;
+        if (approach_time > 0 || approach_time > max_approach_time) { // Skips the case of approach_time <= 0, ie. the projectile is moving away from us
+          var approach_diff = diff + vdiff * approach_time; // The difference vector when the projectile is nearest to our ship, this is the resulting vector of the projectile
+          var length_sqr = approach_diff.LengthSquared();
+          var safe_distance = safe_distance_ratio * ((float)projectiles[i].Get("size") + my_size);
+          if (length_sqr < safe_distance * safe_distance) {
             count++;
             total += approach_diff / approach_time;
+            continue;
           }
-          continue;
         }
       }
       // Mark projectiles that have moved pass or would not come near us to be moved to the back so that we are less likely to check them again in the future
-      if (removed.Count < removed.Capacity) { // We would not move more than the number of projectiles left unchecked, as moving them to the back would still leave them inside the max_check range
+      if (removed.Count < max_remove) { // We would not move more than the number of projectiles left unchecked, as moving them to the back would still leave them inside the max_check range
         removed.Add(projectiles[i]);
         projectiles[i] = null;
       }
     }
-    // Compact our projectile array to leave empty spaces at the back
-    for (int i = 0, delta = 0; i < projectiles.Length; i++) {
-      if (projectiles[i] == null)
-        delta++;
-      else if (delta > 0)
-        projectiles[i-delta] = projectiles[i];
-    }
-    // Add the removed projectiles back to the array
-    for (int i = 0; i < removed.Count; i++)
-      projectiles[projectiles.Length - i - 1] = removed[i];
+    append_removed_nodes(projectiles, removed);
     return count > 0 ? total / count : total;
   }
-  
-  public double erf(double x) {
-    // constants
-    double a1 = 0.254829592;
-    double a2 = -0.284496736;
-    double a3 = 1.421413741;
-    double a4 = -1.453152027;
-    double a5 = 1.061405429;
-    double p = 0.3275911;
-    // Save the sign of x
-    int sign = 1;
-    if (x < 0)
-        sign = -1;
-    x = Math.Abs(x);
-    // A&S formula 7.1.26
-    double t = 1.0 / (1.0 + p*x);
-    double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*Math.Exp(-x*x);
-    return sign*y;
+  public Vector3 dodge_bodies(Node2D self, float safe_distance_ratio, Godot.Collections.Array<Node2D> bodies, Godot.Collections.Array<Node2D> removed, int max_check, float max_approach_time) {
+    int max_remove;
+    (max_check, max_remove) = get_max_remove(max_check, bodies);
+    removed.Clear();
+    var total = Vector2.Zero; // The sum of results calculated from each of the contributing projectile
+    var count = 0; // Number of contributing projectile to calculate the average
+    var vdiff_total = 0f;
+    var my_size = (float)self.Get("size");
+    for (int i = 0; i < max_check; i++) {
+      // Formula to calculate the approach time, the time that the projectile reaches nearest to our ship
+      var vdiff = (Vector2)bodies[i].Get("linear_velocity") - (Vector2)self.Get("linear_velocity");
+      var vdiff_sqr = vdiff.LengthSquared();
+      if (vdiff_sqr > 100) { // Projectile not moving relative to us, will take forever to reach
+        var diff = bodies[i].GlobalPosition - self.GlobalPosition;
+        float approach_time = - vdiff.Dot(diff) / vdiff_sqr;
+        if (approach_time > 0 || approach_time > max_approach_time) { // Skips the case of approach_time <= 0, ie. the projectile is moving away from us
+          vdiff_total += vdiff_sqr;
+          var approach_diff = diff + vdiff * approach_time; // The difference vector when the projectile is nearest to our ship, this is the resulting vector of the projectile
+          var length_sqr = approach_diff.LengthSquared();
+          var safe_distance = safe_distance_ratio * vdiff_sqr * ((float)bodies[i].Get("size") + my_size);
+          if (length_sqr < safe_distance * safe_distance) {
+            count++;
+            total += approach_diff * vdiff_sqr / approach_time;
+            continue;
+          }
+        }
+      }
+      // Mark projectiles that have moved pass or would not come near us to be moved to the back so that we are less likely to check them again in the future
+      if (removed.Count < max_remove) { // We would not move more than the number of projectiles left unchecked, as moving them to the back would still leave them inside the max_check range
+        removed.Add(bodies[i]);
+        bodies[i] = null;
+      }
+    }
+    append_removed_nodes(bodies, removed);
+    if (count > 0)
+      total = total / count / 100;
+    return new Vector3(total.x, total.y, vdiff_total);
+  }
+  (int, int) get_max_remove(int max_check, Godot.Collections.Array<Node2D> source) {
+    if (max_check > source.Count) {
+      return (source.Count, 0);
+    } else {
+      return (max_check, Mathf.Min(source.Count - max_check, max_check)); // The capacity will be the smaller of the number of checked projectiles and the number of projectiles left unchecked
+    }
+  }
+  void append_removed_nodes(Godot.Collections.Array<Node2D> dest, Godot.Collections.Array<Node2D> removed) {
+    // Compact our destination array to leave empty spaces at the back
+    for (int i = 0, delta = 0; i < dest.Count; i++) {
+      if (dest[i] == null)
+        delta++;
+      else if (delta > 0)
+        dest[i-delta] = dest[i];
+    }
+    // Add the removed nodes back to the array
+    for (int i = 0; i < removed.Count; i++)
+      dest[dest.Count - i - 1] = removed[i];
   }
   
   /// Calculate aim rotation for a direction, taking into account ship and bullet speed

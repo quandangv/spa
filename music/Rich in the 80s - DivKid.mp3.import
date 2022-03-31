@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Rich in the 80s - DivKid.mp3-10f5e9173f1fabb210ae0a5da25c9331.mp3str"
+
+[deps]
+
+source_file="res://music/Rich in the 80s - DivKid.mp3"
+dest_files=[ "res://.import/Rich in the 80s - DivKid.mp3-10f5e9173f1fabb210ae0a5da25c9331.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Gentlemen - DivKid.mp3-eeccf347e49d8d906d9754a2af622b4b.mp3str"
+
+[deps]
+
+source_file="res://music/The Gentlemen - DivKid.mp3"
+dest_files=[ "res://.import/The Gentlemen - DivKid.mp3-eeccf347e49d8d906d9754a2af622b4b.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

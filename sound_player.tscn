@@ -12,7 +12,7 @@
 [sub_resource type="Resource" id=1]
 script = ExtResource( 4 )
 name = "explosion"
-volume_db = -10.0
+volume_db = -5.0
 pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
@@ -27,7 +27,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 8 )
-simultaneity = 0.4
+simultaneity = 0.5
 
 [sub_resource type="Resource" id=3]
 script = ExtResource( 4 )
@@ -37,7 +37,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 7 )
-simultaneity = 1.5
+simultaneity = 2.0
 
 [sub_resource type="Resource" id=4]
 script = ExtResource( 4 )
@@ -47,7 +47,7 @@ pitch = 1.0
 attenuation = 1.0
 bus = "SFX"
 sound = ExtResource( 6 )
-simultaneity = 0.3
+simultaneity = 0.2
 
 [sub_resource type="Resource" id=5]
 script = ExtResource( 4 )

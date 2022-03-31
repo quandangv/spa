@@ -26,7 +26,7 @@ func register_implicit_controller(type, controller, front = false):
     controller.connect("tree_exiting", self, "unregister_implicit_controller", [controller])
   if index == 0:
     if len(_implicit_controllers) >= 2:
-      if _implicit_controllers[1] == null or _implicit_controllers[1].lost_input():
+      if not _implicit_controllers[1] or _implicit_controllers[1].lost_input():
         _implicit_controllers.remove(1)
         _implicit_controllers_priorities.remove(1)
     return true

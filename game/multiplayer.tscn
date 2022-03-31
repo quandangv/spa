@@ -11,15 +11,28 @@ script/source = "extends Node2D
 
 export(Dictionary) var scenes = {}
 onready var spawned = $spawned
+var anchors = []
+
+func _ready():
+  var index = 0
+  while true:
+    var anchor = get_node_or_null(\"anchor\" + str(index))
+    if anchor:
+      anchors.append(anchor)
+      index += 1
+    else:
+      break
 
 func put(anchor_index, instance):
-  var anchor = get_node(\"anchor\" + String(anchor_index))
-  spawned.add_child(instance)
+  var anchor = anchors[anchor_index]
   anchor.spawn(instance)
+  spawned.add_child(instance)
 
 func clear():
   for child in spawned.get_children():
     child.queue_free()
+  for anchor in anchors:
+    anchor.reset()
 "
 
 [node name="multiplayer" type="Node2D"]

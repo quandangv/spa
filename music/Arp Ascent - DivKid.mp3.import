@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Arp Ascent - DivKid.mp3-8a38ebd9bcd4401cb66051deba359b80.mp3str"
+
+[deps]
+
+source_file="res://music/Arp Ascent - DivKid.mp3"
+dest_files=[ "res://.import/Arp Ascent - DivKid.mp3-8a38ebd9bcd4401cb66051deba359b80.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Ridge Racer - DivKid.mp3-86724a377f323c57edd8cd7bd1e2916d.mp3str"
+
+[deps]
+
+source_file="res://music/Ridge Racer - DivKid.mp3"
+dest_files=[ "res://.import/Ridge Racer - DivKid.mp3-86724a377f323c57edd8cd7bd1e2916d.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -3,8 +3,8 @@ extends Node
 signal client_connected
 signal client_connect_failed
 signal my_stat_changed
-signal network_changed
-signal connection_closed
+signal activate
+signal deactivate
 signal player_info_updated
 
 const default_port = 10753
@@ -90,18 +90,18 @@ remote func sync_init(stat):
   set_my_stat(stat)
   rpc("update_player_stat", stat)
 
-func spawn_local(scene_name, anchor = null):
+func spawn_local(scene_name, anchor = -1):
   var instance = spawner.scenes[scene_name].instance()
   instance.set_meta("_scene", scene_name)
-  if my_stat != null:
+  if active:
     instance.name = String(instance.name) + String(get_unique_id())
     var my_id = get_tree().get_network_unique_id()
     instance.set_network_master(my_id, true)
-    spawner.put(my_stat["anchor"] if anchor == null else anchor, instance)
+    spawner.put(my_stat["anchor"] if anchor == -1 else anchor, instance)
     rpc("spawn", serialize(instance))
     instance.color = Storage.player["color"]
   else:
-    if anchor == null:
+    if anchor == -1:
       spawner.spawned.add_child(instance)
     else:
       spawner.put(anchor, instance)
@@ -127,8 +127,8 @@ func close_connection():
   if active:
     get_tree().network_peer.close_connection()
     get_tree().network_peer = null
-    emit_signal("connection_closed")
     active = false
+    emit_signal("deactivate")
   spawner.clear()
 
 func host_game(port):
@@ -140,12 +140,11 @@ func host_game(port):
     spawner.clear()
     active = true
     my_port = port
-    emit_signal("network_changed")
+    emit_signal("activate")
     set_my_stat({"anchor":0})
     available_anchors.clear()
     for i in range(max_player-1, 0, -1):
       available_anchors.append(i)
-    print(available_anchors)
     $seed_sync.start()
   else:
     return "already connected"
@@ -161,7 +160,7 @@ func join_game(address):
     get_tree().network_peer = peer
     spawner.clear()
     active = true
-    emit_signal("network_changed")
+    emit_signal("activate")
     set_my_stat(null)
     player_stats.clear()
     $seed_sync.stop()

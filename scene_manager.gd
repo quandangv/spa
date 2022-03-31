@@ -2,6 +2,8 @@ extends Node
 
 
 export(Array, Resource) var scenes
+export(Array, AudioStream) var rand_music
+var rand_music_pos:int = 0
 var scene_dict = {}
 var fade_animation:Animation
 var fade_modulate_track:int
@@ -13,16 +15,23 @@ onready var anim = $anim
 onready var music = $music
 onready var queue = $queue
 
-
 func _ready():
   fade_animation = $anim.get_animation("fade")
   fade_modulate_track = fade_animation.find_track("rect:modulate")
   exp_circle_animation = $anim.get_animation("exp_circle")
   exp_circle_modulate_track = exp_circle_animation.find_track("rect:modulate")
   exp_circle_position_track = exp_circle_animation.find_track("rect:rect_position")
+  music.connect("finished", self, "play_random")
   for scene in scenes:
     scene_dict[scene.name] = scene
 
+func play_random():
+  yield(get_tree().create_timer(5), "timeout")
+  if rand_music_pos % len(rand_music) == 0:
+    rand_music.shuffle()
+    rand_music_pos = 0
+  play_music(rand_music[rand_music_pos])
+  rand_music_pos += 1
 
 func exp_circle_load(to_scene, starting_screen_position, color = Color.white):
   if not loading:

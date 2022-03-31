@@ -86,7 +86,7 @@ func body_entered(other):
   if damage > 0:
     damage *= mass * collision_damage_multiplier
     var damage_scale = clamp(inverse_lerp(1, 10, damage), 0, 1)
-    SoundPlayer.play_audio("collision", global_position, lerp(2, 0.4, damage_scale), lerp(0, 10, damage_scale))
+    SoundPlayer.play_audio("collision", global_position, lerp(2, 0.4, damage_scale), lerp(-10, 10, damage_scale))
     emit_signal("bumped", dir)
     if not Multiplayer.active or is_network_master():
       if Multiplayer.active:

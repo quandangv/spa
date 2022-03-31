@@ -12,7 +12,3 @@ starting_side = "enemy"
 [node name="target_selector" type="Node2D" parent="controller" index="1"]
 script = ExtResource( 3 )
 max_from_anchor = 500.0
-
-[node name="enemy_check" type="Timer" parent="controller/target_selector" index="0"]
-wait_time = 0.2
-autostart = true

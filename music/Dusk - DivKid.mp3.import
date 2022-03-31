@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Dusk - DivKid.mp3-abf8d85e6cbab12915ff2cef5e1af9f9.mp3str"
+
+[deps]
+
+source_file="res://music/Dusk - DivKid.mp3"
+dest_files=[ "res://.import/Dusk - DivKid.mp3-abf8d85e6cbab12915ff2cef5e1af9f9.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

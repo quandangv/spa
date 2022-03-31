@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Cupid's Tubes - DivKid.mp3-42561fd09875e6f2a99e5cbb93da2694.mp3str"
+
+[deps]
+
+source_file="res://music/Cupid's Tubes - DivKid.mp3"
+dest_files=[ "res://.import/Cupid's Tubes - DivKid.mp3-42561fd09875e6f2a99e5cbb93da2694.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

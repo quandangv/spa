@@ -26,7 +26,3 @@ distance_kept = [ 6, 3 ]
 
 [node name="target_selector" type="Node2D" parent="controller/bot" index="1"]
 script = ExtResource( 4 )
-
-[node name="enemy_check" type="Timer" parent="controller/bot/target_selector" index="0"]
-wait_time = 0.2
-autostart = true

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Digifunk - DivKid.mp3-1ff268f3440d0c734c22d0633e7fb41f.mp3str"
+
+[deps]
+
+source_file="res://music/Digifunk - DivKid.mp3"
+dest_files=[ "res://.import/Digifunk - DivKid.mp3-1ff268f3440d0c734c22d0633e7fb41f.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

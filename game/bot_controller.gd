@@ -29,7 +29,7 @@ var strafe_time:float
 var strafe_direction = 1
 const strafe_max = 3
 
-var firing_wait = 0.7 # time to wait for turret to cool before firing again
+var firing_wait  # time to wait for turret to cool before firing again
 var firing_wait_random = [4, 6] # randomize waiting time for unpredictability
 const firing_angle = 0.4 # multiplier of the acceptable turret angular precision to fire
 export(Array, float) var distance_kept = [10, 3] # distance to keep from the target instead of heabutting them

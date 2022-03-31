@@ -9,9 +9,9 @@
    id="svg5"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20, custom)"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/quan/ssa-new/icon.png"
-   inkscape:export-xdpi="10.24"
-   inkscape:export-ydpi="10.24"
+   inkscape:export-filename="/home/quan/ssa-new/artworks/icon.png"
+   inkscape:export-xdpi="40.959999"
+   inkscape:export-ydpi="40.959999"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -29,13 +29,13 @@
      showgrid="false"
      units="px"
      width="1920px"
-     inkscape:zoom="0.23392591"
-     inkscape:cx="-27.786576"
-     inkscape:cy="220.15518"
-     inkscape:window-width="1880"
-     inkscape:window-height="1000"
-     inkscape:window-x="20"
-     inkscape:window-y="20"
+     inkscape:zoom="0.27579912"
+     inkscape:cx="-29.006619"
+     inkscape:cy="157.72349"
+     inkscape:window-width="930"
+     inkscape:window-height="490"
+     inkscape:window-x="970"
+     inkscape:window-y="530"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:snap-global="false"
@@ -5647,7 +5647,7 @@
            inkscape:export-xdpi="96"
            inkscape:export-ydpi="96"
            inkscape:label="ring-0"
-           style="display:inline"
+           style="display:none"
            transform="translate(2016.1288,362.00211)">
           <g
              id="g44268"
@@ -13824,7 +13824,7 @@
         </g>
         <g
            id="g108594"
-           style="display:inline"
+           style="display:none"
            inkscape:export-filename="/home/quan/ssa-new/backgrounds/ring-1.png"
            inkscape:export-xdpi="96"
            inkscape:export-ydpi="96"
@@ -19286,7 +19286,7 @@
         </g>
         <g
            id="g50981"
-           style="display:inline"
+           style="display:none"
            transform="translate(2014.0121,359.88544)"
            inkscape:export-filename="/home/quan/ssa-new/backgrounds/ring-0.png"
            inkscape:export-xdpi="96"
@@ -25421,7 +25421,7 @@
         </g>
         <g
            id="g58464"
-           style="display:inline"
+           style="display:none"
            transform="translate(2014.0121,359.88544)"
            inkscape:export-filename="/home/quan/ssa-new/backgrounds/ring-3.png"
            inkscape:export-xdpi="96"
@@ -33829,7 +33829,7 @@
        inkscape:export-ydpi="52.540386" />
     <text
        xml:space="preserve"
-       style="font-size:96.8572px;line-height:0.7;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;text-align:center;letter-spacing:0px;writing-mode:lr-tb;text-orientation:upright;text-anchor:middle;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
+       style="font-size:96.8572px;line-height:0.7;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;text-align:center;letter-spacing:0px;writing-mode:lr-tb;text-orientation:upright;text-anchor:middle;display:none;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
        x="134.97995"
        y="-86.314323"
        id="text11711"
@@ -33837,21 +33837,21 @@
          sodipodi:role="line"
          id="tspan11709"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:96.8572px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans';text-align:start;writing-mode:lr-tb;text-orientation:upright;text-anchor:start;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
-         x="134.97995"
-         y="-86.314323">S<tspan
+         x="0"
+         y="0">S<tspan
    style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:48.429px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans Medium';writing-mode:lr-tb;text-orientation:upright;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
    id="tspan50926">PACESHIP</tspan></tspan><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:96.8572px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans';text-align:start;writing-mode:lr-tb;text-orientation:upright;text-anchor:start;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
-         x="134.97995"
-         y="-12.945751"
+         x="0"
+         y="0"
          id="tspan46110"> P<tspan
    style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:48.429px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans Medium';writing-mode:lr-tb;text-orientation:upright;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
    id="tspan53906">ILOT</tspan></tspan><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:96.8572px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans';text-align:start;writing-mode:lr-tb;text-orientation:upright;text-anchor:start;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
-         x="134.97995"
-         y="60.422821"
+         x="0"
+         y="0"
          id="tspan46112">A<tspan
    style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:48.429px;font-family:'Smooch Sans';-inkscape-font-specification:'Smooch Sans Medium';writing-mode:lr-tb;text-orientation:upright;fill:#ffffff;fill-opacity:0.997759;stroke:none;stroke-width:5.29167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.5;paint-order:markers stroke fill"
    id="tspan54638">CADEMY</tspan></tspan></text>

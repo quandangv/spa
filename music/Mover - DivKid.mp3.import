@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Mover - DivKid.mp3-2db071da170a7ba8f0c4bda3e5fbd501.mp3str"
+
+[deps]
+
+source_file="res://music/Mover - DivKid.mp3"
+dest_files=[ "res://.import/Mover - DivKid.mp3-2db071da170a7ba8f0c4bda3e5fbd501.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

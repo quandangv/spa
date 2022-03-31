@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Dreamer - DivKid.mp3-6a569a582eed2642f5c71169c1c78122.mp3str"
+
+[deps]
+
+source_file="res://music/Dreamer - DivKid.mp3"
+dest_files=[ "res://.import/Dreamer - DivKid.mp3-6a569a582eed2642f5c71169c1c78122.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

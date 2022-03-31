@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Polymetric Juggling - DivKid.mp3-44459689aa43f1afb254f9227b4bb511.mp3str"
+
+[deps]
+
+source_file="res://music/Polymetric Juggling - DivKid.mp3"
+dest_files=[ "res://.import/Polymetric Juggling - DivKid.mp3-44459689aa43f1afb254f9227b4bb511.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

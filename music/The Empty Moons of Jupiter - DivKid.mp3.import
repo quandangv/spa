@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Empty Moons of Jupiter - DivKid.mp3-454a8383c396af3e51df494cab4c08a7.mp3str"
+
+[deps]
+
+source_file="res://music/The Empty Moons of Jupiter - DivKid.mp3"
+dest_files=[ "res://.import/The Empty Moons of Jupiter - DivKid.mp3-454a8383c396af3e51df494cab4c08a7.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

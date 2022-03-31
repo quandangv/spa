@@ -17,6 +17,7 @@ const mid_color = Color(0.8, 0.8, 0.8)
 onready var camera = get_node("/root/game/camera")
 onready var bg_modulate = get_node("/root/game/background/modulate")
 onready var parent = get_parent()
+var direct_control = true
 
 func _ready():
   if not Multiplayer.active or is_network_master():
@@ -29,7 +30,6 @@ func _ready():
 func wake_up():
   disabled = false
   if not Multiplayer.active or is_network_master():
-    parent.set_color(GameUtils.ship_colors["self"])
     $shape.shape.radius = parent.size
     if InputCoordinator.register_implicit_controller("ship", self, true):
       gained_input()
@@ -44,21 +44,24 @@ func hibernate():
   lost_input()
 
 func _process(delta):
-  register_input("movement", Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")))
-  register_input("firing", Input.is_action_pressed("fire"))
-  if Input.is_action_just_pressed("fire"):
-    if Multiplayer.active:
+  var new_movement = Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down"))
+  var new_firing = Input.is_action_pressed("fire")
+  var new_angle = (self.get_global_mouse_position() - parent.global_position).angle()
+  var new_start_firing = Input.is_action_just_pressed("fire")
+  if Multiplayer.active and direct_control:
+    if new_movement != movement:
+      rpc("set_movement", new_movement)
+    if new_firing != firing:
+      rpc("set_firing", new_firing)
+    rpc_unreliable("angle", new_angle)
+    if new_start_firing:
       rpc("set_start_firing")
-    else:
-      set_start_firing()
-  register_input("angle", (self.get_global_mouse_position() - parent.global_position).angle())
-
-func register_input(name, value):
-  if Multiplayer.active:
-    if value != get(name):
-      rpc("set_" + name, value)
   else:
-    set(name, value)
+    movement = new_movement
+    firing = new_firing
+    angle = new_angle
+    if new_start_firing:
+      set_start_firing()
 
 puppetsync func set_movement(value):
   movement = value

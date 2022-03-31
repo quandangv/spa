@@ -20,7 +20,7 @@ func _ready():
   join_button.connect("press_other", self, "close_connection")
   Multiplayer.connect("client_connected", self, "join_success")
   Multiplayer.connect("client_connect_failed", self, "join_failure")
-  Multiplayer.connect("connection_closed", self, "clear_address")
+  Multiplayer.connect("deactivate", self, "clear_address")
   Multiplayer.connect("player_info_updated", self, "info_update")
 
 func clear_address():
@@ -36,6 +36,13 @@ func info_update(id, info):
       show_textbox(false, old_name + " changed their color", "close", "Okay")
   else:
     show_textbox(false, info["name"] + " has joined!", "close", "Yay!")
+
+func get_public_ipv6():
+  for ip in IP.get_local_addresses():
+    if ip.find(':') != -1 and (ip[0] == '2' or ip[0] == '3'):
+      return ip
+  printerr("Can't find a public IPv6 address")
+  return IP.get_local_addresses()[0]
 
 func not_already_initialized():
   var tree = get_tree()
@@ -56,7 +63,7 @@ func host_game():
     host_button.is_original = false
     join_button.disabled = true
     print(IP.get_local_addresses())
-    address = IP.get_local_addresses()[0] + ":" + String(Multiplayer.my_port)
+    address = get_public_ipv6() + ":" + String(Multiplayer.my_port)
     show_address()
   else:
     show_textbox(false, error, "prep_host_game", "Try different port")
@@ -89,11 +96,11 @@ func join_failure():
 func prep_name_player():
   show_textbox(true, Storage.player["name"], "name_player", "Select Name")
   color_picker.color = Storage.player["color"]
-  color_picker.visible = true
+  color_picker.get_parent().visible = true
 func name_player():
-  color_picker.visible = false
+  color_picker.get_parent().visible = false
   Storage.set_player_display(text, color_picker.color)
-  self.visible = false
+  self.set_visible(false)
 
 func close_connection():
   host_button.is_original = true
@@ -101,7 +108,7 @@ func close_connection():
   host_button.disabled = false
   join_button.disabled = false
   close_button.visible = false
-  self.visible = false
+  self.set_visible(false)
   Multiplayer.close_connection()
 
 func show_textbox(editable, text, action, helper_text, placeholder = ""):
@@ -109,7 +116,7 @@ func show_textbox(editable, text, action, helper_text, placeholder = ""):
   self.text = text
   helper_action = action
   helper.text = helper_text
-  self.visible = true
+  self.set_visible(true)
   self.placeholder_text = placeholder
   close_button.visible = true
 
@@ -123,8 +130,10 @@ func helper_pressed():
 func close():
   if address != null:
     show_address()
-  self.visible = false
+  self.set_visible(false)
 
 func set_visible(value):
   .set_visible(value)
   helper.visible = value
+  if not value:
+    color_picker.get_parent().visible = false

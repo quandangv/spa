@@ -1,7 +1,7 @@
 extends Node
 
 onready var parent = get_parent()
-const check_enemy_interval = 13
+const check_enemy_interval = 20
 var check_enemy_count = randi() % check_enemy_interval
 
 const keep_target_preference = 70 # preference to keep the target even when there are nearer targets
@@ -22,7 +22,7 @@ func check_enemy():
     if body != parent and GameUtils.is_enemy(parent.parent.side, body) and target_condition(body):
       var dist = (body.global_position - parent.parent.global_position).length_squared()
       if body == parent.target_obj:
-        dist -= keep_target_preference / max(parent.thrust, 1)
+        dist -= keep_target_preference / max(parent.thrust/parent.parent.mass, 1)
       var rank = parent.get_target_rank(body)
       if rank in min_dists:
         var min_dist = min_dists[rank]
@@ -30,6 +30,9 @@ func check_enemy():
           continue
       min_dists[rank] = dist
       chosen_bodies[rank] = body
+  if len(chosen_bodies) == 0:
+    parent.remove_target()
+    return
   for i in range(parent.max_rank):
     var new_target = chosen_bodies.get(i)
     if new_target:

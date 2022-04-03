@@ -9,9 +9,10 @@ signal before_combine_movement
 
 var movement:Vector2
 const firing = false
-var angle:float = 0
+var angle:float
 const stop_multiplier = 1
 const thrust_to_rotate_speed = 3
+const speed_limit = INF
 
 var target_obj = null
 var target_rank:int
@@ -30,7 +31,7 @@ var strafe_direction = 1
 const strafe_max = 3
 
 var firing_wait  # time to wait for turret to cool before firing again
-var firing_wait_random = [4, 6] # randomize waiting time for unpredictability
+var firing_wait_random = [6, 9] # randomize waiting time for unpredictability
 const firing_angle = 0.4 # multiplier of the acceptable turret angular precision to fire
 export(Array, float) var distance_kept = [10, 3] # distance to keep from the target instead of heabutting them
 const base_bullet_speed = 8 # used along with turret stats to calculate approximate bullet speed
@@ -72,7 +73,7 @@ func wake_up():
   stats_changed()
   set_physics_process(true)
   set_process(true)
-  angle = 0
+  angle = parent.global_rotation
   movement = Vector2.ZERO
   for child in get_children():
     child.set_physics_process(true)
@@ -86,13 +87,9 @@ const max_rank = 2
 func get_target_rank(obj):
   var turrets = obj.get('turrets')
   if turrets:
-    var has_turret = false
     for turret in turrets:
       if not is_nan(turret.reload_time):
-        has_turret = true
-        break
-    if has_turret:
-      return 0
+        return 0
   return 1
 
 var check_target_wait:float
@@ -121,7 +118,7 @@ func _physics_process(delta):
       if waited >= current_firing_wait and (target_speed - parent_speed).dot(diff_norm) < bullet_speed_approx: # only fire if our projectiles can actually close the distance to them
         var distance = max(diff_length - parent.size - target_obj.size, 0.00000001) # modify the distance to decrease the turret angular precision in close range
         var acceptable_angle = asin(clamp(firing_angle * target_obj.size / sqrt(distance), 0, 1))
-        if abs(angle_diff(angle, parent.rotation)) < acceptable_angle:
+        if abs(angle_diff(angle, parent.global_rotation)) < acceptable_angle:
           emit_signal("start_firing") # finally, fire the turret
           current_firing_wait = firing_wait * log(distance / target_obj.size) / rand_range(firing_wait_random[0], firing_wait_random[1])
           waited = 0
@@ -170,10 +167,9 @@ func set_target(new_target):
     else:
       target_obj = new_target
       target_rank = get_target_rank(new_target)
-      waited = 0
-      current_firing_wait = 0
       target_speed = target_obj.linear_velocity
 
 func remove_target():
-  target_obj = null
-  emit_signal("target_removed")
+  if target_obj != null:
+    target_obj = null
+    emit_signal("target_removed")

@@ -11,4 +11,3 @@ starting_side = "enemy"
 
 [node name="target_selector" type="Node2D" parent="controller" index="1"]
 script = ExtResource( 3 )
-max_from_anchor = 500.0

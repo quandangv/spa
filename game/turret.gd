@@ -17,7 +17,7 @@ var plasma_hp:float = 12
 var plasma_damage:float = 30
 var fire_delay: float = 0
 var turret_cooldown_speed:float
-var wait_before_fire:float
+var wait_before_fire:float = -1
 
 var turret_heat:float = 0
 var fire_interval = 0
@@ -53,14 +53,14 @@ func init(component):
   var power = component["_plasma_power"]
   var squeeze = component["_squeeze"]
   var position = component["position"]
-  var spread = clamp(inverse_lerp(12, 0, supply), 0, 1)
-  var base_width = size * lerp(1.5, 1, spread)
-  var muzzle_width = size * lerp(1.5, 2, spread) if supply > 0 else 0.2
-  var length = size * lerp(6, 2, spread)
+  var spread = clamp(inverse_lerp(24, 0, supply), 0, 1)
+  var base_width = size * lerp(3, 1, spread)
+  var muzzle_width = size * lerp(4, 1, spread) if supply > 0 else 0.2
+  var length = size * lerp(8, 2, spread)
   self.rotation = component["rotation"] * PI/3
   self.position = Vector2((parent.size * cos(PI/6) + length), (position-(squeeze-1)/2.0) * parent.size / squeeze*0.8).rotated(self.rotation)
   self.plasma_pool = get_node("/root/game/plasma_" + plasma_type)
-  self.base_speed = 7 + power*2
+  self.base_speed = 6 + power*2
   if supply:
     self.reload_time = 3.0/supply
     self.turret_cooldown_speed = supply
@@ -103,7 +103,7 @@ puppetsync func _fire(plasma_name = null):
   var turret_heat = pow(turret_cooldown_base, fire_interval)
   turret_heat += 1
   var buildup = clamp(1 / turret_heat, 0, 1)
-  var velocity = (Vector2(base_speed, 0) * lerp(1, 8, buildup)).rotated(self.global_rotation\
+  var velocity = (Vector2(base_speed, 0) * lerp(1, 10, buildup)).rotated(self.global_rotation\
       + (randf()-0.5) * (1 - buildup) * base_spread) + parent.linear_velocity
   fire_interval = log(turret_heat)/log(turret_cooldown_base)
   $audio.play()

@@ -1,6 +1,5 @@
 extends Node
 
-
 export(Array, Resource) var scenes
 export(Array, AudioStream) var rand_music
 var rand_music_pos:int = 0

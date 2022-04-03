@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/arrow.svg-d9500d30d9f5f07b130fe6c432ca3337.stex"
+path="res://.import/resume.svg-c21178a963ac4b7fd1cbab642f5d05ac.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://game/arrow.svg"
-dest_files=[ "res://.import/arrow.svg-d9500d30d9f5f07b130fe6c432ca3337.stex" ]
+source_file="res://icons/resume.svg"
+dest_files=[ "res://.import/resume.svg-c21178a963ac4b7fd1cbab642f5d05ac.stex" ]
 
 [params]
 

@@ -1,7 +1,7 @@
-extends LineEdit
+extends Control
 
-export var helper_path:NodePath
-onready var helper = get_node(helper_path)
+export var action_button_path:NodePath
+onready var action_button = get_node(action_button_path)
 export var join_path:NodePath
 onready var join_button = get_node(join_path)
 export var host_path:NodePath
@@ -10,10 +10,16 @@ export var color_path:NodePath
 onready var color_picker = get_node(color_path)
 export var close_button_path:NodePath
 onready var close_button = get_node(close_button_path)
-var helper_action = null
+export var text_box_path:NodePath
+onready var text_box = get_node(text_box_path)
+var action = null
 var address = null
+var showing_color_picker:bool = false
 
 func _ready():
+  close_button.connect("toggled", self, "set_prompt_visible")
+  action_button.connect("pressed", self, "action_button_pressed")
+  color_picker.connect("color_changed", self, "change_color")
   host_button.connect("press_original", self, "prep_host_game")
   join_button.connect("press_original", self, "prep_join_game")
   host_button.connect("press_other", self, "close_connection")
@@ -56,9 +62,9 @@ func prep_host_game():
   if not_already_initialized():
     show_textbox(true, "", "host_game", "Use Port", String(Multiplayer.default_port))
 func host_game():
-  if text == "":
-    text = placeholder_text
-  var error = Multiplayer.host_game(int(text))
+  if text_box.text == "":
+    text_box.text = text_box.placeholder_text
+  var error = Multiplayer.host_game(int(text_box.text))
   if not error:
     host_button.is_original = false
     join_button.disabled = true
@@ -74,13 +80,13 @@ func prep_join_game():
   if not_already_initialized():
     show_textbox(true, "", "join_game", "Join with address", OS.clipboard)
 func join_game():
-  if text == "":
-    text = placeholder_text
-  var error = Multiplayer.join_game(text)
+  if text_box.text == "":
+    text_box.text = text_box.placeholder_text
+  var error = Multiplayer.join_game(text_box.text)
   if not error:
     join_button.is_original = false
     host_button.disabled = true
-    address = text
+    address = text_box.text
     show_textbox(false, "joining...", "close", "Okay")
   else:
     address = null
@@ -96,11 +102,11 @@ func join_failure():
 func prep_name_player():
   show_textbox(true, Storage.player["name"], "name_player", "Select Name")
   color_picker.color = Storage.player["color"]
-  color_picker.get_parent().visible = true
+  set_show_color_picker(true)
 func name_player():
-  color_picker.get_parent().visible = false
-  Storage.set_player_display(text, color_picker.color)
-  self.set_visible(false)
+  Storage.set_player_display(text_box.text, color_picker.color)
+  set_prompt_visible(false)
+  set_show_color_picker(false)
 
 func close_connection():
   host_button.is_original = true
@@ -108,32 +114,38 @@ func close_connection():
   host_button.disabled = false
   join_button.disabled = false
   close_button.visible = false
-  self.set_visible(false)
+  set_prompt_visible(false)
   Multiplayer.close_connection()
 
-func show_textbox(editable, text, action, helper_text, placeholder = ""):
-  self.editable = editable
-  self.text = text
-  helper_action = action
-  helper.text = helper_text
-  self.set_visible(true)
-  self.placeholder_text = placeholder
+func show_textbox(editable, text, action, action_text, placeholder = ""):
+  text_box.editable = editable
+  text_box.text = text
+  self.action = action
+  action_button.text = action_text
+  set_prompt_visible(true)
+  text_box.placeholder_text = placeholder
   close_button.visible = true
+  set_show_color_picker(false)
+
+func set_show_color_picker(value):
+  color_picker.get_parent().visible = value
+  showing_color_picker = value
 
 func copy():
-  OS.clipboard = text
+  OS.clipboard = text_box.text
 
-func helper_pressed():
-  if helper_action:
-    call(helper_action)
+func action_button_pressed():
+  if action:
+    call(action)
 
 func close():
   if address != null:
     show_address()
-  self.set_visible(false)
+  set_prompt_visible(false)
 
-func set_visible(value):
-  .set_visible(value)
-  helper.visible = value
-  if not value:
-    color_picker.get_parent().visible = false
+func set_prompt_visible(value):
+  text_box.visible = value
+  action_button.visible = value
+  close_button.pressed = value
+  if showing_color_picker:
+    color_picker.get_parent().visible = value

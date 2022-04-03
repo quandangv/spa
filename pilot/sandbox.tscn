@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://game/retaining_pool.gd" type="Script" id=1]
 [ext_resource path="res://game/html5_notice.gd" type="Script" id=2]
@@ -8,26 +8,12 @@
 [ext_resource path="res://game/plasma.tscn" type="PackedScene" id=6]
 [ext_resource path="res://game/tracker.gd" type="Script" id=7]
 [ext_resource path="res://flat_game_theme.tres" type="Theme" id=8]
-[ext_resource path="res://game_theme.tres" type="Theme" id=9]
+[ext_resource path="res://game/pause_menu.tscn" type="PackedScene" id=9]
 [ext_resource path="res://fonts/SmallMenuFont.tres" type="DynamicFont" id=10]
 [ext_resource path="res://small_game_theme.tres" type="Theme" id=12]
 [ext_resource path="res://game/multiplayer_ui.gd" type="Script" id=13]
 [ext_resource path="res://game/dual_state_button.gd" type="Script" id=14]
-[ext_resource path="res://edit.svg" type="Texture" id=15]
-
-[sub_resource type="GDScript" id=8]
-script/source = "extends Button
-
-func _ready():
-  $confirm.connect(\"confirmed\", self, \"exit\")
-
-func _pressed():
-  $confirm.popup_centered()
-
-func exit():
-  SceneManager.fade_load(\"sandbox\", \"main_menu\")
-  Multiplayer.close_connection()
-"
+[ext_resource path="res://icons/edit.svg" type="Texture" id=15]
 
 [sub_resource type="GDScript" id=5]
 script/source = "extends Button
@@ -48,22 +34,8 @@ func _ready():
 
 [sub_resource type="GDScript" id=4]
 script/source = "extends Button
-
-export var text_box_path:NodePath
-onready var text_box = get_node(text_box_path)
-export var helper_path:NodePath
-onready var helper = get_node(helper_path)
-export var color_picker_path:NodePath
-onready var color_picker = get_node(color_picker_path)
-
 func _toggled(button_pressed):
-  text_box.set_visible(button_pressed)
   text = \"<\" if button_pressed else \">\"
-
-
-func _text_box_visibility_changed():
-  text = \"<\" if text_box.visible else \">\"
-  pressed = text_box.visible
 "
 
 [sub_resource type="Gradient" id=6]
@@ -110,6 +82,7 @@ script = ExtResource( 1 )
 scene = ExtResource( 6 )
 
 [node name="camera" type="Camera2D" parent="."]
+pause_mode = 2
 current = true
 smoothing_enabled = true
 smoothing_speed = 2.0
@@ -122,43 +95,33 @@ script = ExtResource( 7 )
 [node name="base" type="Control" parent="ui"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
 mouse_filter = 2
 theme = ExtResource( 8 )
 
-[node name="exit" type="Button" parent="ui/base"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_top = 20.0
-margin_right = -20.0
-grow_horizontal = 0
-text = "Exit"
-script = SubResource( 8 )
-
-[node name="confirm" type="ConfirmationDialog" parent="ui/base/exit"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -619.0
-margin_top = 200.5
-margin_right = -298.0
-margin_bottom = 298.5
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource( 9 )
-window_title = ""
-dialog_text = "You are exiting to the main menu"
+[node name="pause_menu" parent="ui/base" instance=ExtResource( 9 )]
+margin_left = -140.0
+margin_bottom = 59.0
 
 [node name="multiplayer" type="VBoxContainer" parent="ui/base"]
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 685.0
-margin_bottom = 576.0
+pause_mode = 2
+margin_right = 569.0
+margin_bottom = 69.0
 mouse_filter = 2
 custom_constants/separation = 10
+script = ExtResource( 13 )
+action_button_path = NodePath("text_box/action")
+join_path = NodePath("buttons/join_game")
+host_path = NodePath("buttons/host_game")
+color_path = NodePath("text_box/color_picker_box/color_picker")
+close_button_path = NodePath("text_box/close")
+text_box_path = NodePath("text_box/text_box")
 
 [node name="buttons" type="HBoxContainer" parent="ui/base/multiplayer"]
-margin_right = 665.0
+margin_right = 569.0
 margin_bottom = 59.0
 mouse_filter = 2
 
@@ -191,7 +154,7 @@ script = SubResource( 5 )
 
 [node name="text_box" type="HBoxContainer" parent="ui/base/multiplayer"]
 margin_top = 69.0
-margin_right = 665.0
+margin_right = 569.0
 margin_bottom = 69.0
 mouse_filter = 2
 theme = ExtResource( 12 )
@@ -202,10 +165,10 @@ margin_right = 332.0
 margin_bottom = 480.0
 
 [node name="color_picker" type="ColorPicker" parent="ui/base/multiplayer/text_box/color_picker_box"]
-margin_left = 52.0
-margin_top = 52.0
-margin_right = 368.0
-margin_bottom = 516.0
+margin_left = 104.0
+margin_top = 104.0
+margin_right = 420.0
+margin_bottom = 568.0
 theme = ExtResource( 3 )
 edit_alpha = false
 presets_enabled = false
@@ -224,14 +187,8 @@ editable = false
 expand_to_text_length = true
 context_menu_enabled = false
 placeholder_alpha = 0.4
-script = ExtResource( 13 )
-helper_path = NodePath("../helper")
-join_path = NodePath("../../buttons/join_game")
-host_path = NodePath("../../buttons/host_game")
-color_path = NodePath("../color_picker_box/color_picker")
-close_button_path = NodePath("../close")
 
-[node name="helper" type="Button" parent="ui/base/multiplayer/text_box"]
+[node name="action" type="Button" parent="ui/base/multiplayer/text_box"]
 visible = false
 margin_left = 552.0
 margin_right = 632.0
@@ -249,9 +206,6 @@ size_flags_vertical = 0
 toggle_mode = true
 text = ">"
 script = SubResource( 4 )
-text_box_path = NodePath("../text_box")
-helper_path = NodePath("../helper")
-color_picker_path = NodePath("../color_picker_box/color_picker")
 
 [node name="html5_notice" type="Label" parent="ui/base/multiplayer/text_box"]
 visible = false
@@ -264,18 +218,21 @@ script = ExtResource( 2 )
 closed_nodes = [ NodePath("../close"), NodePath("../../buttons") ]
 
 [node name="spawn" type="VBoxContainer" parent="ui/base"]
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 20.0
-margin_top = -121.0
-margin_right = 268.0
-margin_bottom = -20.0
+margin_left = -248.0
+margin_top = -99.0
+grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
 
 [node name="title" type="Label" parent="ui/base/spawn"]
+margin_left = 184.0
 margin_right = 248.0
 margin_bottom = 36.0
+size_flags_horizontal = 8
 theme = SubResource( 9 )
 text = "Spawn"
 
@@ -286,6 +243,7 @@ margin_bottom = 99.0
 grow_vertical = 0
 mouse_filter = 2
 theme = ExtResource( 3 )
+alignment = 2
 script = SubResource( 10 )
 
 [node name="spawn" type="Button" parent="ui/base/spawn/commands"]
@@ -303,9 +261,6 @@ grow_horizontal = 0
 text = "Enemy"
 flat = true
 
-[connection signal="pressed" from="ui/base/multiplayer/buttons/name" to="ui/base/multiplayer/text_box/text_box" method="prep_name_player"]
-[connection signal="color_changed" from="ui/base/multiplayer/text_box/color_picker_box/color_picker" to="ui/base/multiplayer/buttons/name" method="change_color"]
-[connection signal="visibility_changed" from="ui/base/multiplayer/text_box/text_box" to="ui/base/multiplayer/text_box/close" method="_text_box_visibility_changed"]
-[connection signal="pressed" from="ui/base/multiplayer/text_box/helper" to="ui/base/multiplayer/text_box/text_box" method="helper_pressed"]
+[connection signal="pressed" from="ui/base/multiplayer/buttons/name" to="ui/base/multiplayer" method="prep_name_player"]
 [connection signal="pressed" from="ui/base/spawn/commands/spawn" to="ui/base/spawn/commands" method="spawn_controlled"]
 [connection signal="pressed" from="ui/base/spawn/commands/spawn_bot" to="ui/base/spawn/commands" method="spawn_bot"]

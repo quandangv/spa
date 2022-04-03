@@ -6,6 +6,7 @@ var primary_target:Node
 var secondary_target:Node
 var following:bool
 var following_secondary:bool
+var force_follow_primary:bool
 var destroyed_once:bool
 var follow_distance
 
@@ -13,6 +14,7 @@ func _enter_tree():
   destroyed_once = false
   secondary_target = null
   $collision.disabled = false
+  force_follow_primary = false
   set("mode", RigidBody2D.MODE_RIGID)
 
 func destroyed_by(other):
@@ -24,13 +26,14 @@ func destroyed_by(other):
       if follow_distance != null:
         secondary_target = target
         following_secondary = true
-    set("mass", sqrt(og_hp / hp_multiplier))
-    set("mode", RigidBody2D.MODE_KINEMATIC)
-    destroyed_once = true
-    $collision.disabled = true
-    color.a = 1
-    update()
-    return
+    if following_secondary or force_follow_primary:
+      set("mass", sqrt(og_hp / hp_multiplier))
+      set("mode", RigidBody2D.MODE_KINEMATIC)
+      destroyed_once = true
+      $collision.disabled = true
+      color.a = 1
+      update()
+      return
   destroyed()
 func draw():
   if destroyed_once:

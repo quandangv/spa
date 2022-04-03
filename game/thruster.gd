@@ -5,6 +5,8 @@ const thrust_to_torque = 1500
 const thrust_to_force = 300
 const min_movement = 0.01
 const modulate_factor = 0.1
+var move_direction:Vector2
+var move_strength:float
 onready var controller = get_node("../controller")
 onready var parent = get_parent()
 onready var particles = $particles
@@ -17,24 +19,27 @@ func _draw():
   draw_rect(Rect2(0, -thrust, thrust, thrust*2), color, true)
 
 func move(direction, delta):
-  var length = direction.length()
-  if length < min_movement:
-    direction = -parent.linear_velocity * controller.stop_multiplier
-    length = direction.length()
-    if length != 0 and length < thrust * thrust_to_force * delta / parent.mass:
+  move_direction = direction
+  var move_strength = move_direction.length()
+  if move_strength < min_movement: # if user give no input
+    move_direction = -parent.linear_velocity * controller.stop_multiplier
+    move_strength = move_direction.length()
+    if move_strength != 0 and move_strength < thrust * thrust_to_force * delta / parent.mass:
       parent.linear_velocity = Vector2.ZERO
-      length = 0
-  if length >= 0.99:
-    direction = direction.normalized()
-    length = 1
-  if length > 0.1:
-    rotation = lerp_angle(rotation, (-direction).angle() - parent.rotation, 0.05)
-  particles.emitting = randf() < length
-  if length > 0:
-    parent.apply_central_impulse(direction * thrust * thrust_to_force * delta)
+      move_strength = 0
+  if move_strength >= 0.99: # if user input is out of bound
+    move_direction = move_direction.normalized()
+    move_strength = 1
+  move_direction *= exp(-move_direction.dot(parent.linear_velocity.normalized())*0.5)
+  
+  if move_strength > 0.1: # if there is any input after everything
+    rotation = lerp_angle(rotation, (-move_direction).angle() - parent.global_rotation, 0.05)
+  particles.emitting = randf() < move_strength
+  if move_strength > 0:
+    parent.apply_central_impulse(move_direction * thrust * thrust_to_force * delta)
 
 func init(thrust):
-  particles.speed_scale = thrust
+  particles.speed_scale = thrust*2
   particles.modulate = Color(1, 1, 1, modulate_factor * thrust)
   self.thrust = thrust
   visible = thrust > 0
@@ -49,7 +54,7 @@ func _physics_process(delta):
     assert(not is_nan(controller.angle), "Controller angle is NAN")
     if is_nan(controller.angle):
       controller.angle = 0
-    var rotation_delta = controller.angle - parent.rotation
+    var rotation_delta = controller.angle - parent.global_rotation
     if rotation_delta < -PI:
       rotation_delta += PI*2
     elif rotation_delta > PI:

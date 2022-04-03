@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/circle.svg-eba4af6877b7d2d8988bb5e3058e0ce7.stex"
+path="res://.import/exit.svg-ca5330d24b36dca6b084bf30b7d0d867.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://game/circle.svg"
-dest_files=[ "res://.import/circle.svg-eba4af6877b7d2d8988bb5e3058e0ce7.stex" ]
+source_file="res://icons/exit.svg"
+dest_files=[ "res://.import/exit.svg-ca5330d24b36dca6b084bf30b7d0d867.stex" ]
 
 [params]
 

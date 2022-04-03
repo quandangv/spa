@@ -7,9 +7,11 @@ signal on_gained_input
 var movement:Vector2
 var firing:bool
 var angle:float
-const stop_multiplier = 1
+var stop_multiplier = base_stop_multiplier
 const thrust_to_rotate_speed = 3
 
+const base_stop_multiplier = 1
+var speed_limit:float = 40
 var disabled:bool
 var have_input:bool = false
 const off_color = Color(0.5, 0.5, 0.5)
@@ -18,6 +20,7 @@ onready var camera = get_node("/root/game/camera")
 onready var bg_modulate = get_node("/root/game/background/modulate")
 onready var parent = get_parent()
 var direct_control = true
+export var auto_take_input:bool = true
 
 func _ready():
   if not Multiplayer.active or is_network_master():
@@ -31,11 +34,13 @@ func wake_up():
   disabled = false
   if not Multiplayer.active or is_network_master():
     $shape.shape.radius = parent.size
-    if InputCoordinator.register_implicit_controller("ship", self, true):
+    if auto_take_input and InputCoordinator.register_implicit_controller("ship", self, true):
       gained_input()
     else:
+      have_input = true
       lost_input()
   else:
+    have_input = true
     lost_input()
 
 func hibernate():
@@ -45,6 +50,11 @@ func hibernate():
 
 func _process(delta):
   var new_movement = Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down"))
+#  if parent.thruster != null and new_movement.dot(parent.linear_velocity) > speed_limit * parent.thruster.thrust:
+#    new_movement = Vector2.ZERO
+#    stop_multiplier = 0
+#  else:
+#    stop_multiplier = base_stop_multiplier
   var new_firing = Input.is_action_pressed("fire")
   var new_angle = (self.get_global_mouse_position() - parent.global_position).angle()
   var new_start_firing = Input.is_action_just_pressed("fire")
@@ -76,8 +86,9 @@ func lost_input():
   if have_input:
     have_input = false
     set_process(false)
-    parent.disconnect("bumped", self, "_bumped")
-    parent.disconnect("explode", self, "_explode")
+    if parent.is_connected("bumped", self, "_bumped"):
+      parent.disconnect("bumped", self, "_bumped")
+      parent.disconnect("explode", self, "_explode")
     camera.tracked_obj.erase(parent)
     movement = Vector2.ZERO
     firing = false
@@ -89,8 +100,9 @@ func gained_input():
   if not have_input:
     have_input = true
     set_process(true)
-    parent.connect("bumped", self, "_bumped")
-    parent.connect("explode", self, "_explode")
+    if not parent.is_connected("bumped", self, "_bumped"):
+      parent.connect("bumped", self, "_bumped")
+      parent.connect("explode", self, "_explode")
     camera.tracked_obj.append(parent)
     emit_signal("on_gained_input")
   update_color()

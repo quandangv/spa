@@ -36,5 +36,6 @@ func init_asteroid(asteroid):
 func destroyed():
   set_process(false)
   for asteroid in $pool.get_children():
+    asteroid.force_follow_primary = true
     asteroid.destroyed_by(self)
   hibernate()

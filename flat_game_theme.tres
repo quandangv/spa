@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=10 format=2]
+[gd_resource type="Theme" load_steps=12 format=2]
 
 [ext_resource path="res://fonts/SmoochSans-Regular.ttf" type="DynamicFontData" id=1]
 
@@ -56,7 +56,15 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="Gradient" id=12]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 0, 0, 0, 0 )
+
+[sub_resource type="GradientTexture" id=13]
+gradient = SubResource( 12 )
+width = 1
+
+[sub_resource type="StyleBoxFlat" id=11]
 bg_color = Color( 0, 0.647059, 1, 0.196078 )
 border_width_left = 1
 border_width_top = 1
@@ -115,5 +123,5 @@ PanelContainer/styles/panel = SubResource( 8 )
 TextEdit/colors/caret_color = Color( 1, 1, 1, 1 )
 TextEdit/colors/selection_color = Color( 0, 0.717647, 1, 0.509804 )
 TextEdit/styles/normal = SubResource( 8 )
-WindowDialog/icons/close = null
-WindowDialog/styles/panel = SubResource( 3 )
+WindowDialog/icons/close = SubResource( 13 )
+WindowDialog/styles/panel = SubResource( 11 )

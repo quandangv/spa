@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/play.svg-6793fc14af2a749592f2dfa231b1688e.stex"
+path="res://.import/play.svg-f4488b14f34309562c42b22138f573bf.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://play.svg"
-dest_files=[ "res://.import/play.svg-6793fc14af2a749592f2dfa231b1688e.stex" ]
+source_file="res://icons/play.svg"
+dest_files=[ "res://.import/play.svg-f4488b14f34309562c42b22138f573bf.stex" ]
 
 [params]
 

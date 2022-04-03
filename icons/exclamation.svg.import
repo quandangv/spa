@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/exclamation.svg-578e5b06160c566b5bfabd7452e808ea.stex"
+path="res://.import/exclamation.svg-a014ef2fad0cbb57b259e89b4477982a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://game/exclamation.svg"
-dest_files=[ "res://.import/exclamation.svg-578e5b06160c566b5bfabd7452e808ea.stex" ]
+source_file="res://icons/exclamation.svg"
+dest_files=[ "res://.import/exclamation.svg-a014ef2fad0cbb57b259e89b4477982a.stex" ]
 
 [params]
 

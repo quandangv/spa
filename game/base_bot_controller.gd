@@ -26,7 +26,7 @@ func _ready():
   if dodge_bodies:
     detector.connect("body_entered", self, "body_entered")
     detector.connect("body_exited", self, "body_exited")
-  detector.get_node("shape").shape.radius = detect_radius
+  detector.scale = Vector2(detect_radius, detect_radius)
 
 func _process(delta):
   dodge_count += 1

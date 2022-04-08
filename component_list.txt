@@ -1,0 +1,10 @@
+component list:
+- core: give AI features
+- generator: generates plasma
+- accelerator: gives plasma speed
+- energizer: gives plasma power
+- turret: fires limited amount of plasma, requires free space ahead
+- guiding turret: fires guided plasma (less capacity than turret)
+- thruster: accelerates ship
+- shield: protects surrounding components, regenerates if adjacent to generator
+- armor: resists collision damage while having higher hp

@@ -1,18 +1,18 @@
 [gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://fonts/SmoochSans-Regular.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://game/theme.tres" type="Theme" id=2]
-[ext_resource path="res://game/ship.tscn" type="PackedScene" id=3]
-[ext_resource path="res://game/anchored_target_selector.gd" type="Script" id=4]
-[ext_resource path="res://game/bot_controller.tscn" type="PackedScene" id=5]
-[ext_resource path="res://game/tracker.gd" type="Script" id=6]
+[ext_resource path="res://base/theme.tres" type="Theme" id=2]
+[ext_resource path="res://base/ship.tscn" type="PackedScene" id=3]
+[ext_resource path="res://base/anchored_target_selector.gd" type="Script" id=4]
+[ext_resource path="res://base/bot_controller.tscn" type="PackedScene" id=5]
+[ext_resource path="res://base/tracker.gd" type="Script" id=6]
 [ext_resource path="res://icons/play.svg" type="Texture" id=7]
 [ext_resource path="res://fonts/TitleFont.tres" type="DynamicFont" id=8]
 [ext_resource path="res://icons/multiplayer.svg" type="Texture" id=9]
-[ext_resource path="res://game/object_pool.gd" type="Script" id=10]
-[ext_resource path="res://game/plasma_pool.gd" type="Script" id=11]
-[ext_resource path="res://game/plasma.tscn" type="PackedScene" id=12]
-[ext_resource path="res://game/main_menu.gd" type="Script" id=13]
+[ext_resource path="res://base/object_pool.gd" type="Script" id=10]
+[ext_resource path="res://base/plasma_pool.gd" type="Script" id=11]
+[ext_resource path="res://base/plasma.tscn" type="PackedScene" id=12]
+[ext_resource path="res://base/main_menu.gd" type="Script" id=13]
 [ext_resource path="res://backgrounds/planet_moon.tscn" type="PackedScene" id=14]
 
 [sub_resource type="DynamicFont" id=1]
@@ -101,6 +101,7 @@ current = true
 smoothing_enabled = true
 smoothing_speed = 2.0
 script = ExtResource( 6 )
+manual_adjustment_limit = [ 0.5, 2 ]
 tracked_obj = [ NodePath("../ship3"), NodePath("../ship4"), NodePath("../ship5"), NodePath("../ship6") ]
 
 [node name="Control" type="Control" parent="."]

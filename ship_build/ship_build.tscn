@@ -162,7 +162,9 @@ tile_set = ExtResource( 2 )
 cell_size = Vector2( 1, 1 )
 cell_custom_transform = Transform2D( 295.604, 0, 147.802, 256, 0, 0 )
 cell_tile_origin = 1
+centered_textures = true
 format = 1
+tile_data = PoolIntArray( 1179670, 11, 0, 1245205, 12, 0, 1310741, 6, 0 )
 
 [node name="top" type="TileMap" parent="map"]
 mode = 2
@@ -172,7 +174,7 @@ cell_custom_transform = Transform2D( 295.604, 0, 147.802, 256, 0, 0 )
 cell_tile_origin = 1
 centered_textures = true
 format = 1
-tile_data = PoolIntArray( 524317, 39, 0, 524318, 39, 0, 524319, 39, 0, 524320, 39, 0, 589852, 39, 0, 589853, 9, 0, 589854, 9, 0, 589855, 9, 0, 589856, 39, 0, 655387, 39, 0, 655388, 9, 0, 655389, 17, 0, 655390, 17, 0, 655391, 9, 0, 655392, 39, 0, 720923, 9, 0, 720924, 17, 0, 720925, 0, 0, 720926, 17, 0, 720927, 9, 0, 720928, 39, 0 )
+tile_data = PoolIntArray( 1179670, 3, 0, 1245205, 0, 0, 1245206, 5, 0, 1310741, 4, 0 )
 __meta__ = {
 "_editor_description_": ""
 }

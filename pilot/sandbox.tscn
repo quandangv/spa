@@ -1,18 +1,18 @@
 [gd_scene load_steps=21 format=2]
 
-[ext_resource path="res://game/retaining_pool.gd" type="Script" id=1]
-[ext_resource path="res://game/html5_notice.gd" type="Script" id=2]
+[ext_resource path="res://base/retaining_pool.gd" type="Script" id=1]
+[ext_resource path="res://base/html5_notice.gd" type="Script" id=2]
 [ext_resource path="res://flat_buttons.tres" type="Theme" id=3]
-[ext_resource path="res://game/plasma_pool.gd" type="Script" id=4]
+[ext_resource path="res://base/plasma_pool.gd" type="Script" id=4]
 [ext_resource path="res://backgrounds/galaxy.tscn" type="PackedScene" id=5]
-[ext_resource path="res://game/plasma.tscn" type="PackedScene" id=6]
-[ext_resource path="res://game/tracker.gd" type="Script" id=7]
+[ext_resource path="res://base/plasma.tscn" type="PackedScene" id=6]
+[ext_resource path="res://base/tracker.gd" type="Script" id=7]
 [ext_resource path="res://flat_game_theme.tres" type="Theme" id=8]
-[ext_resource path="res://game/pause_menu.tscn" type="PackedScene" id=9]
+[ext_resource path="res://base/pause_menu.tscn" type="PackedScene" id=9]
 [ext_resource path="res://fonts/SmallMenuFont.tres" type="DynamicFont" id=10]
 [ext_resource path="res://small_game_theme.tres" type="Theme" id=12]
-[ext_resource path="res://game/multiplayer_ui.gd" type="Script" id=13]
-[ext_resource path="res://game/dual_state_button.gd" type="Script" id=14]
+[ext_resource path="res://base/multiplayer_ui.gd" type="Script" id=13]
+[ext_resource path="res://base/dual_state_button.gd" type="Script" id=14]
 [ext_resource path="res://icons/edit.svg" type="Texture" id=15]
 
 [sub_resource type="GDScript" id=5]
@@ -87,6 +87,7 @@ current = true
 smoothing_enabled = true
 smoothing_speed = 2.0
 script = ExtResource( 7 )
+manual_adjustment_limit = [ 0.5, 2 ]
 
 [node name="background" parent="." instance=ExtResource( 5 )]
 
@@ -165,10 +166,10 @@ margin_right = 332.0
 margin_bottom = 480.0
 
 [node name="color_picker" type="ColorPicker" parent="ui/base/multiplayer/text_box/color_picker_box"]
-margin_left = 104.0
-margin_top = 104.0
-margin_right = 420.0
-margin_bottom = 568.0
+margin_left = 108.0
+margin_top = 108.0
+margin_right = 424.0
+margin_bottom = 572.0
 theme = ExtResource( 3 )
 edit_alpha = false
 presets_enabled = false

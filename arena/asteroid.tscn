@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://base/autodestroyer.gd" type="Script" id=1]
+[ext_resource path="res://arena/asteroid_base.tscn" type="PackedScene" id=2]
+
+[node name="polygon" instance=ExtResource( 2 )]
+
+[node name="notifier" type="VisibilityNotifier2D" parent="." index="2"]
+rect = Rect2( -1, -1, 2, 2 )
+script = ExtResource( 1 )
+initial_wait = 20.0

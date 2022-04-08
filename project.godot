@@ -22,7 +22,7 @@ _global_script_classes=[ {
 "base": "Resource",
 "class": "SoundInfo",
 "language": "GDScript",
-"path": "res://game/sound_info.gd"
+"path": "res://base/sound_info.gd"
 } ]
 _global_script_class_icons={
 "RadialGradientTexture": "",
@@ -42,9 +42,9 @@ ComponentUtils="*res://component_utils.tscn"
 GameUtils="*res://game_utils.tscn"
 SoundPlayer="*res://sound_player.tscn"
 SceneManager="*res://scene_manager.tscn"
-Storage="*res://game/storage.gd"
+Storage="*res://base/storage.gd"
 InputCoordinator="*res://input_coordinator.gd"
-Multiplayer="*res://game/multiplayer.tscn"
+Multiplayer="*res://base/multiplayer.tscn"
 
 [debug]
 

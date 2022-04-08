@@ -46,8 +46,3 @@ func unregister_implicit_controller(controller):
       if i == 0 and len(_implicit_controllers) > 0:
         _implicit_controllers.front().gained_input()
       break
-func replace_explicit_controllers(controller):
-  _explicit_controllers.clear()
-  _explicit_controllers.append(controller)
-func clear_explicit_controllers():
-  _explicit_controllers.clear()
